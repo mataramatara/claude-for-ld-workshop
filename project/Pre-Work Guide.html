@@ -1,0 +1,390 @@
+<!DOCTYPE html><html lang="en" data-cc-id="cc-16"><head>
+
+
+
+
+<meta charset="utf-8">
+<title>Pre-Work Guide — Claude for L&amp;D Professionals</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  html, body { background: var(--paper); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 80px 64px 120px;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  @media print {
+    body { max-width: 7in; padding: 0.6in 0.7in; font-size: 12pt; }
+    .page-break { break-before: page; }
+    .no-print { display: none; }
+  }
+  header.doc-head {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  header.doc-head .tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  header.doc-head .meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  h1.doc-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 52px;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+    text-wrap: pretty;
+  }
+  h1.doc-title em { color: var(--terra); font-style: italic; }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 48px;
+    max-width: 700px;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 48px 0 18px;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    margin: 28px 0 8px;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 6px;
+  }
+  p { margin: 0 0 16px; }
+  ol.steps {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    counter-reset: step;
+  }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    padding: 18px 0 18px 60px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  ol.steps > li:last-child { border-bottom: 0; }
+  ol.steps > li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: 18px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--terra);
+    letter-spacing: 0.04em;
+  }
+  ol.steps > li > strong:first-child {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 18px;
+  }
+  .callout {
+    background: var(--paper-2);
+    border-left: 3px solid var(--terra);
+    padding: 18px 22px;
+    margin: 24px 0;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .callout .label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 6px;
+  }
+  .prompt-try {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    padding: 20px 22px;
+    border-radius: 8px;
+    margin: 18px 0 24px;
+    position: relative;
+    white-space: pre-wrap;
+  }
+  .prompt-try::before {
+    content: 'TRY THIS PROMPT';
+    position: absolute;
+    top: -8px;
+    left: 16px;
+    background: var(--terra);
+    color: var(--paper);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+  .checklist {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+  }
+  .checklist li {
+    padding: 10px 0 10px 32px;
+    position: relative;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 15px;
+  }
+  .checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 12px;
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--ink);
+    border-radius: 3px;
+  }
+  .url {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--paper-2);
+    padding: 3px 8px;
+    border-radius: 3px;
+    color: var(--terra-deep);
+  }
+  footer.doc-foot {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body data-cc-id="cc-2" style="cursor: crosshair;">
+
+<header class="doc-head" data-cc-id="cc-2">
+  <span class="tag">Pre-Work · 10 minutes</span>
+  <span class="meta" data-cc-id="cc-1" style="">ATD Houston · Technology SIG · April 2026</span>
+</header>
+
+<h1 class="doc-title" data-cc-id="cc-3">Before we meet:<br><em data-cc-id="cc-11">get Claude ready.</em></h1>
+
+<p class="lede" data-cc-id="cc-4">
+  A short guide to set up your free Claude account and arrive ready to work. Fifteen minutes, tops. You'll thank yourself when we start.
+</p>
+
+<h2 data-cc-id="cc-5"><span class="section-num" data-cc-id="cc-12">Part One</span>Why this matters</h2>
+<p data-cc-id="cc-6">
+  The workshop is hands-on. You'll write real prompts, on your real work, in your own Claude account. If you arrive with the account already created and one prompt already tried, you'll get twice as much out of our hour together.
+</p>
+<p data-cc-id="cc-1">
+  Everything we do in the session works on the <strong>free plan</strong>. No credit card needed. If you already have a paid Claude account, you're set — skip to Part Three.
+</p>
+
+<h2 data-cc-id="cc-4"><span class="section-num" data-cc-id="cc-3">Part Two</span>Create your free account</h2>
+
+<ol class="steps">
+  <li data-cc-id="cc-5">
+    <strong data-cc-id="cc-6">Go to claude.ai</strong>
+    Open a browser and visit <span class="url">claude.ai</span>. You'll see a sign-in page.
+  </li>
+  <li data-cc-id="cc-7">
+    <strong data-cc-id="cc-8">Choose a sign-in method</strong>
+    Sign up with Google, email, or Apple ID. A personal email is fine — you don't need a work account.
+  </li>
+  <li data-cc-id="cc-9">
+    <strong data-cc-id="cc-10">Confirm your email</strong>
+    Click the confirmation link Anthropic sends. Set a password if you used email sign-up.
+  </li>
+  <li data-cc-id="cc-13">
+    <strong data-cc-id="cc-12">Accept the usage policies</strong>
+    Read the acceptable-use highlights. Nothing surprising — no harmful content, no using Claude to harass people, be a reasonable human.
+  </li>
+  <li data-cc-id="cc-11" style="">
+    <strong data-cc-id="cc-14">Complete the welcome flow</strong>
+    Anthropic will ask a couple of questions about how you plan to use Claude. Answer honestly; it doesn't affect your access.
+  </li>
+  <li data-cc-id="cc-7" style="">
+    <strong>Download the desktop app (recommended)</strong>
+    During setup, Claude will show you a <em>Get the most out of Claude on your desktop</em> screen. Click <strong>Download for Mac</strong> or <strong>Download for Windows</strong> and install it — feel free to click <em>Skip</em>.&nbsp;<figure style="margin: 14px 0 6px; padding: 0;" data-cc-id="cc-8">
+      <img src="assets/welcome-download-desktop.png" alt="Screenshot of the 'Get the most out of Claude on your desktop' screen, offering a Download for Windows button alongside Skip." style="width: 100%; max-width: 560px; display: block; border: 1px solid var(--rule-soft); border-radius: 6px;" data-cc-id="cc-9">
+      <figcaption style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--ink-soft); margin-top: 6px;" data-cc-id="cc-13">You'll see this during the welcome flow — click Download or you can Skip.</figcaption>
+    </figure>
+    The browser works fine for what we'll do, but the desktop app adds things the browser can't reach — <strong data-cc-id="cc-14">Cowork</strong> (an autonomous agent that works across your files and apps), <strong data-cc-id="cc-16">Claude Code</strong> access, and local file integrations via Desktop Extensions. If you miss this screen, you can always grab it later at <span class="url">claude.com/download</span>.
+  </li>
+  <li data-cc-id="cc-10">
+    <strong data-cc-id="cc-15" style="">Review "Help Claude improve"</strong>
+    On the <em data-cc-id="cc-19">Before your first chat</em> screen, you'll see three items — the last is a toggle for <strong data-cc-id="cc-18">Help Claude improve</strong>, which allows Anthropic to use your chats to train future models.
+    <figure style="margin: 14px 0 6px; padding: 0;" data-cc-id="cc-20">
+      <img src="assets/welcome-help-improve.png" alt="Screenshot of the 'Before your first chat' screen in Claude, showing three items including the 'Help Claude improve' toggle set to off." style="width: 100%; max-width: 520px; display: block; border: 1px solid var(--rule-soft); border-radius: 6px;" data-cc-id="cc-17">
+      <figcaption style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--ink-soft); margin-top: 6px;" data-cc-id="cc-21">The welcome screen where you'll see the toggle.</figcaption>
+    </figure>
+    Your choice — but as a best practice, I recommend switching it <strong>off</strong>, or at least reading <em>Learn more</em> before leaving it on. You can change it anytime in <strong>Settings → Privacy</strong>.
+  </li>
+  <li data-cc-id="cc-15">
+    <strong data-cc-id="cc-18">Confirm you're on the Free plan</strong>
+    Open your profile menu (bottom-left) and look for your plan badge. You should see "Free." That's what we want. You may also be prompted to download Claude Code — choose <strong>Maybe Later</strong>. We won't be covering Claude Code in this session.
+  </li>
+</ol>
+
+<div class="callout" data-cc-id="cc-17">
+  <span class="label" data-cc-id="cc-22">If something goes sideways</span>
+  Anthropic occasionally pauses new signups in a region for capacity reasons. If that happens, try again the next day.
+</div>
+
+<h2 data-cc-id="cc-20"><span class="section-num" data-cc-id="cc-21">Part Three</span>Try one prompt before we meet</h2>
+
+<p data-cc-id="cc-19">
+  Opening Claude for the first time during a workshop is awkward. Open it <em>now</em>, send one real message, and the workshop feels like the second visit, not the first.
+</p>
+
+<h3 data-cc-id="cc-25">Your five-minute first run</h3>
+
+<p data-cc-id="cc-24" style="">
+  Click <strong>New Chat</strong>. Paste the prompt below. Replace the bracketed parts with something true about your work. Send it. Read what comes back.
+</p>
+<p data-cc-id="cc-22">
+  <em>Note:</em> if during the welcome flow you picked topics you're interested in, Claude may offer you a starter prompt on your first visit. Feel free to use that one instead and just go with the flow — the point is to send <em>something</em> real before we meet.
+</p>
+
+<div class="prompt-try" data-cc-id="cc-23">Act as a thoughtful L&amp;D peer who asks good questions.
+
+I'm preparing for a short workshop on [TOPIC YOU KNOW WELL]
+for an audience of [WHO YOUR LEARNERS ARE].
+
+Before you give me any advice, ask me 5 clarifying questions
+that would help you give a better answer. Number them.
+Wait for me to respond before you say anything else.</div>
+
+<p data-cc-id="cc-26">
+  That's it. Notice what it asks. Notice whether the questions are obvious, sharp, or surprising.
+</p>
+
+<h2 data-cc-id="cc-27"><span class="section-num" data-cc-id="cc-28">Part Four</span>Turn on Skills (2 minutes)</h2>
+<p>
+  Skills are pre-built procedures Claude can run for you — things like document creation, data analysis, or visual design. Some are on by default; some you need to enable. We'll use at least one together during the session, so flip these on now.
+</p>
+
+<ol class="steps">
+  <li data-cc-id="cc-24" style="">
+    <strong data-cc-id="cc-54">Find the Skills panel</strong>
+    From your profile menu (top-left), click <strong>Customize</strong> → <strong>Skills</strong>. You should see one skill there already — <em data-cc-id="cc-25">skill-creator</em>.
+  </li>
+  <li data-cc-id="cc-23" style="">
+    <strong data-cc-id="cc-26">Click the + sign to browse Skills</strong>
+    Flip the toggle to <em>on</em> for each of these:
+    <ul style="margin: 8px 0 0; padding-left: 18px;" data-cc-id="cc-55">
+      <li data-cc-id="cc-30"><strong data-cc-id="cc-31">doc-coauthoring</strong> — structured workflow for creating documentation</li>
+      <li data-cc-id="cc-28"><strong data-cc-id="cc-27">brand-guidelines</strong> — apply Anthropic's brand guidelines</li>
+      <li data-cc-id="cc-32" style=""><strong data-cc-id="cc-29" style="">canvas-design</strong> — use design philosophy to create posters and other designs<div data-cc-id="cc-57" style=""><b data-cc-id="cc-56" style="">claude-designer</b> - new designer that was just released&nbsp;</div></li>
+      <li data-cc-id="cc-33" style=""><strong data-cc-id="cc-34">web-artifacts-builder</strong> — create HTML artifacts</li>
+    </ul>
+  </li>
+  <li data-cc-id="cc-35" style="">
+    <strong data-cc-id="cc-36">Leave the rest alone</strong>
+    Don't worry about community-built or custom Skills yet — we'll cover those together in the session.
+  </li>
+</ol>
+
+<div class="callout" data-cc-id="cc-37" style="">
+  <span class="label" data-cc-id="cc-43" style="">Don’t see some of them?</span>
+  Anthropic rolls features out in waves, and some Skills are newer than others. If you don’t see Claude Designer on your free account yet, that’s fine — I will have a few screenshots for you.&nbsp;</div>
+
+<h2 data-cc-id="cc-41"><span class="section-num" data-cc-id="cc-42">Part Five</span>Connect Canva (3 minutes)</h2>
+<p data-cc-id="cc-45">
+  We’ll do a live demo of the <strong>Canva Connector</strong> — asking Claude to turn a learning objective into a polished Canva asset, in real time, without leaving the chat. It’s free and available on the free plan. If you want to follow along on your own screen, connect it now.
+</p>
+
+<ol class="steps">
+  <li data-cc-id="cc-38">
+    <strong data-cc-id="cc-44">Have a Canva account</strong>
+    A free Canva account is fine. If you don’t have one, sign up at <span class="url">canva.com</span> — takes a minute.
+  </li>
+  <li data-cc-id="cc-39">
+    <strong data-cc-id="cc-40">Open the Connectors panel</strong>
+    From your profile menu (bottom-left), click <strong>Customize</strong> → <strong>Connectors</strong>, then click the <strong>+</strong> to browse. There are plenty of options here — at a minimum, connect Canva. Feel free to explore others; popular ones include Google tools, Microsoft tools, and Notion.
+  </li>
+  <li data-cc-id="cc-49">
+    <strong>Find Canva in the list</strong>
+    Scroll until you see the Canva tile, then click <strong>Connect</strong>.
+  </li>
+  <li data-cc-id="cc-46">
+    <strong data-cc-id="cc-48">Authorize Claude</strong>
+    A Canva login window opens. Sign in, then click <strong data-cc-id="cc-47">Allow</strong> to let Claude read and write to your Canva account.
+  </li>
+  <li>
+    <strong>Confirm it's live</strong>
+    Back in the Connectors panel, the Canva tile should show <em>Connected</em>. You're done.
+  </li>
+</ol>
+
+<div class="callout">
+  <span class="label">A note on permissions</span>
+  The Canva Connector lets Claude create and edit designs in <em>your</em> Canva account. Only connect accounts you control. You can disconnect at any time from the same Connectors panel.
+</div>
+
+<h2><span class="section-num">Part Six</span>A short primer — why Claude, specifically</h2>
+<p>
+  You don't need to know this before the session, but a lot of people ask. In short: Claude is made by Anthropic, an AI company focused on safety and careful reasoning. Compared to other assistants, Claude tends to produce longer, more thoughtful responses, handles long documents well, and is good at holding a specific voice when you ask for one.
+</p>
+<p data-cc-id="cc-50">
+  We'll get into the nuances together. For today, that's enough.
+</p>
+
+<h2 data-cc-id="cc-52"><span class="section-num" data-cc-id="cc-53">Part Seven</span>Bring this to the session</h2>
+
+<ul class="checklist">
+  <li data-cc-id="cc-51">A laptop (not a phone — you'll be typing real prompts).</li>
+  <li>A working claude.ai login you've tested at least once.</li>
+  <li>Skills turned on (Part Four) and Canva connected (Part Five).</li>
+  <li>One real task from the next two weeks you'd like to move faster on.</li>
+  <li>A healthy mix of curiosity and skepticism. Both are welcome.</li>
+</ul>
+
+<footer class="doc-foot" data-cc-id="cc-60" style="text-align: left; line-height: 1.55; align-items: flex-start;">
+  <span data-cc-id="cc-59" style=""><br></span>
+  <span data-cc-id="cc-58" style="text-align: left; line-height: 1.55; width: 800px;">Questions? tamara_thomas@live.com<br>Subscribe and chat with me on Substack&nbsp;https://substack.com/@tinkeringwithtech</span>
+</footer>
+
+
+
+</body></html>

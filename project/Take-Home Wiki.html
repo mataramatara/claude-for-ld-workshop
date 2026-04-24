@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Take-Home Wiki — Claude for L&D</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: var(--paper); }
+  body { display: flex; font-family: var(--sans); color: var(--ink); font-size: 15px; line-height: 1.6; }
+
+  /* ── Sidebar ───────────────────────────────────────────── */
+  #sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+  }
+  .sidebar-header {
+    padding: 28px 22px 18px;
+    border-bottom: 1px solid rgba(246,241,231,0.12);
+  }
+  .sidebar-header .eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 6px;
+  }
+  .sidebar-header h1 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0;
+    color: var(--paper);
+  }
+  .sidebar-header h1 em { color: var(--terra); font-style: italic; }
+
+  nav { padding: 14px 0 28px; flex: 1; }
+  .nav-section-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(246,241,231,0.35);
+    padding: 10px 22px 4px;
+    display: block;
+  }
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 22px;
+    font-size: 13px;
+    color: rgba(246,241,231,0.7);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+    line-height: 1.3;
+  }
+  nav a:hover { background: rgba(246,241,231,0.07); color: var(--paper); }
+  nav a.active { background: rgba(196,98,58,0.2); color: var(--paper); border-left: 3px solid var(--terra); padding-left: 19px; }
+  nav a .num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--terra);
+    min-width: 22px;
+    flex-shrink: 0;
+  }
+
+  /* ── Main content ───────────────────────────────────────── */
+  #main {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--paper);
+  }
+
+  .page { display: none; padding: 56px 64px 80px; max-width: 860px; }
+  .page.active { display: block; }
+
+  .page-header {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .page-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 4px;
+  }
+  h1.page-title {
+    font-family: var(--serif);
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1.05;
+    margin: 0;
+    letter-spacing: -0.015em;
+  }
+  h1.page-title em { color: var(--terra); font-style: italic; }
+  .page-lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    margin: 12px 0 32px;
+    max-width: 680px;
+  }
+
+  /* Shared components */
+  h2.sub { font-family: var(--serif); font-weight: 400; font-size: 26px; margin: 36px 0 8px; letter-spacing: -0.01em; }
+  h3.sub { font-family: var(--sans); font-weight: 600; font-size: 16px; margin: 24px 0 4px; }
+  .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); }
+  .mono { font-family: var(--mono); }
+  .callout { padding: 14px 18px; background: var(--paper-2); border-left: 3px solid var(--terra); font-size: 13px; line-height: 1.55; margin: 14px 0; }
+  .callout strong { color: var(--ink); }
+
+  /* Prompt blocks */
+  .prompt-block {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.55;
+    padding: 16px 18px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    margin: 8px 0 14px;
+  }
+  .prompt-block .fill { color: var(--terra); font-style: italic; }
+  .pmeta { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
+  .why { font-size: 13px; color: var(--ink-soft); font-style: italic; padding-left: 12px; border-left: 2px solid var(--rule); margin: 0 0 8px; }
+
+  /* Challenge cards */
+  .chal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .chal-card { border: 1px solid var(--rule); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; }
+  .chal-card.accent { background: var(--terra); color: var(--paper); border-color: var(--terra); }
+  .chal-card .day { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--terra); }
+  .chal-card.accent .day { color: rgba(246,241,231,0.8); }
+  .chal-card h4 { font-family: var(--serif); font-size: 20px; font-weight: 400; line-height: 1.1; margin: 0; }
+  .chal-card p { font-size: 13px; color: var(--ink-soft); margin: 0; }
+  .chal-card.accent p { color: rgba(246,241,231,0.88); }
+  .checkbox { width: 16px; height: 16px; border: 1.5px solid var(--ink); border-radius: 3px; margin-top: auto; align-self: flex-end; }
+  .chal-card.accent .checkbox { border-color: rgba(246,241,231,0.6); }
+
+  /* Habits */
+  .habit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin-top: 14px; }
+  .habit { padding: 12px 0; border-bottom: 1px solid var(--rule-soft); display: grid; grid-template-columns: 30px 1fr; gap: 10px; }
+  .habit .hn { font-family: var(--mono); font-size: 12px; color: var(--terra); padding-top: 1px; }
+  .habit h5 { font-family: var(--sans); font-weight: 600; font-size: 14px; margin: 0 0 2px; }
+  .habit p { font-size: 12px; line-height: 1.4; margin: 0; color: var(--ink-soft); }
+
+  /* Reflect */
+  .reflect { border: 1px solid var(--rule); padding: 18px 20px; margin-bottom: 14px; }
+  .reflect .q { font-family: var(--serif); font-size: 17px; font-style: italic; font-weight: 300; margin: 0 0 8px; }
+  .write-lines { background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 26px, var(--rule-soft) 26px, var(--rule-soft) 27px); height: 100px; }
+
+  /* Artifact cards */
+  .art-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 16px; }
+  .art-card { border: 1px solid var(--rule); padding: 18px 20px; }
+  .art-card .alabel { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); margin-bottom: 4px; display: block; }
+  .art-card h4 { font-family: var(--serif); font-size: 19px; font-weight: 400; margin: 0 0 6px; }
+  .art-card p { font-size: 12px; color: var(--ink-soft); margin: 0 0 8px; }
+  .art-connector { background: var(--paper-2); border-left: 2px solid var(--terra); padding: 7px 10px; font-size: 11px; color: var(--ink-soft); margin-top: 8px; }
+
+  /* Ideas */
+  .idea-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; margin-top: 12px; }
+  .idea { padding: 10px 0; border-bottom: 1px solid var(--rule-soft); display: grid; grid-template-columns: 24px 1fr; gap: 8px; }
+  .idea .in { font-family: var(--mono); font-size: 10px; color: var(--terra); }
+  .idea h5 { font-family: var(--sans); font-weight: 600; font-size: 13px; margin: 0 0 2px; }
+  .idea p { font-size: 12px; margin: 0; color: var(--ink-soft); }
+
+  /* Moment cards */
+  .moment { border: 1px solid var(--rule); padding: 20px 24px; margin-bottom: 14px; }
+  .moment .mnum { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); margin-bottom: 4px; }
+  .moment h4 { font-family: var(--serif); font-size: 20px; font-weight: 400; margin: 0 0 10px; }
+  .moment p { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 0 0 8px; }
+  .moment .mquote { font-family: var(--mono); font-size: 12px; background: var(--paper-2); border-left: 3px solid var(--terra); padding: 9px 12px; margin: 10px 0; line-height: 1.5; color: var(--ink); }
+
+  /* People + Tools */
+  .card-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+  .mini-card { border: 1px solid var(--rule); padding: 16px 18px; }
+  .mini-card .tag { margin-bottom: 4px; display: block; }
+  .mini-card h5 { font-family: var(--sans); font-weight: 600; font-size: 14px; margin: 0 0 3px; }
+  .mini-card p { font-size: 12px; color: var(--ink-soft); margin: 0; line-height: 1.4; }
+  .mini-card a { color: var(--terra); text-decoration: none; }
+  .mini-card a:hover { text-decoration: underline; }
+
+  /* Decision table */
+  table.dtable { width: 100%; border-collapse: collapse; font-size: 13px; margin: 14px 0; }
+  table.dtable th { background: var(--ink); color: var(--paper); text-align: left; padding: 10px 12px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+  table.dtable td { padding: 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  table.dtable tr:nth-child(even) td { background: var(--paper-2); }
+
+  /* Checklist index */
+  .index-list { list-style: none; margin: 0; padding: 0; }
+  .index-list li { display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule-soft); font-size: 14px; cursor: pointer; }
+  .index-list li:hover .index-title { color: var(--terra); }
+  .index-num { font-family: var(--mono); font-size: 10px; color: var(--terra); min-width: 40px; }
+  .index-title { font-weight: 600; }
+  .index-desc { font-size: 12px; color: var(--ink-soft); margin-left: auto; text-align: right; max-width: 280px; }
+  .index-arrow { color: var(--terra); font-size: 14px; margin-left: 8px; }
+
+  /* Bottom prev/next nav */
+  .page-nav { display: flex; justify-content: space-between; margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--rule); }
+  .page-nav a { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; color: var(--terra); text-decoration: none; display: flex; align-items: center; gap: 6px; }
+  .page-nav a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ─────────────────────────────────────────────────── -->
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <div class="eyebrow">ATD Houston · Technology SIG</div>
+    <h1>L&amp;D Take-<em>Home.</em></h1>
+  </div>
+  <nav>
+    <span class="nav-section-label">Start here</span>
+    <a href="#" data-page="index" class="active"><span class="num">—</span> What's in this pack</a>
+
+    <span class="nav-section-label">Prompts &amp; habits</span>
+    <a href="#" data-page="prompts"><span class="num">01</span> 20 L&amp;D Prompts</a>
+    <a href="#" data-page="challenge"><span class="num">02</span> 7-Day Challenge</a>
+    <a href="#" data-page="habits"><span class="num">03</span> Ten Habits</a>
+    <a href="#" data-page="reflect"><span class="num">04</span> Reflection Sheet</a>
+
+    <span class="nav-section-label">Claude setup</span>
+    <a href="#" data-page="instructions"><span class="num">05</span> Instructions Templates</a>
+    <a href="#" data-page="decision"><span class="num">06</span> Prompt → Project → Skill</a>
+    <a href="#" data-page="artifacts"><span class="num">07</span> Artifact Starter Prompts</a>
+
+    <span class="nav-section-label">Go deeper</span>
+    <a href="#" data-page="efficiency"><span class="num">08</span> Using Claude Efficiently</a>
+    <a href="#" data-page="connectors"><span class="num">09</span> Connector Permissions</a>
+    <a href="#" data-page="github"><span class="num">10</span> GitHub Overview</a>
+
+    <span class="nav-section-label">Ideas</span>
+    <a href="#" data-page="ideas-ld"><span class="num">11</span> 20 L&amp;D Ideas</a>
+    <a href="#" data-page="ideas-personal"><span class="num">12</span> 20 Personal Ideas</a>
+
+    <span class="nav-section-label">Tamara</span>
+    <a href="#" data-page="moments"><span class="num">13</span> Five Moments</a>
+    <a href="#" data-page="resources"><span class="num">14</span> Tools &amp; People</a>
+
+    <span class="nav-section-label">Bonus</span>
+    <a href="#" data-page="claudecode"><span class="num">+</span> Claude Code Setup</a>
+  </nav>
+</aside>
+
+<!-- ── MAIN ───────────────────────────────────────────────────── -->
+<main id="main">
+
+  <!-- INDEX -->
+  <div class="page active" id="page-index">
+    <div class="page-header">
+      <div><span class="page-kicker">Take-Home Pack · April 2026</span><h1 class="page-title">The L&amp;D <em>Take-Home.</em></h1></div>
+    </div>
+    <p class="page-lede">Twenty prompts, ten habits, a seven-day challenge, instructions templates, 40 quick-ship ideas, and everything else from today's session. Click any section to jump in.</p>
+    <ul class="index-list">
+      <li data-page="prompts"><span class="index-num">01</span><div><span class="index-title">20 L&amp;D Prompts</span><br/><span style="font-size:12px;color:var(--ink-soft);">ADDIE-mapped, copy-paste ready</span></div><span class="index-arrow">→</span></li>
+      <li data-page="challenge"><span class="index-num">02</span><div><span class="index-title">7-Day Challenge</span><br/><span style="font-size:12px;color:var(--ink-soft);">Print it. Check boxes. Seven reps beats one Saturday.</span></div><span class="index-arrow">→</span></li>
+      <li data-page="habits"><span class="index-num">03</span><div><span class="index-title">Ten Habits</span><br/><span style="font-size:12px;color:var(--ink-soft);">Small moves that compound quietly</span></div><span class="index-arrow">→</span></li>
+      <li data-page="reflect"><span class="index-num">04</span><div><span class="index-title">Reflection Sheet</span><br/><span style="font-size:12px;color:var(--ink-soft);">After the seven days</span></div><span class="index-arrow">→</span></li>
+      <li data-page="instructions"><span class="index-num">05</span><div><span class="index-title">Instructions Templates</span><br/><span style="font-size:12px;color:var(--ink-soft);">Personal Preferences + Project Instructions</span></div><span class="index-arrow">→</span></li>
+      <li data-page="decision"><span class="index-num">06</span><div><span class="index-title">Prompt → Project → Skill</span><br/><span style="font-size:12px;color:var(--ink-soft);">The decision guide for when to use what</span></div><span class="index-arrow">→</span></li>
+      <li data-page="artifacts"><span class="index-num">07</span><div><span class="index-title">Artifact Starter Prompts</span><br/><span style="font-size:12px;color:var(--ink-soft);">Six copy-paste prompts for six artifact types</span></div><span class="index-arrow">→</span></li>
+      <li data-page="efficiency"><span class="index-num">08</span><div><span class="index-title">Using Claude Efficiently</span><br/><span style="font-size:12px;color:var(--ink-soft);">Go word, markdown files, NotebookLM</span></div><span class="index-arrow">→</span></li>
+      <li data-page="connectors"><span class="index-num">09</span><div><span class="index-title">Connector Permissions</span><br/><span style="font-size:12px;color:var(--ink-soft);">Before you authorize anything</span></div><span class="index-arrow">→</span></li>
+      <li data-page="github"><span class="index-num">10</span><div><span class="index-title">GitHub Overview</span><br/><span style="font-size:12px;color:var(--ink-soft);">Free hosting, version history, hidden gems</span></div><span class="index-arrow">→</span></li>
+      <li data-page="ideas-ld"><span class="index-num">11</span><div><span class="index-title">20 L&amp;D Ideas</span><br/><span style="font-size:12px;color:var(--ink-soft);">One for each ADDIE phase and more</span></div><span class="index-arrow">→</span></li>
+      <li data-page="ideas-personal"><span class="index-num">12</span><div><span class="index-title">20 Personal Productivity Ideas</span><br/><span style="font-size:12px;color:var(--ink-soft);">After you close the work laptop</span></div><span class="index-arrow">→</span></li>
+      <li data-page="moments"><span class="index-num">13</span><div><span class="index-title">Tamara's Five Moments</span><br/><span style="font-size:12px;color:var(--ink-soft);">The conversations that changed how I see this</span></div><span class="index-arrow">→</span></li>
+      <li data-page="resources"><span class="index-num">14</span><div><span class="index-title">Tools &amp; People Worth Following</span><br/><span style="font-size:12px;color:var(--ink-soft);">Honest takes on what I actually use</span></div><span class="index-arrow">→</span></li>
+      <li data-page="claudecode"><span class="index-num">+</span><div><span class="index-title">Getting Started with Claude Code</span><br/><span style="font-size:12px;color:var(--ink-soft);">Bonus appendix — for the curious</span></div><span class="index-arrow">→</span></li>
+    </ul>
+  </div>
+
+  <!-- 01 PROMPTS -->
+  <div class="page" id="page-prompts">
+    <div class="page-header"><div><span class="page-kicker">Part One · 20 Prompts</span><h1 class="page-title">The L&amp;D <em>Prompt Library.</em></h1></div></div>
+    <p class="page-lede">Copy a prompt. Replace the bracketed parts. Run it. Organized by ADDIE phase.</p>
+
+    <h2 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;margin-top:24px;">Analyze</h2>
+
+    <h3 class="sub">01 — Learning objectives from a messy transcript</h3>
+    <div class="pmeta">Best for: SME interviews · Output: 3-6 objectives</div>
+    <div class="prompt-block">Act as a senior instructional designer.
+I'll paste a transcript of an SME interview about <span class="fill">[TOPIC]</span>.
+Generate 3–6 learning objectives at the appropriate Bloom's level for <span class="fill">[AUDIENCE]</span>.
+For each objective: state the verb, the content, and the condition.
+Then briefly flag which parts of the transcript support it.
+
+Transcript: <span class="fill">[PASTE TRANSCRIPT]</span></div>
+    <p class="why">Forces Claude to ground objectives in source evidence, not generics.</p>
+
+    <h3 class="sub">02 — Interrogate a long document</h3>
+    <div class="pmeta">Best for: research, policies, SME docs</div>
+    <div class="prompt-block">I'm attaching a <span class="fill">[DOCUMENT TYPE]</span>. Read it carefully.
+Then, without summarizing yet, answer:
+1. What are the 3 most important claims?
+2. What assumptions are unstated?
+3. Where would a <span class="fill">[AUDIENCE]</span> get confused?
+4. What 5 questions would I need answered to turn this into a learning experience?
+
+<span class="fill">[ATTACH / PASTE DOCUMENT]</span></div>
+
+    <h3 class="sub">03 — Compare two frameworks</h3>
+    <div class="prompt-block">I'll paste two <span class="fill">[FRAMEWORK TYPE]</span>. Compare them on:
+- What they agree on
+- Where they directly conflict
+- Which audiences each is better suited for
+- A proposed merged version preserving the strongest elements of each
+
+Framework A: <span class="fill">[PASTE A]</span>
+Framework B: <span class="fill">[PASTE B]</span></div>
+
+    <h3 class="sub">13 — Training needs analysis from interview data</h3>
+    <div class="pmeta">Best for: root-cause analysis before designing</div>
+    <div class="prompt-block">I'm going to paste notes from <span class="fill">[N]</span> stakeholder interviews about <span class="fill">[TOPIC]</span>.
+After reading them:
+1. Identify the top 3 performance gaps
+2. Note what is causing each gap (knowledge, skill, or environment)
+3. Recommend whether training is the right solution — and if not, what is
+
+Be skeptical. Not everything is a training problem.
+Interview notes: <span class="fill">[PASTE NOTES]</span></div>
+    <p class="why">Forces a root-cause lens instead of jumping straight to course design.</p>
+
+    <h3 class="sub">14 — Audience gap analysis</h3>
+    <div class="prompt-block">I need to understand where my audience is starting from before I design this program.
+Role: <span class="fill">[ROLE]</span>  Topic: <span class="fill">[TOPIC]</span>
+What I know about them: <span class="fill">[PASTE CONTEXT]</span>
+
+Give me:
+- What they likely already know (and what I can skip)
+- Where their common misconceptions or gaps tend to be
+- What they'll resist or question in this content
+- One question I should ask before designing anything</div>
+
+    <h2 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;margin-top:32px;">Design</h2>
+
+    <h3 class="sub">04 — Workshop outline from an objective</h3>
+    <div class="pmeta">Best for: ILT design · Output: timed table</div>
+    <div class="prompt-block">Design a <span class="fill">[DURATION]</span>-minute in-person workshop that achieves:
+<span class="fill">[PASTE OBJECTIVE]</span>
+
+Audience: <span class="fill">[AUDIENCE DESCRIPTION + SIZE]</span>
+
+Output a table: time · activity · facilitator action · learner action · assessment moment.
+Include at least one activity that surfaces prior experience and one that practices the new behavior.
+
+Ask me 3 clarifying questions before you draft.</div>
+
+    <h3 class="sub">05 — Convert content to a scenario</h3>
+    <div class="prompt-block">Take the policy/procedure below and turn it into a realistic workplace scenario for <span class="fill">[AUDIENCE]</span>.
+The scenario should:
+- Introduce a dilemma, not just a demonstration
+- Include 2 distractor details that feel real but aren't decision-critical
+- End with a decision point, not a conclusion
+
+Source: <span class="fill">[PASTE POLICY]</span></div>
+
+    <h3 class="sub">15 — Competency map for a role</h3>
+    <div class="prompt-block">Draft a competency map for the role of <span class="fill">[ROLE]</span> in a <span class="fill">[INDUSTRY]</span> organization.
+For each competency:
+- Name it in plain language (no HR jargon)
+- Write 2 behavioral indicators at a developing level
+- Write 2 behavioral indicators at a proficient level
+
+Include 4–6 competencies. Flag which are most critical in Year 1.
+Reference: <span class="fill">[PASTE JOB DESCRIPTION]</span></div>
+
+    <h3 class="sub">16 — Learning experience blueprint</h3>
+    <div class="prompt-block">I'm designing a <span class="fill">[DURATION / FORMAT]</span> program on <span class="fill">[TOPIC]</span> for <span class="fill">[AUDIENCE]</span>.
+Build a module-level blueprint with:
+- 4–6 module titles in learner-facing language
+- One primary learning objective per module
+- The recommended modality (ILT, eLearning, job aid, practice, etc.)
+- A sequencing rationale — why this order
+
+Audience context: <span class="fill">[PASTE WHAT YOU KNOW]</span></div>
+
+    <h2 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;margin-top:32px;">Develop</h2>
+
+    <h3 class="sub">06 — Scenario-based multiple choice</h3>
+    <div class="prompt-block">Generate <span class="fill">[N]</span> scenario-based MCQs on <span class="fill">[TOPIC]</span> for <span class="fill">[AUDIENCE]</span>.
+For each: stem (2–3 sentence scenario) · 4 options · distractor rationales · Bloom's level.
+Avoid trivia. Every item should require judgment.</div>
+    <p class="why">"Plausible distractor rationale" is the thing that stops lazy MCQs.</p>
+
+    <h3 class="sub">07 — Critique my assessment</h3>
+    <div class="prompt-block">Critique my assessment items as a skeptical assessment specialist would. For each item call out:
+- Does it test what it claims to test?
+- Is the stem clear, or does it test reading comprehension?
+- Are distractors genuinely plausible for a novice?
+- Any bias?
+
+Be specific. Then rewrite the weakest 3 items.
+Items: <span class="fill">[PASTE ITEMS]</span></div>
+
+    <h3 class="sub">08 — Facilitator script with timing cues</h3>
+    <div class="prompt-block">Turn the attached outline into a facilitator script for someone delivering this session for the first time.
+Include: what the facilitator says (in natural speaking voice) · timing cues in [brackets] · watch-outs · what to do if an activity runs long.
+Outline: <span class="fill">[PASTE OUTLINE]</span></div>
+
+    <h3 class="sub">09 — One-page job aid</h3>
+    <div class="prompt-block">Create a one-page job aid for <span class="fill">[TASK]</span> that a <span class="fill">[ROLE]</span> could keep at their desk.
+Structure: title (6 words max) · 3–5 numbered steps in verb-first voice · "watch-out" call-out · if/then decision table.
+Optimize for scannability. No paragraphs.</div>
+
+    <h3 class="sub">17 — Storyboard draft for one eLearning scene</h3>
+    <div class="prompt-block">Turn the content below into a storyboard for one eLearning scene. Target: <span class="fill">[N]</span> screens.
+For each screen: number + title · narration script (conversational) · on-screen text (max 20 words) · suggested visual or interaction · learner action.
+Objective: <span class="fill">[OBJECTIVE]</span>
+Content: <span class="fill">[PASTE SOURCE CONTENT]</span></div>
+
+    <h3 class="sub">18 — SME review request email</h3>
+    <div class="prompt-block">Write a short email asking <span class="fill">[SME NAME / ROLE]</span> to review the attached <span class="fill">[CONTENT TYPE]</span>.
+The email should:
+- Explain what you need reviewed and why their input matters
+- Give them a clear deadline: <span class="fill">[DATE]</span>
+- Include 4 specific questions to guide their feedback
+- Keep the total ask under 30 minutes of their time
+Context: <span class="fill">[WHAT IT'S FOR AND WHO IT'S FOR]</span></div>
+    <p class="why">Guided feedback questions prevent the "looks great!" response that tells you nothing.</p>
+
+    <h2 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;margin-top:32px;">Implement</h2>
+
+    <h3 class="sub">10 — Discussion questions, calibrated</h3>
+    <div class="prompt-block">Generate 6 discussion questions on <span class="fill">[TOPIC]</span> for a <span class="fill">[DURATION]</span>-minute small-group conversation.
+Structure: 2 to surface prior experience · 2 to apply to real work · 2 to provoke disagreement.
+For each, note the Bloom's level and what a facilitator should listen for.</div>
+
+    <h3 class="sub">11 — Rewrite in my voice</h3>
+    <div class="prompt-block">Below are 3 writing samples in my voice and a draft that isn't.
+Study the samples, identify my moves (sentence length, vocabulary, structure, what I avoid), then rewrite the draft to match.
+Before rewriting, summarize in 5 bullets what you noticed about my voice. Show your work.
+Samples: <span class="fill">[PASTE 3 SAMPLES]</span>
+Draft: <span class="fill">[PASTE DRAFT]</span></div>
+
+    <h3 class="sub">12 — Executive summary for a specific skeptic</h3>
+    <div class="prompt-block">Summarize the attached <span class="fill">[REPORT / PROPOSAL]</span> for: <span class="fill">[ROLE + WHAT THEY CARE ABOUT + WHAT THEY'RE SKEPTICAL OF]</span>.
+150 words or fewer. Lead with the business outcome. Address the skepticism directly. End with the single decision I'm asking them to make.
+Then flag: what claims would you verify before sending?
+<span class="fill">[ATTACH / PASTE CONTENT]</span></div>
+
+    <h2 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;margin-top:32px;">Evaluate</h2>
+
+    <h3 class="sub">19 — Level 1 evaluation survey</h3>
+    <div class="prompt-block">Write a post-session survey for a <span class="fill">[DURATION / FORMAT]</span> program on <span class="fill">[TOPIC]</span> for <span class="fill">[AUDIENCE]</span>.
+Requirements: 6–8 questions max · mix of Likert and open-ended · at least one question about what participants will do differently in 30 days · one question that surfaces what was missing or unclear.
+Avoid: vanity questions. Focus on: learning + transfer intent.</div>
+
+    <h3 class="sub">20 — Learning impact summary for stakeholders</h3>
+    <div class="prompt-block">Summarize the impact of <span class="fill">[PROGRAM NAME]</span> for <span class="fill">[STAKEHOLDER AUDIENCE]</span>.
+Data I have: <span class="fill">[PASTE EVALUATION DATA]</span>
+Write a one-page impact summary that:
+- Leads with the business outcome or behavior change
+- Translates data into plain language (no percentages without context)
+- Includes one or two direct learner quotes (leave a placeholder — I'll supply them)
+- Ends with one recommendation for the next iteration
+Tone: confident, honest, non-defensive about gaps.</div>
+    <p class="why">Stakeholders remember stories and recommendations — not completion rates.</p>
+
+    <div class="page-nav">
+      <span></span>
+      <a href="#" data-page="challenge">Next: 7-Day Challenge →</a>
+    </div>
+  </div>
+
+  <!-- 02 CHALLENGE -->
+  <div class="page" id="page-challenge">
+    <div class="page-header"><div><span class="page-kicker">Part Two</span><h1 class="page-title">The <em>7-Day Challenge.</em></h1></div></div>
+    <p class="page-lede">Print this page. Tape it somewhere visible. Seven reps beats one ambitious Saturday.</p>
+    <div class="chal-grid">
+      <div class="chal-card"><div class="day">DAY 01 · Monday</div><h4>Draft one email with Claude.</h4><p>Any email. Paste what you know, let Claude draft, then edit. Notice how long it took vs. from scratch.</p><div class="checkbox"></div></div>
+      <div class="chal-card"><div class="day">DAY 02 · Tuesday</div><h4>Interrogate a long doc.</h4><p>Paste something dense. Ask: "What are 3 questions this raises for a new manager?" Save the questions.</p><div class="checkbox"></div></div>
+      <div class="chal-card"><div class="day">DAY 03 · Wednesday</div><h4>Generate 5 MCQs. Critique them.</h4><p>Use Prompt 06. Then use Prompt 07 on Claude's own output. Notice what it catches.</p><div class="checkbox"></div></div>
+      <div class="chal-card"><div class="day">DAY 04 · Thursday</div><h4>Start one Project.</h4><p>Create a Project for something you're working on. Pin one file. Write one sentence of instructions.</p><div class="checkbox"></div></div>
+      <div class="chal-card"><div class="day">DAY 05 · Friday</div><h4>Make one job aid as an Artifact.</h4><p>Use Prompt 09. Iterate twice. Send it to a colleague for feedback.</p><div class="checkbox"></div></div>
+      <div class="chal-card"><div class="day">DAY 06 · Saturday</div><h4>Let Claude critique you.</h4><p>Paste something you wrote last week. Ask: "What's weakest about this? Be direct."</p><div class="checkbox"></div></div>
+      <div class="chal-card accent" style="grid-column: span 2;"><div class="day">DAY 07 · Sunday</div><h4>Teach one colleague one thing you learned.</h4><p>Five minutes. You'll remember it twice as well, and now there are two of you.</p><div class="checkbox"></div></div>
+    </div>
+    <div class="page-nav"><a href="#" data-page="prompts">← Prompts</a><a href="#" data-page="habits">Next: Ten Habits →</a></div>
+  </div>
+
+  <!-- 03 HABITS -->
+  <div class="page" id="page-habits">
+    <div class="page-header"><div><span class="page-kicker">Part Three</span><h1 class="page-title">Ten <em>Habits.</em></h1></div></div>
+    <p class="page-lede">Not prompts — posture. Adopt one a week and your outputs will look different in a month.</p>
+    <div class="habit-grid">
+      <div class="habit"><span class="hn">01</span><div><h5>One task per prompt.</h5><p>Focused prompts outperform compound ones — every time.</p></div></div>
+      <div class="habit"><span class="hn">02</span><div><h5>Always add success criteria.</h5><p>"It's good if X, Y, Z." Claude hits what you name.</p></div></div>
+      <div class="habit"><span class="hn">03</span><div><h5>Front-load context.</h5><p>Give everything Claude needs up front. Trickling context costs messages and quality.</p></div></div>
+      <div class="habit"><span class="hn">04</span><div><h5>Stop when it's off track.</h5><p>Don't keep nudging a drifting conversation. Start fresh with a cleaner prompt.</p></div></div>
+      <div class="habit"><span class="hn">05</span><div><h5>Ask for the method, not the answer.</h5><p>"Walk me through how you'd approach this" gets you a better answer.</p></div></div>
+      <div class="habit"><span class="hn">06</span><div><h5>Tell Claude to push back.</h5><p>"Disagree with me if I'm wrong." Its default is agreeable — override that.</p></div></div>
+      <div class="habit"><span class="hn">07</span><div><h5>Test before you share.</h5><p>Run the prompt yourself before passing it to a teammate.</p></div></div>
+      <div class="habit"><span class="hn">08</span><div><h5>Don't blindly trust outputs.</h5><p>Verify anything financial, regulatory, or citation-level before a stakeholder reads it.</p></div></div>
+      <div class="habit"><span class="hn">09</span><div><h5>Iterate in one-sentence edits.</h5><p>"Shorter." "More skeptical." "Cut the filler." Small moves beat rewriting the prompt.</p></div></div>
+      <div class="habit"><span class="hn">10</span><div><h5>Save what works.</h5><p>Keep a doc of your ten best prompts. Reuse, don't rewrite. This single habit doubles your output.</p></div></div>
+    </div>
+    <div class="page-nav"><a href="#" data-page="challenge">← 7-Day Challenge</a><a href="#" data-page="reflect">Next: Reflection Sheet →</a></div>
+  </div>
+
+  <!-- 04 REFLECT -->
+  <div class="page" id="page-reflect">
+    <div class="page-header"><div><span class="page-kicker">Part Four</span><h1 class="page-title">End of <em>Week One.</em></h1></div></div>
+    <p class="page-lede">After the seven days, sit with this for ten minutes. Write by hand if you can.</p>
+    <div class="reflect"><div class="q">Which prompt surprised me — in a good way or a bad one?</div><div class="write-lines"></div></div>
+    <div class="reflect"><div class="q">Where did Claude save me real time? Be specific: which task, how much time.</div><div class="write-lines"></div></div>
+    <div class="reflect"><div class="q">Where did Claude waste my time or produce something I had to mostly throw out?</div><div class="write-lines"></div></div>
+    <div class="reflect"><div class="q">What's one recurring L&amp;D task I now want to always run through Claude?</div><div class="write-lines"></div></div>
+    <div class="reflect"><div class="q">What's one task I decided Claude should never touch? Why?</div><div class="write-lines"></div></div>
+    <div class="reflect" style="background:var(--terra);border-color:var(--terra);"><div class="q" style="color:var(--paper);">Who on my team am I going to show this to next week?</div><div class="write-lines" style="background-image:repeating-linear-gradient(to bottom, transparent 0, transparent 26px, rgba(246,241,231,0.3) 26px, rgba(246,241,231,0.3) 27px);"></div></div>
+    <div class="page-nav"><a href="#" data-page="habits">← Ten Habits</a><a href="#" data-page="instructions">Next: Instructions Templates →</a></div>
+  </div>
+
+  <!-- 05 INSTRUCTIONS -->
+  <div class="page" id="page-instructions">
+    <div class="page-header"><div><span class="page-kicker">Part Five</span><h1 class="page-title">Instructions <em>Templates.</em></h1></div></div>
+    <p class="page-lede">Two scopes. Set both up once and Claude starts every conversation knowing who you are.</p>
+
+    <h2 class="sub">Personal Preferences / Global Instructions</h2>
+    <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px;">Settings → Personal Preferences. Applies to every chat. Set your defaults once.</p>
+    <div class="prompt-block">
+<span class="fill">[YOUR ROLE]</span>
+I am a <span style="opacity:0.5;">______________</span> at <span style="opacity:0.5;">______________</span>.
+
+<span class="fill">[MY AUDIENCE]</span>
+Most of what I build is for <span style="opacity:0.5;">______________</span>.
+
+<span class="fill">[MY DEFAULTS]</span>
+Unless I say otherwise:
+  • Before you build or draft anything, ask me clarifying
+    questions. I'll say GO when I'm ready.
+  • Write in plain, direct language — no corporate filler.
+  • Use headers and bullets only when they improve clarity.
+  • Keep responses under <span style="opacity:0.5;">______________</span> unless I ask for more.
+
+<span class="fill">[MY NON-NEGOTIABLES]</span>
+  • Always flag if you're uncertain about something.
+  • Never cite a source I haven't given you.
+  • Never give me generic examples.
+  • <span style="opacity:0.5;">______________</span></div>
+
+    <h2 class="sub">Project Instructions</h2>
+    <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px;">Scoped to one workspace. Inherits global defaults, adds project-specific context.</p>
+    <div class="prompt-block">
+<span class="fill">[ROLE]</span>  You are my <span style="opacity:0.5;">______________</span> for <span style="opacity:0.5;">______________</span>.
+
+<span class="fill">[AUDIENCE]</span>  My learners are <span style="opacity:0.5;">______________</span>.
+They know <span style="opacity:0.5;">______________</span> but struggle with <span style="opacity:0.5;">______________</span>.
+
+<span class="fill">[ALWAYS DO]</span>
+  • Reference <span style="opacity:0.5;">[the attached file]</span> before you answer.
+  • Before you draft, ask me clarifying questions. I'll say GO.
+  • <span style="opacity:0.5;">______________</span>
+
+<span class="fill">[NEVER DO]</span>
+  • Don't invent statistics or cite sources I haven't given you.
+  • Don't give me generic examples.
+  • <span style="opacity:0.5;">______________</span>
+
+<span class="fill">[VOICE]</span>  Match the tone of this sample: <span style="opacity:0.5;">"[paste 3–5 sentences you wrote]"</span>
+
+<span class="fill">[DEFAULT FORMAT]</span>  Unless I say otherwise, give me <span style="opacity:0.5;">______________</span>.</div>
+
+    <div class="callout"><strong>File naming tip:</strong> Name your project files descriptively — "Q3-manager-sme-interview.docx" is easier to reference than "doc1.docx." Claude can reference them by name.</div>
+    <div class="callout"><strong>Non-negotiables include what NOT to do.</strong> "Never give me generic examples. Never add sections I didn't ask for." These are just as powerful as the rules you set.</div>
+
+    <div class="page-nav"><a href="#" data-page="reflect">← Reflection Sheet</a><a href="#" data-page="decision">Next: Prompt → Project → Skill →</a></div>
+  </div>
+
+  <!-- 06 DECISION -->
+  <div class="page" id="page-decision">
+    <div class="page-header"><div><span class="page-kicker">Part Six</span><h1 class="page-title">Prompt → Project <em>→ Skill.</em></h1></div></div>
+    <p class="page-lede">Anything you do often should live with Claude — as a Project or a Skill.</p>
+    <table class="dtable">
+      <thead><tr><th>If the work is…</th><th>Use</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>One-off.</strong><br/><span style="color:var(--ink-soft);font-size:12px;">I may never do this again.</span></td><td><strong>A prompt.</strong></td><td style="color:var(--ink-soft);font-size:12px;">No overhead. Type it, use it, close the tab.</td></tr>
+        <tr><td><strong>Recurring, same context.</strong><br/><span style="color:var(--ink-soft);font-size:12px;">One client, one course, one workstream.</span></td><td><strong>A Project.</strong></td><td style="color:var(--ink-soft);font-size:12px;">Files, voice, and instructions stay loaded. Every chat inherits them.</td></tr>
+        <tr><td><strong>Recurring, any context.</strong><br/><span style="color:var(--ink-soft);font-size:12px;">A procedure that applies to many topics.</span></td><td><strong>A Skill.</strong></td><td style="color:var(--ink-soft);font-size:12px;">Lives with Claude. Runs automatically — in any chat, any Project.</td></tr>
+        <tr><td><strong>Needs another tool.</strong><br/><span style="color:var(--ink-soft);font-size:12px;">Canva, Notion, Google Drive, Slack, etc.</span></td><td><strong>A Connector.</strong></td><td style="color:var(--ink-soft);font-size:12px;">Claude reads from / writes to the tool directly. No copy-paste round-trips.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><strong>Rule of thumb:</strong> Prompts are experiments. Projects are workstreams. Skills are habits. Connectors are bridges.</div>
+    <div class="page-nav"><a href="#" data-page="instructions">← Instructions Templates</a><a href="#" data-page="artifacts">Next: Artifact Starter Prompts →</a></div>
+  </div>
+
+  <!-- 07 ARTIFACTS -->
+  <div class="page" id="page-artifacts">
+    <div class="page-header"><div><span class="page-kicker">Part Seven</span><h1 class="page-title">Artifact <em>Starter Prompts.</em></h1></div></div>
+    <p class="page-lede">Pick one. Paste the prompt. Swap the brackets. You'll have something in under five minutes.</p>
+    <div class="callout">Artifacts run in the browser. They handle interactive experiences but <em>don't</em> save data between sessions or connect to your LMS. For that, you'd need Zapier or a developer.</div>
+    <div class="art-grid">
+      <div class="art-card"><span class="alabel">01 · Job Aid</span><h4>One-page reference card</h4><p>Scannable, printable. Great for process steps and decision guides.</p>
+        <div class="prompt-block" style="font-size:11px;padding:12px 14px;">Build a one-page job aid as a clean HTML page.
+Topic: <span class="fill">[TASK OR PROCESS]</span>  Audience: <span class="fill">[ROLE]</span>
+Include: short title · 4–6 numbered steps · "watch-out" callout · if/then decision table.
+Before you build, ask me 3 questions. GO.</div></div>
+      <div class="art-card"><span class="alabel">02 · Self-Check</span><h4>Interactive knowledge check</h4><p>Browser-based quiz with instant feedback. No LMS needed.</p>
+        <div class="prompt-block" style="font-size:11px;padding:12px 14px;">Build an interactive knowledge check as a self-contained HTML page.
+Topic: <span class="fill">[TOPIC]</span>  Audience: <span class="fill">[LEARNER ROLE AND LEVEL]</span>
+5 scenario-based MCQs. Immediate feedback per option. Score at the end.
+Before you build, ask me 3 questions. GO.</div></div>
+      <div class="art-card"><span class="alabel">03 · Widget</span><h4>Interactive reference tool</h4><p>A calculator, checklist, or decision guide built around your content.</p>
+        <div class="prompt-block" style="font-size:11px;padding:12px 14px;">Build an interactive <span class="fill">[CALCULATOR / CHECKLIST / DECISION GUIDE]</span> as a self-contained HTML page.
+What it does: <span class="fill">[DESCRIBE]</span>  Audience: <span class="fill">[ROLE]</span>
+Simple and mobile-friendly. No frameworks.
+Before you build, ask me 3 questions. GO.</div></div>
+      <div class="art-card"><span class="alabel">04 · Simulation</span><h4>Conversation practice sim</h4><p>Branching dialogue with realistic choices and consequences.</p>
+        <div class="prompt-block" style="font-size:11px;padding:12px 14px;">Build a conversation practice simulation as an interactive HTML page.
+Scenario: <span class="fill">[WHO · WHAT'S AT STAKE · WHAT THE LEARNER DOES]</span>
+3 decision points · 3 choices each · consequences · brief debrief.
+Before you build, ask me 3 questions. GO.</div>
+        <div class="art-connector"><strong>Heads up:</strong> Recipients need a Claude account to view shared Artifact links. Host on GitHub Pages for truly standalone delivery.</div></div>
+      <div class="art-card"><span class="alabel">05 · Microsite</span><h4>Program or resource hub</h4><p>One-page mini-website for a program or initiative.</p>
+        <div class="prompt-block" style="font-size:11px;padding:12px 14px;">Build a one-page microsite as a clean HTML file.
+Program: <span class="fill">[NAME]</span>  Purpose: <span class="fill">[WHAT IT DOES]</span>  Audience: <span class="fill">[WHO IT'S FOR]</span>
+Sections: overview · key outcomes · what to expect · next step.
+Before you build, ask me 3 questions. GO.</div></div>
+      <div class="art-card"><span class="alabel">06 · Game</span><h4>Learning game or challenge</h4><p>A simple browser game. More memorable than a quiz.</p>
+        <div class="prompt-block" style="font-size:11px;padding:12px 14px;">Build a simple learning game as an interactive HTML page.
+Type: <span class="fill">[MATCHING / SORTING / TIMED QUIZ / SCENARIO]</span>
+Content: <span class="fill">[TOPIC OR PASTE CONTENT]</span>  Audience: <span class="fill">[ROLE]</span>
+Rules simple. Show a result. No frameworks.
+Before you build, ask me 3 questions. GO.</div></div>
+    </div>
+    <div class="page-nav"><a href="#" data-page="decision">← Decision Guide</a><a href="#" data-page="efficiency">Next: Using Claude Efficiently →</a></div>
+  </div>
+
+  <!-- 08 EFFICIENCY -->
+  <div class="page" id="page-efficiency">
+    <div class="page-header"><div><span class="page-kicker">Part Eight</span><h1 class="page-title">Using Claude <em>Efficiently.</em></h1></div></div>
+    <p class="page-lede">A few habits that stretch your plan further — and improve your results.</p>
+    <h2 class="sub">01 · The Go Word</h2>
+    <p style="font-size:14px;line-height:1.55;margin:0 0 8px;">Add this to your Personal Preferences: <em>"Before you build or draft anything, ask me clarifying questions. I'll say GO when I'm ready."</em></p>
+    <p style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin:0 0 20px;">This stops Claude from generating before you've given it all the context. Fewer back-and-forths. Better output on the first try.</p>
+    <h2 class="sub">02 · Markdown Files Save on Usage</h2>
+    <p style="font-size:14px;line-height:1.55;margin:0 0 6px;"><strong>What is a Markdown file?</strong> A .md file is plain text with simple formatting — # for headings, ** for bold, - for lists. Claude reads and writes it natively.</p>
+    <p style="font-size:14px;line-height:1.55;margin:0 0 6px;"><strong>Why it saves usage:</strong> When you save context as a .md file in your Project knowledge, Claude references it precisely without you re-explaining in each chat. Shorter conversations, better responses, fewer wasted messages.</p>
+    <p style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin:0 0 20px;"><strong>Best for:</strong> Instructions, style guides, research notes, outlines, anything you'd otherwise paste repeatedly. Create one in any text editor and save as filename.md.</p>
+    <h2 class="sub">03 · Be Specific About Format and Length</h2>
+    <p style="font-size:14px;line-height:1.55;margin:0 0 20px;">Add a length constraint: <em>"150 words or fewer," "three bullet points," "one paragraph."</em> You'll get what you need without the filler.</p>
+    <h2 class="sub">04 · Use NotebookLM for Research, Claude for Building</h2>
+    <p style="font-size:14px;line-height:1.55;margin:0 0 20px;">NotebookLM (Google, free and unlimited) is exceptional for synthesizing source documents. Do your research there. Bring the polished summary into Claude when you're ready to design or build. Two tools, each doing what it does best.</p>
+    <div class="page-nav"><a href="#" data-page="artifacts">← Artifact Prompts</a><a href="#" data-page="connectors">Next: Connector Permissions →</a></div>
+  </div>
+
+  <!-- 09 CONNECTORS -->
+  <div class="page" id="page-connectors">
+    <div class="page-header"><div><span class="page-kicker">Part Nine</span><h1 class="page-title">Before You Authorize <em>a Connector.</em></h1></div></div>
+    <p class="page-lede">When you connect Claude to an external tool, you're giving it access to read — and sometimes write. Know what you're authorizing.</p>
+    <ol style="padding-left:20px;font-size:14px;line-height:1.8;">
+      <li style="margin-bottom:10px;"><strong>Only enable what you're actively using.</strong> Less access is always safer.</li>
+      <li style="margin-bottom:10px;"><strong>Check what level of access each Connector requests.</strong> Some are read-only. Others can create, edit, or delete. Know the difference before you click Authorize.</li>
+      <li style="margin-bottom:10px;"><strong>For workplace tools — Slack, Google Drive, Gmail — think it through.</strong> Are you comfortable with Claude seeing everything in this account?</li>
+      <li style="margin-bottom:10px;"><strong>Turn off Connectors between sessions.</strong> You don't need them running in the background.</li>
+      <li style="margin-bottom:0;"><strong>If something feels off, revoke the access.</strong> Settings → Connectors → Disconnect. No harm done.</li>
+    </ol>
+    <div class="callout" style="margin-top:20px;">Connectors make Claude dramatically more powerful. The caution here isn't about avoiding them — it's about using them intentionally.</div>
+    <div class="page-nav"><a href="#" data-page="efficiency">← Using Claude Efficiently</a><a href="#" data-page="github">Next: GitHub Overview →</a></div>
+  </div>
+
+  <!-- 10 GITHUB -->
+  <div class="page" id="page-github">
+    <div class="page-header"><div><span class="page-kicker">Part Ten</span><h1 class="page-title">GitHub <em>Overview.</em></h1></div></div>
+    <p class="page-lede">You don't need to know how to code to use GitHub. You need to know it exists and what it gives you for free.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px;">
+      <div style="border:1px solid var(--rule);padding:16px;"><div class="tag" style="margin-bottom:6px;">What it is</div><p style="font-size:13px;margin:0;line-height:1.45;">Think Google Drive, but for websites and apps — with a full version history of everything you've saved.</p></div>
+      <div style="border:1px solid var(--rule);padding:16px;"><div class="tag" style="margin-bottom:6px;">What it gives you</div><p style="font-size:13px;margin:0;line-height:1.45;"><strong>GitHub Pages</strong> — free hosting. Any site you build with Claude can go live at a public URL with a few clicks.</p></div>
+      <div style="border:1px solid var(--rule);padding:16px;"><div class="tag" style="margin-bottom:6px;">How hard it is</div><p style="font-size:13px;margin:0;line-height:1.45;">I log on, click a button or two, and leave the rest for later. You don't need to be technical to start.</p></div>
+    </div>
+    <ol style="padding-left:20px;font-size:14px;line-height:1.8;">
+      <li style="margin-bottom:8px;"><strong>GitHub is free to sign up.</strong> Free repos, version history, and GitHub Pages hosting. Start at github.com.</li>
+      <li style="margin-bottom:8px;"><strong>GitHub Pages makes your Artifact shareable without a Claude account.</strong> Upload an HTML file and share the link with anyone.</li>
+      <li style="margin-bottom:8px;"><strong>Version history is your undo button.</strong> If something breaks, you can go back to the last saved version.</li>
+    </ol>
+    <div class="callout" style="margin-top:16px;margin-bottom:12px;">Ask Claude to walk you through setting it up. It will explain every step as you go.</div>
+    <div class="callout" style="background:rgba(196,98,58,0.08);">
+      <strong>Hidden gem:</strong> GitHub is full of people sharing ideas, documentation, workflows, and prompts in public repositories — for free. Search for topics like "instructional design prompts" or "Claude workflows" and you'll find real practitioners sharing what actually works. You can browse, copy, and adapt anything in a public repo.
+    </div>
+    <div class="page-nav"><a href="#" data-page="connectors">← Connector Permissions</a><a href="#" data-page="ideas-ld">Next: 20 L&amp;D Ideas →</a></div>
+  </div>
+
+  <!-- 11 IDEAS L&D -->
+  <div class="page" id="page-ideas-ld">
+    <div class="page-header"><div><span class="page-kicker">Part Eleven</span><h1 class="page-title">20 Ideas for <em>Learning Professionals.</em></h1></div></div>
+    <p class="page-lede">Organized by ADDIE. Each one is a real thing you can hand Claude in under a minute.</p>
+    <h3 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:16px;">Analyze</h3>
+    <div class="idea-grid">
+      <div class="idea"><span class="in">01</span><div><h5>Learner needs survey</h5><p>Give Claude your topic and audience. Ask for a 10-question survey to uncover gaps before you design anything.</p></div></div>
+      <div class="idea"><span class="in">02</span><div><h5>SME interview questions</h5><p>Tell Claude the topic and what you're building. Get probing questions for your next SME session.</p></div></div>
+      <div class="idea"><span class="in">03</span><div><h5>Evaluation data summarizer</h5><p>Paste Level 1 results. Ask: "What are 3 patterns and what do they suggest?"</p></div></div>
+      <div class="idea"><span class="in">04</span><div><h5>Learner persona builder</h5><p>Describe your audience from memory. Get a detailed persona — what they know, struggle with, what motivates them.</p></div></div>
+    </div>
+    <h3 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:20px;">Design</h3>
+    <div class="idea-grid">
+      <div class="idea"><span class="in">05</span><div><h5>Curriculum framework</h5><p>Describe the program. Get a topic-to-objective map with recommended sequence.</p></div></div>
+      <div class="idea"><span class="in">06</span><div><h5>Learning objective writer</h5><p>Give Claude a topic and Bloom's level. Get 5 measurable objectives in verb-first format.</p></div></div>
+      <div class="idea"><span class="in">07</span><div><h5>Competency model draft</h5><p>Paste a job description. Get a competency model with behavioral indicators at two levels.</p></div></div>
+      <div class="idea"><span class="in">08</span><div><h5>Storyboard outline</h5><p>Describe the eLearning objective. Get a scene-by-scene storyboard outline in table format.</p></div></div>
+    </div>
+    <h3 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:20px;">Develop</h3>
+    <div class="idea-grid">
+      <div class="idea"><span class="in">09</span><div><h5>Quiz question bank</h5><p>Paste your source content. Ask for 10 scenario-based MCQs with distractors and rationales.</p></div></div>
+      <div class="idea"><span class="in">10</span><div><h5>Branching scenario script</h5><p>Describe the situation. Get a branching dialogue with decision points and consequences.</p></div></div>
+      <div class="idea"><span class="in">11</span><div><h5>Job aid</h5><p>Give Claude the task and audience. Get a one-page reference card with steps and a watch-out.</p></div></div>
+      <div class="idea"><span class="in">12</span><div><h5>Facilitator guide expander</h5><p>Paste your outline. Get timing, talking points, and transition phrases.</p></div></div>
+      <div class="idea"><span class="in">13</span><div><h5>Video script writer</h5><p>Paste your content. Get a two-minute script in a direct, conversational voice.</p></div></div>
+    </div>
+    <h3 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:20px;">Implement</h3>
+    <div class="idea-grid">
+      <div class="idea"><span class="in">14</span><div><h5>Learner kickoff email</h5><p>Describe the program and Day 1 ask. Get a motivating kickoff email they'll actually read.</p></div></div>
+      <div class="idea"><span class="in">15</span><div><h5>Rollout calendar</h5><p>Give Claude your launch date and milestones. Get a week-by-week rollout calendar in table format.</p></div></div>
+      <div class="idea"><span class="in">16</span><div><h5>Manager preparation guide</h5><p>Describe what learners will experience. Get a one-pager for managers on how to support their people.</p></div></div>
+      <div class="idea"><span class="in">17</span><div><h5>Program one-pager</h5><p>Give Claude the brief. Get a 200-word summary a senior leader could read in 60 seconds.</p></div></div>
+    </div>
+    <h3 class="sub" style="color:var(--terra);font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:20px;">Evaluate</h3>
+    <div class="idea-grid">
+      <div class="idea"><span class="in">18</span><div><h5>Post-session reflection prompts</h5><p>Tell Claude what learners experienced. Get 5 reflection questions calibrated for the session depth.</p></div></div>
+      <div class="idea"><span class="in">19</span><div><h5>Level 3 behavior transfer survey</h5><p>Describe the behavior the program was designed to change. Get a 90-day follow-up survey.</p></div></div>
+      <div class="idea"><span class="in">20</span><div><h5>Evaluation data interpreter</h5><p>Paste your results. Ask: "What patterns do you see? What do they suggest about what worked?"</p></div></div>
+    </div>
+    <div class="page-nav"><a href="#" data-page="github">← GitHub</a><a href="#" data-page="ideas-personal">Next: Personal Ideas →</a></div>
+  </div>
+
+  <!-- 12 IDEAS PERSONAL -->
+  <div class="page" id="page-ideas-personal">
+    <div class="page-header"><div><span class="page-kicker">Part Twelve</span><h1 class="page-title">20 Personal <em>Productivity Ideas.</em></h1></div></div>
+    <p class="page-lede">Claude's useful long after you close your work laptop.</p>
+    <div class="idea-grid">
+      <div class="idea"><span class="in">01</span><div><h5>Email drafts that don't sound like AI</h5><p>Paste context and what you want to say. Tell Claude your voice. Ask for a draft under 100 words.</p></div></div>
+      <div class="idea"><span class="in">02</span><div><h5>Meeting agenda writer</h5><p>Describe the goal and who's coming. Get a timed agenda that ends with a decision or next step.</p></div></div>
+      <div class="idea"><span class="in">03</span><div><h5>Weekly review</h5><p>Tell Claude what you accomplished, what was left behind, and what's coming. Set three priorities for the week.</p></div></div>
+      <div class="idea"><span class="in">04</span><div><h5>Research synthesis</h5><p>Paste three articles. Ask: "What do these agree on? Contradict? What's still unclear?"</p></div></div>
+      <div class="idea"><span class="in">05</span><div><h5>Decision framework</h5><p>Describe what you're stuck on. Ask Claude to lay out the trade-offs and tell you what it would do and why.</p></div></div>
+      <div class="idea"><span class="in">06</span><div><h5>Journaling prompts</h5><p>Tell Claude what's on your mind. Get 5 reflection questions to think it through.</p></div></div>
+      <div class="idea"><span class="in">07</span><div><h5>30-day learning plan</h5><p>Describe something you want to learn. Get a structured plan with actions you can actually fit in.</p></div></div>
+      <div class="idea"><span class="in">08</span><div><h5>Networking message drafts</h5><p>Describe who you're reaching out to. Get a message that's warm, brief, and easy to say yes to.</p></div></div>
+      <div class="idea"><span class="in">09</span><div><h5>Presentation structure</h5><p>Describe your audience, message, and goal. Get an outline with a recommended opening, arc, and close.</p></div></div>
+      <div class="idea"><span class="in">10</span><div><h5>Performance review self-assessment</h5><p>Paste your job description and notes about your year. Frame your accomplishments in the language of impact.</p></div></div>
+      <div class="idea"><span class="in">11</span><div><h5>Personal finance summary</h5><p>Paste a month of expenses. Ask: "What's notable? What would you change if my goal is to save more?"</p></div></div>
+      <div class="idea"><span class="in">12</span><div><h5>Travel planning</h5><p>Give Claude your dates, travel companions, and vibe. Get a day-by-day itinerary draft to react to.</p></div></div>
+      <div class="idea"><span class="in">13</span><div><h5>"What should I make?" cooking helper</h5><p>List what's in your fridge. Get three dinner options with instructions for the one you pick.</p></div></div>
+      <div class="idea"><span class="in">14</span><div><h5>Habit tracker design</h5><p>Tell Claude what habit you're building and how your days usually go. Get a tracking system that fits your life.</p></div></div>
+      <div class="idea"><span class="in">15</span><div><h5>Book or article takeaways</h5><p>Paste your notes. Ask: "What are the three most useful ideas? What would I want to remember in six months?"</p></div></div>
+      <div class="idea"><span class="in">16</span><div><h5>Feedback request draft</h5><p>Describe what you've been working on. Get a request a colleague can respond to in five minutes.</p></div></div>
+      <div class="idea"><span class="in">17</span><div><h5>Negotiation prep</h5><p>Describe the situation. Ask Claude to map the landscape: your position, theirs, likely objections.</p></div></div>
+      <div class="idea"><span class="in">18</span><div><h5>To-do list prioritization</h5><p>Paste your list. Tell Claude your top goal. Ask: "Which three items would move the needle most?"</p></div></div>
+      <div class="idea"><span class="in">19</span><div><h5>Professional bio draft</h5><p>Give Claude your background and what you want people to know. Get a 150-word bio in first and third person.</p></div></div>
+      <div class="idea"><span class="in">20</span><div><h5>Thank-you note that means something</h5><p>Describe what the person did and why it mattered. Get a note that's specific and genuine.</p></div></div>
+    </div>
+    <div class="page-nav"><a href="#" data-page="ideas-ld">← L&amp;D Ideas</a><a href="#" data-page="moments">Next: Five Moments →</a></div>
+  </div>
+
+  <!-- 13 MOMENTS -->
+  <div class="page" id="page-moments">
+    <div class="page-header"><div><span class="page-kicker">Part Thirteen · In Her Own Words</span><h1 class="page-title">Five <em>Moments.</em></h1></div></div>
+    <p class="page-lede">I didn't expect Claude to feel different from other AI tools. These are the five conversations that showed me it was.</p>
+
+    <div class="moment">
+      <div class="mnum">Moment 1 — The Redirect</div>
+      <h4>New idea vs. active work</h4>
+      <p>I came in buzzing about a shiny new tool. Claude's response?</p>
+      <div class="mquote">"Before you go too far down that rabbit hole — how's Bree's website coming along?"</div>
+      <p>Then when I showed restraint and just starred the GitHub repo instead of diving in:</p>
+      <div class="mquote">"That's actually great impulse control right there. 👏🏾 The system is working."</div>
+      <p>A collaborator who holds you accountable AND celebrates the small wins? That hit different.</p>
+    </div>
+
+    <div class="moment">
+      <div class="mnum">Moment 2 — The Mindset Check</div>
+      <h4>The barrier that wasn't real</h4>
+      <p>I said I couldn't apply to a major opportunity because "I don't have a business yet." Claude didn't agree.</p>
+      <div class="mquote">"That's a mindset block worth challenging — not a real barrier. This is exactly the pattern your coach has been working with you on. A massive opportunity shows up, and instead of finding the path in, you find the reason you're not ready yet."</div>
+      <p>I didn't ask for the truth. I got it anyway.</p>
+    </div>
+
+    <div class="moment">
+      <div class="mnum">Moment 3 — The Brain Dump Slowdown</div>
+      <h4>When it tells you to go to bed</h4>
+      <p>I came in with a full download — clients, systems, ideas, family logistics, AT&T tech support drama. All of it, at once. Claude mapped every single thing out, then quietly said:</p>
+      <div class="mquote">"Does this give you enough clarity to sleep? Go to bed. We'll pick this up tomorrow. 💙"</div>
+      <p>I said goodnight. We both meant it.</p>
+    </div>
+
+    <div class="moment">
+      <div class="mnum">Moment 4 — The Dreamstorm Debrief</div>
+      <h4>It named what I'd been doing my whole life</h4>
+      <p>After a long late-night session of pure ideation — no building, just wandering — Claude named what I'd been doing my whole life without realizing it had a name.</p>
+      <div class="mquote">"You've intuitively developed a healthy practice. You're not 'all over the place' — you're doing legitimate creative work. You just need the follow-through systems."</div>
+      <p>Then it added: <em>"Which, ironically, you're really good at building for other people."</em></p>
+      <p style="font-style:italic;color:var(--ink);">...okay, fair.</p>
+    </div>
+
+    <div class="moment" style="background:rgba(196,98,58,0.04);border-color:var(--terra);">
+      <div class="mnum">Moment 5 — The Health Check</div>
+      <h4>The moment I stopped calling it a tool</h4>
+      <p>I mentioned, almost in passing, that I hadn't been taking care of myself — pouring into clients, into Laila, into systems, into everything and everyone but me. Claude didn't let it slide. It paused the whole conversation to name it directly: I was solving for everyone else's capacity while quietly running on empty.</p>
+      <p>It wasn't harsh. It wasn't a lecture. It was just — seen.</p>
+      <p style="font-style:italic;color:var(--ink);font-weight:500;">That's the moment I realized this wasn't a tool. It was a thinking partner.</p>
+    </div>
+
+    <div class="page-nav"><a href="#" data-page="ideas-personal">← Personal Ideas</a><a href="#" data-page="resources">Next: Tools &amp; People →</a></div>
+  </div>
+
+  <!-- 14 RESOURCES -->
+  <div class="page" id="page-resources">
+    <div class="page-header"><div><span class="page-kicker">Part Fourteen</span><h1 class="page-title">Tools &amp; People <em>Worth Following.</em></h1></div></div>
+    <p class="page-lede">Where I go to stay current, get inspired, and keep learning.</p>
+
+    <h2 class="sub">My Substack</h2>
+    <div style="border:1px solid var(--rule);padding:16px 20px;margin-bottom:24px;">
+      <p style="margin:0 0 4px;font-size:15px;font-weight:600;">substack.com/@[YOUR SUBSTACK HANDLE]</p>
+      <p style="margin:0;font-size:13px;color:var(--ink-soft);line-height:1.45;">Where I share what I'm learning, building, and experimenting with as an L&D professional navigating AI in real time. Not a highlight reel. The honest version.</p>
+    </div>
+
+    <h2 class="sub">People Worth Following</h2>
+    <div class="card-grid-2">
+      <div class="mini-card"><span class="tag">LinkedIn</span><h5>Mel Milloway</h5><p><a href="https://www.linkedin.com/in/melmilloway">linkedin.com/in/melmilloway</a></p></div>
+      <div class="mini-card"><span class="tag">Substack</span><h5>Dr. Philippa Hardman</h5><p><a href="https://substack.com/@drphilippahardman">substack.com/@drphilippahardman</a></p></div>
+      <div class="mini-card"><span class="tag">Substack</span><h5>Ruben</h5><p><a href="https://substack.com/@ruben">substack.com/@ruben</a></p></div>
+      <div class="mini-card"><span class="tag">YouTube</span><h5>Nate B. Jones</h5><p><a href="https://www.youtube.com/@NateBJones">youtube.com/@NateBJones</a></p></div>
+    </div>
+
+    <h2 class="sub" style="margin-top:32px;">Tools I've Explored — Honest Takes</h2>
+    <div class="card-grid-2">
+      <div class="mini-card"><span class="tag">At work &amp; at home</span><h5>Microsoft Copilot</h5><p>The one I spend the most time in. Worth mastering because it lives inside the tools you already use at work.</p></div>
+      <div class="mini-card"><span class="tag">Automation</span><h5>Make &amp; Zapier</h5><p>For connecting apps and automating repetitive tasks without code. Make is more flexible; Zapier is easier to start with.</p></div>
+      <div class="mini-card"><span class="tag">Building apps</span><h5>Lovable &amp; Replit</h5><p>Make the front end of an app quickly — easy to add back-end functionality. Start here if you want to build something real without deep coding knowledge.</p></div>
+      <div class="mini-card"><span class="tag">Hosting</span><h5>Netlify</h5><p>Free hosting for websites and apps. Drag-and-drop deployment that actually works.</p></div>
+    </div>
+
+    <div style="margin-top:28px;padding:18px 22px;background:var(--terra);color:var(--paper);">
+      <p style="margin:0 0 4px;font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.8;">Stay in touch</p>
+      <p style="margin:0;font-size:13px;line-height:1.5;">Tamara Thomas · Principal, Learning &amp; Development · Westlake Corporation<br/>
+      tthomas1@westlake.com · tamara_thomas@live.com</p>
+    </div>
+    <div class="page-nav"><a href="#" data-page="moments">← Five Moments</a><a href="#" data-page="claudecode">Next: Claude Code Setup →</a></div>
+  </div>
+
+  <!-- APPENDIX CLAUDE CODE -->
+  <div class="page" id="page-claudecode">
+    <div class="page-header"><div><span class="page-kicker">Appendix · For the Curious</span><h1 class="page-title">Getting Started with <em>Claude Code.</em></h1></div></div>
+    <p class="page-lede">This is how I built the websites, the coloring book generator, and the YouTube player. My exact setup, honestly described. Bonus material — you don't need it to be effective with Claude.</p>
+    <div class="callout" style="background:rgba(196,98,58,0.08);margin-bottom:20px;"><strong>Real talk:</strong> I'm not a developer. I'm an L&D professional who got curious. What follows is my path — not the full product. It's enough to ship something real.</div>
+    <h2 class="sub">Setup in six steps</h2>
+    <ol style="padding-left:20px;font-size:14px;line-height:1.8;">
+      <li style="margin-bottom:8px;"><strong>Install VS Code.</strong> It's free. <span style="font-family:var(--mono);color:var(--terra);">code.visualstudio.com</span></li>
+      <li style="margin-bottom:8px;"><strong>Install the Claude Code extension.</strong> Search the VS Code Extensions marketplace for "Claude Code." Click install.</li>
+      <li style="margin-bottom:8px;"><strong>Sign in with your Claude account.</strong> Free or Pro plan works.</li>
+      <li style="margin-bottom:8px;"><strong>Make a folder for your project.</strong> Open it in VS Code: File › Open Folder.</li>
+      <li style="margin-bottom:8px;"><strong>Open the Claude Code panel.</strong> A side panel that can see and edit every file in your folder.</li>
+      <li style="margin-bottom:8px;"><strong>Describe what you want to build.</strong> In plain English. That's the whole skill.</li>
+    </ol>
+    <div class="callout"><strong>If you remember one thing:</strong> You don't need to know how to code. You need to know how to describe what you want, read what came back, and ask for changes. If you can write a Project brief, you can do this.</div>
+    <div class="page-nav"><a href="#" data-page="resources">← Tools &amp; People</a><a href="#" data-page="index">↑ Back to top</a></div>
+  </div>
+
+</main>
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  const links = document.querySelectorAll('[data-page]');
+
+  function navigate(pageId) {
+    pages.forEach(p => p.classList.remove('active'));
+    links.forEach(l => l.classList.remove('active'));
+    const target = document.getElementById('page-' + pageId);
+    if (target) { target.classList.add('active'); document.getElementById('main').scrollTop = 0; }
+    document.querySelectorAll('[data-page="' + pageId + '"]').forEach(l => l.classList.add('active'));
+  }
+
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      navigate(link.dataset.page);
+    });
+  });
+</script>
+</body>
+</html>

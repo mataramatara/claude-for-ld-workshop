@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Pre-Work Guide — Claude for L&D Professionals</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  html, body { background: var(--paper); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 80px 64px 120px;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  @media print {
+    body { max-width: 7in; padding: 0.6in 0.7in; font-size: 12pt; }
+    .page-break { break-before: page; }
+    .no-print { display: none; }
+  }
+  header.doc-head {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  header.doc-head .tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  header.doc-head .meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  h1.doc-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 52px;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+    text-wrap: pretty;
+  }
+  h1.doc-title em { color: var(--terra); font-style: italic; }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 48px;
+    max-width: 700px;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 48px 0 18px;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    margin: 28px 0 8px;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 6px;
+  }
+  p { margin: 0 0 16px; }
+  ol.steps {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    counter-reset: step;
+  }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    padding: 18px 0 18px 60px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  ol.steps > li:last-child { border-bottom: 0; }
+  ol.steps > li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: 18px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--terra);
+    letter-spacing: 0.04em;
+  }
+  ol.steps li strong {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 18px;
+  }
+  .callout {
+    background: var(--paper-2);
+    border-left: 3px solid var(--terra);
+    padding: 18px 22px;
+    margin: 24px 0;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .callout .label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 6px;
+  }
+  .prompt-try {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    padding: 20px 22px;
+    border-radius: 8px;
+    margin: 18px 0 24px;
+    position: relative;
+    white-space: pre-wrap;
+  }
+  .prompt-try::before {
+    content: 'TRY THIS PROMPT';
+    position: absolute;
+    top: -8px;
+    left: 16px;
+    background: var(--terra);
+    color: var(--paper);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+  .checklist {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+  }
+  .checklist li {
+    padding: 10px 0 10px 32px;
+    position: relative;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 15px;
+  }
+  .checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 12px;
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--ink);
+    border-radius: 3px;
+  }
+  .url {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--paper-2);
+    padding: 3px 8px;
+    border-radius: 3px;
+    color: var(--terra-deep);
+  }
+  footer.doc-foot {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <span class="tag">Pre-Work · 10 minutes</span>
+  <span class="meta">ATD Houston · L&D SIG · April 2026</span>
+</header>
+
+<h1 class="doc-title">Before we meet:<br/><em>get Claude ready.</em></h1>
+
+<p class="lede">
+  A short guide to set up your free Claude account and arrive ready to work. Fifteen minutes, tops. You'll thank yourself when we start.
+</p>
+
+<h2><span class="section-num">Part One</span>Why this matters</h2>
+<p>
+  The workshop is hands-on. You'll write real prompts, on your real work, in your own Claude account. If you arrive with the account already created and one prompt already tried, you'll get twice as much out of our hour together.
+</p>
+<p>
+  Everything we do in the session works on the <strong>free plan</strong>. No credit card needed. If you already have a paid Claude account, you're set — skip to Part Three.
+</p>
+
+<h2><span class="section-num">Part Two</span>Create your free account</h2>
+
+<ol class="steps">
+  <li>
+    <strong>Go to claude.ai</strong>
+    Open a browser and visit <span class="url">claude.ai</span>. You'll see a sign-in page.
+  </li>
+  <li>
+    <strong>Choose a sign-in method</strong>
+    Sign up with Google, email, or Apple ID. A personal email is fine — you don't need a work account. If your company restricts AI tools, use a personal address until policy catches up.
+  </li>
+  <li>
+    <strong>Confirm your email</strong>
+    Click the confirmation link Anthropic sends. Set a password if you used email sign-up.
+  </li>
+  <li>
+    <strong>Accept the usage policies</strong>
+    Read the acceptable-use highlights. Nothing surprising — no harmful content, no using Claude to harass people, be a reasonable human.
+  </li>
+  <li>
+    <strong>Complete the welcome flow</strong>
+    Anthropic will ask a couple of questions about how you plan to use Claude. Answer honestly; it doesn't affect your access.
+  </li>
+  <li>
+    <strong>Confirm you're on the Free plan</strong>
+    Click your profile icon (bottom-left) → Settings → Plan. You should see "Free." That's what we want.
+  </li>
+</ol>
+
+<div class="callout">
+  <span class="label">If something goes sideways</span>
+  Anthropic occasionally pauses new signups in a region for capacity reasons. If that happens, try again the next day, or bring your phone to the session — I'll have a guest workflow for you.
+</div>
+
+<h2><span class="section-num">Part Three</span>Try one prompt before we meet</h2>
+
+<p>
+  Opening Claude for the first time during a workshop is awkward. Open it <em>now</em>, send one real message, and the workshop feels like the second visit, not the first.
+</p>
+
+<h3>Your five-minute first run</h3>
+
+<p>
+  Click <strong>New Chat</strong>. Paste the prompt below. Replace the bracketed parts with something true about your work. Send it. Read what comes back.
+</p>
+
+<div class="prompt-try">Act as a thoughtful L&amp;D peer who asks good questions.
+
+I'm preparing for a short workshop on [TOPIC YOU KNOW WELL]
+for an audience of [WHO YOUR LEARNERS ARE].
+
+Before you give me any advice, ask me 5 clarifying questions
+that would help you give a better answer. Number them.
+Wait for me to respond before you say anything else.</div>
+
+<p>
+  That's it. Notice what it asks. Notice whether the questions are obvious, sharp, or surprising. Jot down your reaction — we'll share reactions in the first ten minutes of the workshop.
+</p>
+
+<h2><span class="section-num">Part Four</span>A short primer — why Claude, specifically</h2>
+<p>
+  You don't need to know this before the session, but a lot of people ask. In short: Claude is made by Anthropic, an AI company focused on safety and careful reasoning. Compared to other assistants, Claude tends to produce longer, more thoughtful responses, handles long documents well, and is good at holding a specific voice when you ask for one.
+</p>
+<p>
+  We'll get into the nuances together. For today, that's enough.
+</p>
+
+<h2><span class="section-num">Part Five</span>Bring this to the session</h2>
+
+<ul class="checklist">
+  <li>A laptop (not a phone — you'll be typing real prompts).</li>
+  <li>A working claude.ai login you've tested at least once.</li>
+  <li>One real task from the next two weeks you'd like to move faster on.</li>
+  <li>One recent document (transcript, interview, policy, SME notes) — something you'd like to summarize or interrogate.</li>
+  <li>A healthy mix of curiosity and skepticism. Both are welcome.</li>
+</ul>
+
+<div class="callout" style="margin-top: 32px;">
+  <span class="label">One reflection question to bring</span>
+  Before we start, sit with this: <em>What's one task in your week where "good enough, faster" would change your life?</em> We'll return to this question at the end of the hour.
+</div>
+
+<footer class="doc-foot">
+  <span>Claude for L&amp;D · Pre-Work Guide v1</span>
+  <span>Page 1 of 1</span>
+</footer>
+
+<script>
+  (async () => {
+    try { await document.fonts.ready; } catch (e) {}
+    setTimeout(() => window.print(), 500);
+  })();
+</script>
+</body>
+</html>

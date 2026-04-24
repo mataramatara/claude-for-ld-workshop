@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Take-Home Activity Pack — Claude for L&D Professionals</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  html, body { background: var(--paper); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 56px 120px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  @media print {
+    body { max-width: 7.2in; padding: 0.55in 0.6in; font-size: 11pt; }
+    .page-break { break-before: page; page-break-before: always; }
+  }
+  header.doc-head {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  h1.doc-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 52px;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  h1.doc-title em { color: var(--terra); font-style: italic; }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 21px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    max-width: 720px;
+  }
+  h2.section {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin: 56px 0 8px;
+  }
+  .section-kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .section-lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+    max-width: 720px;
+  }
+  h3.prompt-title {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 17px;
+    margin: 28px 0 4px;
+  }
+  .prompt-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .prompt-body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+    padding: 18px 20px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    margin: 0 0 14px;
+  }
+  .prompt-body .fill {
+    color: var(--terra);
+    font-style: italic;
+  }
+  .why {
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin: 0 0 8px;
+    padding-left: 14px;
+    border-left: 2px solid var(--rule);
+  }
+
+  /* Challenge cards */
+  .challenge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .challenge-card {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 200px;
+  }
+  .challenge-card.accent { background: var(--terra); color: var(--paper); border-color: var(--terra); }
+  .challenge-card .day {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--terra);
+  }
+  .challenge-card.accent .day { color: var(--paper); opacity: 0.85; }
+  .challenge-card h4 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.1;
+    margin: 0;
+  }
+  .challenge-card p {
+    font-size: 13.5px;
+    line-height: 1.45;
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  .challenge-card.accent p { color: var(--paper); opacity: 0.9; }
+  .checkbox {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--ink);
+    border-radius: 3px;
+    margin-top: auto;
+    align-self: flex-end;
+  }
+  .challenge-card.accent .checkbox { border-color: var(--paper); }
+
+  /* Reflection sheet */
+  .reflect-block {
+    padding: 22px 24px;
+    border: 1px solid var(--rule);
+    margin-bottom: 18px;
+    background: var(--paper);
+  }
+  .reflect-block .q {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.35;
+    margin: 0 0 10px;
+  }
+  .write-lines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 27px,
+      var(--rule-soft) 27px,
+      var(--rule-soft) 28px
+    );
+    height: 112px;
+    margin-top: 8px;
+  }
+
+  footer.doc-foot {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <span class="tag">Take-Home Pack</span>
+  <span class="meta">ATD Houston · L&D SIG · April 2026</span>
+</header>
+
+<h1 class="doc-title">The L&amp;D<br/><em>Take-Home Pack.</em></h1>
+
+<p class="lede">
+  Twelve prompts you'll reach for this month. Ten habits that quietly improve your output. A seven-day challenge to build the habit. One reflection sheet to turn habit into practice. Open it Monday.
+</p>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 1 · The L&D Prompt Library
+     ══════════════════════════════════════════════════════════════════ -->
+<h2 class="section"><span class="section-kicker">Part One · 12 prompts</span>The L&amp;D Prompt Library.</h2>
+<p class="section-lede">
+  Copy a prompt. Replace the <span class="mono" style="color: var(--terra);">bracketed</span> parts. Run it. Iterate. Each prompt names the job it's for and why it works.
+</p>
+
+<!-- DESIGN -->
+<div style="margin-top: 28px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Design</div>
+
+  <h3 class="prompt-title">01 — Learning objectives from a messy transcript</h3>
+  <div class="prompt-meta">Best for: SME interviews · Output: 3-6 objectives</div>
+  <div class="prompt-body">Act as a senior instructional designer.
+
+I'll paste a transcript of an SME interview about <span class="fill">[TOPIC]</span>.
+Generate 3–6 learning objectives written at the appropriate
+Bloom's level for <span class="fill">[AUDIENCE: new hires / managers / etc]</span>.
+
+For each objective: state the verb, the content, and the condition.
+Then briefly flag which parts of the transcript support it.
+
+Transcript:
+<span class="fill">[PASTE TRANSCRIPT]</span></div>
+  <p class="why">Why it works: forces Claude to ground the objectives in source evidence instead of generating generic ones.</p>
+
+  <h3 class="prompt-title">02 — Workshop outline from an objective</h3>
+  <div class="prompt-meta">Best for: instructor-led design · Output: timed table</div>
+  <div class="prompt-body">Design a <span class="fill">[DURATION]</span>-minute in-person workshop that achieves
+this objective: <span class="fill">[PASTE OBJECTIVE]</span>.
+
+Audience: <span class="fill">[AUDIENCE DESCRIPTION + SIZE]</span>.
+
+Output a table with columns: time, activity, facilitator
+action, learner action, and assessment moment. Include at
+least one activity that surfaces prior experience and one
+that practices the new behavior.
+
+Ask me 3 clarifying questions before you draft.</div>
+  <p class="why">Why it works: the clarifying-question step prevents generic outputs.</p>
+
+  <h3 class="prompt-title">03 — Convert content to a scenario</h3>
+  <div class="prompt-meta">Best for: moving from lecture to application</div>
+  <div class="prompt-body">Take the policy/procedure below and turn it into a realistic
+workplace scenario for <span class="fill">[AUDIENCE]</span>.
+
+The scenario should:
+- Introduce a dilemma, not just a demonstration
+- Include 2 distractor details that feel real but aren't decision-critical
+- End with a decision point, not a conclusion
+
+Source:
+<span class="fill">[PASTE POLICY]</span></div>
+</div>
+
+<!-- ASSESS -->
+<div style="margin-top: 36px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Assess</div>
+
+  <h3 class="prompt-title">04 — Scenario-based multiple choice</h3>
+  <div class="prompt-meta">Best for: knowledge + application checks</div>
+  <div class="prompt-body">Generate <span class="fill">[N]</span> scenario-based multiple-choice items on
+<span class="fill">[TOPIC]</span> for <span class="fill">[AUDIENCE]</span>.
+
+Format per item:
+- Stem: a 2–3 sentence realistic scenario
+- 4 options (A–D), one correct
+- A 1-sentence rationale for why each distractor is plausible
+- The Bloom's level you targeted
+
+Avoid trivia. Every item should require judgment.</div>
+  <p class="why">Why it works: "plausible distractor rationale" is the thing that stops lazy MCQs.</p>
+
+  <h3 class="prompt-title">05 — Critique my assessment</h3>
+  <div class="prompt-meta">Best for: polishing existing items</div>
+  <div class="prompt-body">Here's a set of assessment items I drafted. Critique them
+as a skeptical assessment specialist would.
+
+For each item call out:
+- Does it test what it claims to test?
+- Is the stem clear, or does it test reading comprehension?
+- Are distractors genuinely plausible for a novice?
+- Any cultural, demographic, or context bias?
+
+Be specific. Then rewrite the weakest 3 items.
+
+Items:
+<span class="fill">[PASTE ITEMS]</span></div>
+</div>
+
+<!-- DELIVER -->
+<div style="margin-top: 36px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Deliver</div>
+
+  <h3 class="prompt-title">06 — Facilitator script with timing cues</h3>
+  <div class="prompt-meta">Best for: handoff to other facilitators</div>
+  <div class="prompt-body">Turn the attached outline into a facilitator script for
+someone delivering this session for the first time.
+
+Include:
+- What the facilitator says (in natural speaking voice)
+- Timing cues in [brackets]
+- Watch-outs: where learners commonly get confused
+- What to do if an activity runs long
+
+Outline:
+<span class="fill">[PASTE OUTLINE]</span></div>
+
+  <h3 class="prompt-title">07 — One-page job aid</h3>
+  <div class="prompt-meta">Best for: reinforcement · Output: printable</div>
+  <div class="prompt-body">Create a one-page job aid for <span class="fill">[TASK]</span> that a
+<span class="fill">[ROLE]</span> could keep at their desk.
+
+Structure:
+- Title (6 words max)
+- 3–5 numbered steps in verb-first voice
+- A "watch-out" call-out for the most common mistake
+- An "if X, then Y" decision table for edge cases
+
+Optimize for scannability. No paragraphs.</div>
+
+  <h3 class="prompt-title">08 — Discussion questions, calibrated</h3>
+  <div class="prompt-meta">Best for: virtual live, small groups</div>
+  <div class="prompt-body">Generate 6 discussion questions on <span class="fill">[TOPIC]</span> calibrated
+for a <span class="fill">[DURATION]</span>-minute small-group conversation.
+
+Structure them as:
+- 2 to surface prior experience (no wrong answers)
+- 2 to apply a concept to participants' real work
+- 2 to provoke disagreement
+
+For each question, note the Bloom's level and what a
+facilitator should listen for in the responses.</div>
+</div>
+
+<!-- ANALYZE -->
+<div style="margin-top: 36px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Analyze</div>
+
+  <h3 class="prompt-title">09 — Interrogate a long document</h3>
+  <div class="prompt-meta">Best for: research, policies, SME docs</div>
+  <div class="prompt-body">I'm attaching a <span class="fill">[DOCUMENT TYPE]</span>. Read it carefully.
+
+Then, without summarizing yet, answer:
+1. What are the 3 most important claims?
+2. What assumptions are unstated?
+3. Where would a <span class="fill">[AUDIENCE]</span> get confused?
+4. What 5 questions would I need answered to turn
+   this into a learning experience?
+
+<span class="fill">[ATTACH / PASTE DOCUMENT]</span></div>
+
+  <h3 class="prompt-title">10 — Compare two frameworks</h3>
+  <div class="prompt-meta">Best for: competency models, methodologies</div>
+  <div class="prompt-body">I'll paste two <span class="fill">[FRAMEWORK TYPE]</span>.
+
+Compare them on:
+- What they agree on
+- Where they directly conflict
+- Which audiences each is better suited for
+- A proposed merged version that preserves the
+  strongest elements of each
+
+Framework A:
+<span class="fill">[PASTE A]</span>
+
+Framework B:
+<span class="fill">[PASTE B]</span></div>
+</div>
+
+<!-- REFINE -->
+<div style="margin-top: 36px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Refine</div>
+
+  <h3 class="prompt-title">11 — Rewrite in my voice</h3>
+  <div class="prompt-meta">Best for: maintaining consistency across content</div>
+  <div class="prompt-body">Below are 3 writing samples in my voice and a draft that
+isn't in my voice. Study the samples, identify the moves
+I make (sentence length, vocabulary, structure, humor,
+what I avoid), then rewrite the draft to match.
+
+Before rewriting, summarize in 5 bullets what you noticed
+about my voice. I want to see your work.
+
+Samples:
+<span class="fill">[PASTE 3 SAMPLES]</span>
+
+Draft to rewrite:
+<span class="fill">[PASTE DRAFT]</span></div>
+  <p class="why">Why it works: the "show your work" step catches bad voice-matches before you get a full rewrite.</p>
+
+  <h3 class="prompt-title">12 — Executive summary for a specific skeptic</h3>
+  <div class="prompt-meta">Best for: stakeholder buy-in</div>
+  <div class="prompt-body">Summarize the attached <span class="fill">[REPORT / PROPOSAL]</span> for a
+specific reader: <span class="fill">[ROLE + WHAT THEY CARE ABOUT + WHAT THEY'RE SKEPTICAL OF]</span>.
+
+Output: 150 words or fewer. Lead with the business
+outcome. Address the skepticism directly. End with the
+single decision I'm asking them to make.
+
+Then flag: what claims in this summary would you
+verify before sending?
+
+<span class="fill">[ATTACH / PASTE CONTENT]</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 2 · The Seven-Day Challenge
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<h2 class="section"><span class="section-kicker">Part Two · 7-day challenge</span>One small thing, every day.</h2>
+<p class="section-lede">
+  Print this page. Tape it to your monitor. Check a box every day. Seven reps beats one ambitious Saturday.
+</p>
+
+<div class="challenge-grid">
+  <div class="challenge-card">
+    <div class="day">DAY 01 · Monday</div>
+    <h4>Draft one email with Claude.</h4>
+    <p>Any email. Paste what you know, let Claude draft, then edit. Notice how long it took vs. writing from scratch.</p>
+    <div class="checkbox"></div>
+  </div>
+  <div class="challenge-card">
+    <div class="day">DAY 02 · Tuesday</div>
+    <h4>Interrogate a long doc.</h4>
+    <p>Paste something dense. Ask: "What are 3 questions this raises for a new manager?" Save the questions.</p>
+    <div class="checkbox"></div>
+  </div>
+  <div class="challenge-card">
+    <div class="day">DAY 03 · Wednesday</div>
+    <h4>Generate 5 MCQs. Critique them.</h4>
+    <p>Pick a topic you know cold. Use Prompt 04. Then use Prompt 05 on Claude's own output. Notice what it catches.</p>
+    <div class="checkbox"></div>
+  </div>
+  <div class="challenge-card">
+    <div class="day">DAY 04 · Thursday</div>
+    <h4>Start one Project.</h4>
+    <p>Create a Project for something you're working on this month. Pin one reference file. Write one sentence of instructions.</p>
+    <div class="checkbox"></div>
+  </div>
+  <div class="challenge-card">
+    <div class="day">DAY 05 · Friday</div>
+    <h4>Make one job aid as an Artifact.</h4>
+    <p>Use Prompt 07. Iterate twice. Send it to a colleague for feedback.</p>
+    <div class="checkbox"></div>
+  </div>
+  <div class="challenge-card">
+    <div class="day">DAY 06 · Saturday</div>
+    <h4>Let Claude critique you.</h4>
+    <p>Paste something you wrote last week. Ask: "What's weakest about this? Be direct." Sit with the answer.</p>
+    <div class="checkbox"></div>
+  </div>
+  <div class="challenge-card accent" style="grid-column: span 2;">
+    <div class="day">DAY 07 · Sunday</div>
+    <h4>Teach one colleague one thing you learned.</h4>
+    <p>Five minutes at the coffee machine. You'll remember it twice as well, and now there are two of you. That's how this gets into your team.</p>
+    <div class="checkbox"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 2.5 · Ten Habits
+     ═════════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<h2 class="section"><span class="section-kicker">Part Three · Ten habits</span>Small moves that compound.</h2>
+<p class="section-lede">
+  These aren't prompts — they're the posture. Adopt one a week and your outputs will look different in a month without your prompts getting any longer.
+</p>
+
+<style>
+  .habits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; margin-top: 20px; }
+  .habit { padding: 16px 0; border-bottom: 1px solid var(--rule-soft); display: grid; grid-template-columns: 36px 1fr; gap: 12px; }
+  .habit .hn { font-family: var(--mono); font-size: 13px; color: var(--terra); letter-spacing: 0.08em; padding-top: 2px; }
+  .habit h5 { font-family: var(--sans); font-weight: 600; font-size: 15px; margin: 0 0 4px; }
+  .habit p { font-size: 13.5px; line-height: 1.45; margin: 0; color: var(--ink-soft); }
+</style>
+
+<div class="habits-grid">
+  <div class="habit"><span class="hn">01</span><div><h5>One task per prompt.</h5><p>If a prompt is doing three jobs, split it. Claude nails one job, fumbles three.</p></div></div>
+  <div class="habit"><span class="hn">02</span><div><h5>Always add success criteria.</h5><p>"It's good if X, Y, Z." Claude hits what you name. If you don't name it, you get a guess.</p></div></div>
+  <div class="habit"><span class="hn">03</span><div><h5>Front-load context.</h5><p>Give everything Claude needs up front. Trickling context costs messages and quality.</p></div></div>
+  <div class="habit"><span class="hn">04</span><div><h5>Stop when it's off track.</h5><p>Don't keep nudging a drifting conversation. Start a new chat with a cleaner prompt.</p></div></div>
+  <div class="habit"><span class="hn">05</span><div><h5>Ask for the method, not the answer.</h5><p>"Walk me through how you'd approach this" gets you a better answer than "give me the answer."</p></div></div>
+  <div class="habit"><span class="hn">06</span><div><h5>Tell Claude to push back.</h5><p>"Disagree with me if I'm wrong. Point out what I'm missing." Its default is agreeable — override that.</p></div></div>
+  <div class="habit"><span class="hn">07</span><div><h5>Test before you share.</h5><p>Run the prompt yourself before passing it to a teammate. Half the time, you'll edit it first.</p></div></div>
+  <div class="habit"><span class="hn">08</span><div><h5>Don't blindly trust outputs.</h5><p>Especially financial, regulatory, or citation-level detail. Verify anything a stakeholder will read.</p></div></div>
+  <div class="habit"><span class="hn">09</span><div><h5>Iterate in one-sentence edits.</h5><p>"Shorter." "More skeptical." "Cut the filler." Small moves beat rewriting the whole prompt.</p></div></div>
+  <div class="habit"><span class="hn">10</span><div><h5>Save what works.</h5><p>Keep a doc of your ten best prompts. Reuse, don't rewrite. This single habit doubles your output.</p></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 3 · Reflection Sheet
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<h2 class="section"><span class="section-kicker">Part Four · Reflection</span>End of week one.</h2>
+<p class="section-lede">
+  After the seven days, sit with this sheet for ten minutes. Write by hand if you can. Clarity lives in ink.
+</p>
+
+<div class="reflect-block">
+  <div class="q">Which prompt surprised me — in a good way or a bad one?</div>
+  <div class="write-lines"></div>
+</div>
+
+<div class="reflect-block">
+  <div class="q">Where did Claude save me real time this week? Be specific: which task, how much time.</div>
+  <div class="write-lines"></div>
+</div>
+
+<div class="reflect-block">
+  <div class="q">Where did Claude waste my time or produce something I had to mostly throw out? What was the pattern?</div>
+  <div class="write-lines"></div>
+</div>
+
+<div class="reflect-block">
+  <div class="q">What's one recurring L&amp;D task I now want to always run through Claude?</div>
+  <div class="write-lines"></div>
+</div>
+
+<div class="reflect-block">
+  <div class="q">What's one task I decided Claude should never touch? Why?</div>
+  <div class="write-lines"></div>
+</div>
+
+<div class="reflect-block" style="background: var(--terra); color: var(--paper); border-color: var(--terra);">
+  <div class="q" style="color: var(--paper);">Who on my team am I going to show this to next week?</div>
+  <div class="write-lines" style="background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 27px, rgba(246,241,231,0.35) 27px, rgba(246,241,231,0.35) 28px);"></div>
+</div>
+
+<footer class="doc-foot">
+  <span>Claude for L&amp;D · Take-Home Pack v1</span>
+  <span>Prompt Library · 7-Day Challenge · Reflection</span>
+</footer>
+
+<script>
+  (async () => {
+    try { await document.fonts.ready; } catch (e) {}
+    setTimeout(() => window.print(), 500);
+  })();
+</script>
+</body>
+</html>

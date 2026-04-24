@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Workshop Outline v2 — Claude for L&D Professionals</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  html, body { background: var(--paper); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 72px 56px 120px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  @media print {
+    body { max-width: 7.2in; padding: 0.55in 0.6in; font-size: 11pt; }
+    .page-break { break-before: page; page-break-before: always; }
+    a { color: inherit; text-decoration: none; }
+  }
+  header.doc-head {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  h1.doc-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 46px;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+  }
+  h1.doc-title em { color: var(--terra); font-style: italic; }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+    max-width: 720px;
+  }
+  .revision-note {
+    background: var(--paper-2);
+    border-left: 3px solid var(--terra);
+    padding: 16px 20px;
+    margin: 0 0 40px;
+    font-size: 13.5pt;
+    line-height: 1.5;
+  }
+  .revision-note strong {
+    font-family: var(--mono);
+    font-size: 10pt;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  h2.section {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 40px 0 8px;
+    text-wrap: pretty;
+  }
+  h2.section em { color: var(--terra); font-style: italic; }
+  .section-kicker {
+    font-family: var(--mono);
+    font-size: 10pt;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .section-lede {
+    font-size: 13pt;
+    line-height: 1.5;
+    margin: 0 0 20px;
+    max-width: 680px;
+    color: var(--ink-soft);
+  }
+
+  /* Act block — the core unit of the outline */
+  .act {
+    border: 1px solid var(--rule);
+    padding: 22px 26px;
+    margin: 0 0 18px;
+    background: var(--paper);
+    break-inside: avoid;
+  }
+  .act-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+    gap: 20px;
+  }
+  .act-num {
+    font-family: var(--mono);
+    font-size: 11pt;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .act-time {
+    font-family: var(--mono);
+    font-size: 11pt;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+  .act h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.12;
+    margin: 4px 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .act .purpose {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14pt;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+    max-width: 640px;
+  }
+  .act ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+  .act ul li { margin-bottom: 4px; }
+  .act ul li strong { color: var(--ink); }
+
+  .act .deliverable {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--rule);
+    font-size: 11.5pt;
+    color: var(--ink-soft);
+  }
+  .act .deliverable strong {
+    font-family: var(--mono);
+    font-size: 9.5pt;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-right: 6px;
+    font-weight: 500;
+  }
+
+  /* Comparison panel */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0 24px;
+  }
+  .compare > div {
+    border: 1px solid var(--rule);
+    padding: 16px 18px;
+  }
+  .compare h4 {
+    font-family: var(--mono);
+    font-size: 10pt;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin: 0 0 8px;
+    font-weight: 500;
+  }
+  .compare h5 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 16pt;
+    margin: 0 0 8px;
+    line-height: 1.15;
+  }
+  .compare ul {
+    margin: 0;
+    padding-left: 16px;
+    font-size: 11.5pt;
+    line-height: 1.45;
+  }
+  .compare ul li { margin-bottom: 4px; }
+
+  /* Key table */
+  .kvtable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 28px;
+    font-size: 12pt;
+  }
+  .kvtable td {
+    padding: 10px 14px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.45;
+  }
+  .kvtable tr td:first-child {
+    font-family: var(--mono);
+    font-size: 10.5pt;
+    letter-spacing: 0.06em;
+    color: var(--terra);
+    text-transform: uppercase;
+    width: 180px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  footer.doc-foot {
+    margin-top: 56px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10pt;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.92em;
+    background: var(--paper-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <span class="tag">Second Draft · for Committee Review</span>
+  <span class="meta">ATD Houston · L&amp;D SIG · v2</span>
+</header>
+
+<h1 class="doc-title">Workshop Outline<br/><em>AI Best Practices with Claude.</em></h1>
+
+<p class="lede">
+  A 60-minute hands-on workshop for learning and development professionals. What's different from an AI 101 session: every attendee leaves having built something real, and takes home a pack they can use the next day.
+</p>
+
+<div class="revision-note">
+  <strong>What changed from the first draft</strong>
+  Same commitments, sharper arc. The session no longer opens with &ldquo;what is AI&rdquo; (this audience knows); it opens with what makes <em>Claude</em> different, then spends most of the hour on three capabilities that reshape L&amp;D work: <strong>Artifacts</strong> (build real, interactive outputs), <strong>Projects &amp; Skills</strong> (so Claude remembers your context), and <strong>Connectors</strong> (Canva, featured live). We also touch briefly on <strong>Claude Designer</strong> — a week-old capability every L&amp;D professional should at least know exists. Three activities, three takeaways.
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     AT A GLANCE
+     ═════════════════════════════════════════════════════════════════════ -->
+
+<h2 class="section"><span class="section-kicker">At a glance</span>The shape of the hour.</h2>
+
+<table class="kvtable">
+  <tr><td>Audience</td><td>L&amp;D, talent development, and knowledge-work professionals</td></tr>
+  <tr><td>Format</td><td>60 minutes, in-person, laptop-required</td></tr>
+  <tr><td>Fee</td><td>$20 per attendee (SIG event)</td></tr>
+  <tr><td>Tech</td><td>Claude.ai (free tier is sufficient for all activities; Pro optional)</td></tr>
+  <tr><td>Pre-work</td><td>Short guide sent a week in advance — account setup, one sample prompt, expectations</td></tr>
+  <tr><td>Take-home</td><td>A designed pack: 12 prompts, Project Instructions template, Skills playbook, 7-day challenge, Claude Code bonus appendix</td></tr>
+  <tr><td>Facilitator posture</td><td>Explorer, not guru — honest about what I have and haven't used</td></tr>
+</table>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     LEARNING OUTCOMES
+     ═════════════════════════════════════════════════════════════════════ -->
+
+<h2 class="section"><span class="section-kicker">Outcomes</span>What attendees leave able to do.</h2>
+<p class="section-lede">Outcomes are observable by the end of the session or within one week.</p>
+
+<ul style="font-size: 13pt; line-height: 1.5; margin: 0 0 28px; padding-left: 20px;">
+  <li style="margin-bottom: 8px;"><strong>Write a Claude-shaped prompt.</strong> Apply at least three specific moves (clarifying questions, success criteria, pushback, critique-revise, one-task-only).</li>
+  <li style="margin-bottom: 8px;"><strong>Ship one working Artifact.</strong> A quiz, decision tree, or practice simulation they built in the session — not a draft, a live thing.</li>
+  <li style="margin-bottom: 8px;"><strong>Set up one Project.</strong> With files, instructions, and a first real conversation — so Claude remembers their context on Monday.</li>
+  <li style="margin-bottom: 8px;"><strong>Name the difference</strong> between a prompt, a Project, a Skill, and a Connector — and choose the right one for their next recurring task.</li>
+  <li style="margin-bottom: 8px;"><strong>Form an informed opinion</strong> on Claude Designer and what it means for their team's e-authoring stack.</li>
+  <li style="margin-bottom: 8px;"><strong>Apply three guardrails</strong> for responsible use in L&amp;D (data, attribution, verification).</li>
+</ul>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     COMPARISON TO v1
+     ═════════════════════════════════════════════════════════════════════ -->
+
+<h2 class="section"><span class="section-kicker">Reviewer note</span>What's kept, added, and sharpened.</h2>
+
+<div class="compare">
+  <div>
+    <h4>Kept from v1</h4>
+    <h5>Every committee commitment, honored.</h5>
+    <ul>
+      <li>Welcome &amp; framing</li>
+      <li>Claude fundamentals</li>
+      <li>Prompting &amp; creating instructions</li>
+      <li>3–4 practical use cases with demos</li>
+      <li>Getting-started plan</li>
+      <li>Q&amp;A</li>
+    </ul>
+  </div>
+  <div>
+    <h4>New in v2</h4>
+    <h5>Aligned to what the field is actually doing now.</h5>
+    <ul>
+      <li>Artifacts as the headline capability</li>
+      <li>Projects + Instructions template</li>
+      <li>Skills (free-tier library)</li>
+      <li>Connectors — live Canva demo</li>
+      <li>Claude Designer preview</li>
+      <li>Three hands-on activities (not just demos)</li>
+      <li>Designed take-home pack + Claude Code appendix</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     THE OUTLINE
+     ═════════════════════════════════════════════════════════════════════ -->
+
+<h2 class="section"><span class="section-kicker">The outline</span>Six acts, sixty minutes.</h2>
+
+<!-- ACT 1 -->
+<div class="act">
+  <div class="act-head">
+    <span class="act-num">Act One</span>
+    <span class="act-time">10 min</span>
+  </div>
+  <h3>Why Claude (not AI 101).</h3>
+  <p class="purpose">Position the hour. This audience already knows AI — we go straight to what makes Claude different and why it matters for their work.</p>
+  <ul>
+    <li>The 60-minute agreement (ground rules, interruption policy)</li>
+    <li>Facilitator framing: explorer, not guru</li>
+    <li>Four things Claude does differently: <strong>long documents, Artifacts, voice, Projects</strong></li>
+    <li>Five prompt moves that punch above their weight</li>
+    <li>The 3-use rule: prompt → saved prompt → Project or Skill</li>
+    <li><strong>Activity 01 (6 min):</strong> Write a Claude-shaped prompt for a real task you have this week</li>
+  </ul>
+  <div class="deliverable"><strong>Deliverable</strong>Two prompts shared out loud; everyone has a working prompt for a real task.</div>
+</div>
+
+<!-- ACT 2 -->
+<div class="act">
+  <div class="act-head">
+    <span class="act-num">Act Two</span>
+    <span class="act-time">20 min</span>
+  </div>
+  <h3>What Claude builds — Artifacts.</h3>
+  <p class="purpose">The capability that most reframes what L&amp;D can ship solo: real, interactive outputs, not just text drafts.</p>
+  <ul>
+    <li>What an Artifact is: a working thing in a side panel — not a description of the thing</li>
+    <li>Six Artifacts you can ship this week: job aids, self-checks, widgets, simulations, microsites, games</li>
+    <li>What's on the free tier (everything needed for the activity)</li>
+    <li><strong>Activity 02 (12 min):</strong> Build a working Artifact — one of three options
+      <ul style="margin-top: 4px;">
+        <li>A 5-question self-check on a topic learners struggle with</li>
+        <li>An interactive decision tree for a recurring judgment call</li>
+        <li>A conversation-practice sim (Claude plays the other person)</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="deliverable"><strong>Deliverable</strong>Every attendee ships a live Artifact link and shares it with the person next to them.</div>
+</div>
+
+<!-- ACT 3 -->
+<div class="act">
+  <div class="act-head">
+    <span class="act-num">Act Three</span>
+    <span class="act-time">15 min</span>
+  </div>
+  <h3>How Claude remembers you — Projects.</h3>
+  <p class="purpose">The under-invested capability. Most people type the same context every chat; Projects fix that.</p>
+  <ul>
+    <li>What a Project is: files + instructions that every chat inside inherits</li>
+    <li>Writing instructions that stick: role, audience, non-negotiables, voice sample</li>
+    <li>A fill-in-the-blank Instructions template (in the take-home pack)</li>
+    <li><code>CLAUDE.md</code>, demystified — one slide, because attendees will hear the term</li>
+    <li><strong>Activity 03 (8 min):</strong> Set up one real Project — name, files, instructions, first chat</li>
+  </ul>
+  <div class="deliverable"><strong>Deliverable</strong>Everyone has a Project ready to do real work on Monday.</div>
+</div>
+
+<!-- ACT 4 -->
+<div class="act">
+  <div class="act-head">
+    <span class="act-num">Act Four</span>
+    <span class="act-time">8 min</span>
+  </div>
+  <h3>What Claude connects to — Skills &amp; Connectors.</h3>
+  <p class="purpose">Beyond the chat window. How Claude becomes part of a workflow.</p>
+  <ul>
+    <li>Skills: procedures Claude runs reliably; Anthropic's built-in library is now on free</li>
+    <li>Connectors: the growing library; mix of free and paid-tier availability</li>
+    <li><strong>Live demo:</strong> Canva connector — turn a learning objective into a one-page asset, in real time, from chat</li>
+  </ul>
+  <div class="deliverable"><strong>Deliverable</strong>A concrete, visible example of Claude producing polished work <em>in a tool the audience already uses</em>.</div>
+</div>
+
+<!-- ACT 5 -->
+<div class="act">
+  <div class="act-head">
+    <span class="act-num">Act Five</span>
+    <span class="act-time">5 min</span>
+  </div>
+  <h3>The new thing, and the real talk.</h3>
+  <p class="purpose">A brief preview and an honest reckoning — both essential for L&amp;D credibility.</p>
+  <ul>
+    <li><strong>Claude Designer</strong> (screenshot tour, 2 min): a Canva-partnered capability released days before the workshop. Framed as &ldquo;pay attention to this&rdquo; — may reshape parts of the e-authoring stack (Articulate, Rise, Vyond)</li>
+    <li><strong>What Claude gets wrong:</strong> citations, your context, recency, deep SME judgment, agreeableness, modeling real learners</li>
+    <li><strong>Responsible use — three guardrails:</strong> data (don't paste what you wouldn't email), attribution (you are the author), verification (primary sources for anything a learner will cite)</li>
+  </ul>
+  <div class="deliverable"><strong>Deliverable</strong>A realistic, trustworthy picture of the tool — not a sales pitch.</div>
+</div>
+
+<!-- ACT 6 -->
+<div class="act">
+  <div class="act-head">
+    <span class="act-num">Act Six</span>
+    <span class="act-time">2 min + Q&amp;A</span>
+  </div>
+  <h3>Your turn.</h3>
+  <p class="purpose">Momentum past the hour. A clear 7-day plan, a designed take-home pack, and an invitation to keep going.</p>
+  <ul>
+    <li><strong>Facilitator's practice</strong> — six real things I've built on the Pro plan ($20/mo), plus what I've deliberately <em>not</em> done (agents, Cowork, Claude Desktop). Credibility through honesty.</li>
+    <li><strong>Your 7-day plan</strong> — one small action per day</li>
+    <li><strong>Take-home pack overview</strong> — what's in it, how to use it</li>
+    <li><strong>Q&amp;A</strong> — including &ldquo;I don't know&rdquo; answers where warranted</li>
+  </ul>
+  <div class="deliverable"><strong>Deliverable</strong>Every attendee leaves with a plan, a pack, and a working Artifact.</div>
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     TAKE-HOME PACK
+     ═════════════════════════════════════════════════════════════════════ -->
+
+<div class="page-break"></div>
+
+<h2 class="section"><span class="section-kicker">Appendix A</span>What's in the take-home pack.</h2>
+<p class="section-lede">A designed PDF emailed the evening of the workshop. Six parts plus a bonus appendix.</p>
+
+<table class="kvtable">
+  <tr><td>Part 1</td><td><strong>The L&amp;D Prompt Library</strong> — 12 ready-to-paste prompts for assessments, feedback, SME conversations, microlearning, and more. Each names the job and why it works.</td></tr>
+  <tr><td>Part 2</td><td><strong>The 7-Day Challenge</strong> — one small action per day, printable and trackable.</td></tr>
+  <tr><td>Part 3</td><td><strong>Ten Habits</strong> — small moves that compound: the posture of heavy Claude users.</td></tr>
+  <tr><td>Part 4</td><td><strong>Reflection Sheet</strong> — six questions to sit with after the seven days.</td></tr>
+  <tr><td>Part 5</td><td><strong>Project Instructions Template</strong> — the fill-in-the-blank starter, with the four places people under-invest.</td></tr>
+  <tr><td>Part 6</td><td><strong>Skills Playbook</strong> — decision tree for prompt vs. Project vs. Skill vs. Connector, plus four Skills worth turning on first.</td></tr>
+  <tr><td>Appendix</td><td><strong>Claude Code for the Curious</strong> — facilitator's exact setup (VS Code extension, no terminal), six-step getting-started, first-project prompt, honest caveats. For attendees who want to go further.</td></tr>
+</table>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     LOGISTICS
+     ═════════════════════════════════════════════════════════════════════ -->
+
+<h2 class="section"><span class="section-kicker">Appendix B</span>Logistics &amp; risk.</h2>
+
+<table class="kvtable">
+  <tr><td>Room setup</td><td>Tables or seminar-style seating. Screen visible from every seat. No need for breakout rooms; activities are at-table.</td></tr>
+  <tr><td>Required of attendees</td><td>Laptop (phones workable but suboptimal for Artifacts), a Claude.ai account (free fine), and the pre-work read (10 minutes).</td></tr>
+  <tr><td>Pre-work sent</td><td>One week before: account setup, one sample prompt to try, one L&amp;D task to bring</td></tr>
+  <tr><td>Backup plan</td><td>If the Canva connector is unavailable live, a pre-recorded 90-second screen capture stands in. Activities 01–03 don't require the connector.</td></tr>
+  <tr><td>Data handling</td><td>Attendees are briefed before Activity 02 and 03 to avoid pasting PII, salary data, or identifying performance data. Facilitator models this in every demo.</td></tr>
+  <tr><td>Scope boundaries</td><td>Not a session on: agents, Claude Desktop, Cowork, Claude Code for engineering teams. These are named and bounded up front; curious attendees get the Claude Code appendix.</td></tr>
+</table>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     FACILITATOR NOTE
+     ═════════════════════════════════════════════════════════════════════ -->
+
+<h2 class="section"><span class="section-kicker">Appendix C</span>A note on voice.</h2>
+<p style="font-size: 13pt; line-height: 1.55; max-width: 680px; margin: 0 0 16px;">
+  The facilitator is on the $20/month Pro plan and has deliberately held back from agents, Cowork, and the higher-tier features. That is the point of view of this workshop. Attendees don't need a power-user's toolkit to do meaningful work — they need an honest guide who has shipped real things with the same plan they can afford.
+</p>
+<p style="font-size: 13pt; line-height: 1.55; max-width: 680px; margin: 0 0 16px;">
+  What attendees will hear: <em>&ldquo;Here's what I've built. Here's what I haven't tried yet. Here's how you can do the first thing this week.&rdquo;</em> That authenticity is a feature, not a caveat.
+</p>
+
+<footer class="doc-foot">
+  <span>Claude for L&amp;D · Workshop Outline v2</span>
+  <span>Prepared for ATD Houston L&amp;D SIG Committee</span>
+</footer>
+
+</body>
+</html>

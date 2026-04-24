@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Sample Learner Persona — Activity 1 Starter File</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  html, body { background: var(--paper); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 72px 56px 100px;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .banner {
+    background: var(--terra);
+    color: var(--paper);
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    display: inline-block;
+    border-radius: 3px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin: 0 0 40px;
+    line-height: 1.45;
+  }
+  .persona-header {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 32px;
+    align-items: start;
+    margin-bottom: 36px;
+    padding-bottom: 32px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .persona-avatar {
+    background: var(--ink);
+    color: var(--paper);
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 52px;
+    font-weight: 400;
+    flex-shrink: 0;
+  }
+  .persona-name {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 400;
+    margin: 0 0 4px;
+    line-height: 1.1;
+  }
+  .persona-role {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 12px;
+  }
+  .persona-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .ptag {
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 3px;
+    color: var(--ink-soft);
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    margin: 36px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 13px;
+    margin: 20px 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--terra);
+  }
+  p { margin: 0 0 14px; }
+  ul { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 7px; }
+  .quote-block {
+    background: var(--paper-2);
+    border-left: 3px solid var(--terra);
+    padding: 16px 20px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+    color: var(--ink-soft);
+  }
+  .quote-block cite {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-style: normal;
+    color: var(--terra);
+    margin-top: 8px;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 8px;
+  }
+  .card {
+    border: 1px solid var(--rule);
+    padding: 18px 20px;
+  }
+  .card h4 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--terra);
+    margin: 0 0 10px;
+  }
+  .card ul { margin: 0; padding-left: 18px; }
+  .card li { font-size: 14px; margin-bottom: 6px; }
+  .implication {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+  .implication h3 {
+    color: var(--paper);
+    opacity: 0.7;
+    margin-top: 0;
+  }
+  .implication ul { margin: 0; padding-left: 20px; }
+  .implication li { font-size: 14px; margin-bottom: 8px; color: var(--paper); }
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 0.07em;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">Activity 1 Sample File — Drop into your Claude Project</div>
+
+<h1>Learner Persona</h1>
+<p class="lede">A detailed profile of a primary learner segment. Drop this into your Claude Project so every output is designed for the right person.</p>
+
+<div class="persona-header">
+  <div class="persona-avatar">M</div>
+  <div>
+    <div class="persona-name">Marcus, 34</div>
+    <div class="persona-role">First-Year People Manager · Operations</div>
+    <p style="margin: 8px 0 0; font-size: 14px; color: var(--ink-soft); line-height: 1.5;">Promoted from individual contributor eight months ago. Managing a team of five for the first time. Technically strong; still building his people skills and manager identity.</p>
+    <div class="persona-tag-row">
+      <span class="ptag">First-time manager</span>
+      <span class="ptag">High performer → new role</span>
+      <span class="ptag">Time-scarce</span>
+      <span class="ptag">Self-taught learner</span>
+      <span class="ptag">Skeptical of "soft skills" training</span>
+    </div>
+  </div>
+</div>
+
+<h2>Background &amp; Context</h2>
+
+<p>Marcus was promoted because he was excellent at the job — not because he'd demonstrated strong management instincts. He stepped into the role with confidence in his technical judgment and real uncertainty about everything else: giving feedback, navigating conflict, running 1:1s, advocating for his team upward.</p>
+
+<p>He's nine months in. The initial learning curve was steep and mostly self-directed — books he found, YouTube videos, peers he asked. He's learned a lot, but the learning has been uneven. He's strong at the tactical (setting up workflows, tracking performance data) and shakier on the relational (difficult conversations, recognition, coaching through mistakes).</p>
+
+<p>He works in operations, which means his team is measured daily. He feels the pressure acutely. When something goes wrong with a team member, the instinct is to solve the problem himself rather than coach the person through it.</p>
+
+<h2>What Marcus Sounds Like</h2>
+
+<div class="quote-block">
+  "I know I'm supposed to coach, not just tell people what to do. But honestly, I tell them and it gets done faster. I don't have time to do the Socratic method every time there's a fire."
+  <cite>— Marcus, in a focus group on manager development</cite>
+</div>
+
+<div class="quote-block">
+  "The training I've done so far felt like it was designed for someone in a different job. I need specifics, not frameworks."
+  <cite>— Marcus, in a post-session survey</cite>
+</div>
+
+<h2>Goals &amp; Motivations</h2>
+
+<div class="two-col">
+  <div class="card">
+    <h4>What Marcus wants</h4>
+    <ul>
+      <li>To be respected by his team — not just liked</li>
+      <li>To get results without burning people out (including himself)</li>
+      <li>To feel less reactive and more in control as a manager</li>
+      <li>To handle the hard conversations without dreading them for three days first</li>
+      <li>To understand what good management actually looks like in <em>his</em> context, not a generic one</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>What Marcus doesn't want</h4>
+    <ul>
+      <li>Theoretical frameworks he has to "translate" to his real work</li>
+      <li>Role-plays that feel staged and nothing like his actual team</li>
+      <li>Content that assumes he has unlimited time</li>
+      <li>To feel like a bad manager in the learning environment</li>
+      <li>More information — he has plenty. He wants practice and feedback.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Prior Knowledge &amp; Skill Level</h2>
+
+<h3>Strengths he brings</h3>
+<ul>
+  <li>Deep subject-matter expertise in operations — credible with his team</li>
+  <li>Strong analytical thinking — good at diagnosing process problems</li>
+  <li>Self-awareness about his gaps — he knows what he's not good at yet</li>
+  <li>Some exposure to feedback models (SBI) from a previous workshop — needs practice, not re-teaching</li>
+  <li>High motivation to grow — this job matters to him</li>
+</ul>
+
+<h3>Gaps and challenges</h3>
+<ul>
+  <li>Avoids conflict by over-explaining or solving the problem himself</li>
+  <li>Gives positive feedback awkwardly — tends to underdo it</li>
+  <li>Struggles to coach without directing — defaults to "here's what I would do"</li>
+  <li>Hasn't built the habit of regular 1:1s — cancels them when things get busy</li>
+  <li>Doesn't know how to have a "performance is below expectations" conversation — has never done one</li>
+</ul>
+
+<h2>Learning Preferences &amp; Behaviors</h2>
+
+<ul>
+  <li><strong>Short over long.</strong> He will not read a 40-page guide. He will read a 2-page job aid that tells him exactly what to do in a specific situation.</li>
+  <li><strong>Examples over principles.</strong> "Show me a real conversation that went well and one that didn't. Let me see the difference."</li>
+  <li><strong>Learns by doing, not watching.</strong> Demonstration is useful; practice is necessary. He needs reps, not lectures.</li>
+  <li><strong>Mobile and on-the-go.</strong> More likely to review content on his phone between meetings than sit down at a desk.</li>
+  <li><strong>Skeptical of "soft skills" framing.</strong> Frame learning outcomes in terms of results and team performance — not feelings or interpersonal harmony.</li>
+  <li><strong>Needs psychological safety to practice hard things.</strong> Won't engage authentically in practice if he thinks he'll be judged for getting it wrong.</li>
+</ul>
+
+<h2>Technology &amp; Access</h2>
+<ul>
+  <li>Uses a company laptop and personal iPhone — content needs to work on both</li>
+  <li>No dedicated learning time built into his schedule — all learning competes with meetings</li>
+  <li>Has access to the LMS but hasn't logged in since onboarding — doesn't see it as a resource</li>
+  <li>Comfortable with video, interactive tools, and anything that feels more like an app than a course</li>
+</ul>
+
+<div class="implication">
+  <h3>Design Implications — What This Means for Content</h3>
+  <ul>
+    <li>Lead with the situation, not the concept. Marcus responds to "here's what to do when your team member misses a deadline for the third time" more than "here's the feedback model."</li>
+    <li>Keep sessions under 20 minutes or design for flexible consumption in chunks.</li>
+    <li>Build in practice with realistic scenarios — name the scenarios after real operations situations, not generic "Employee A" placeholders.</li>
+    <li>Outcome language matters. "You'll be able to have a performance conversation" lands better than "you'll understand how to have a performance conversation."</li>
+    <li>Don't retrain what he already knows. Acknowledge SBI, build on it, don't re-explain it.</li>
+    <li>Design for graceful failure. If he does the wrong thing in a scenario, the consequence should be instructive, not punishing.</li>
+  </ul>
+</div>
+
+<footer>Learner Persona — Marcus (First-Year Manager) · Sample starter file for Claude Project · Drop into your Project's Files tab before Activity 1</footer>
+
+</body>
+</html>

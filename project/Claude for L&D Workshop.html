@@ -1,0 +1,1113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Claude for L&D Professionals — ATD Houston SIG Workshop</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="deck-stage.js"></script>
+<style>
+  html, body { height: 100%; }
+  /* Local helpers for new slide types */
+  .tile {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 32px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .slide.dark .tile { background: var(--ink-soft); border-color: rgba(246,241,231,0.12); }
+  .slide.cream2 .tile { background: var(--paper); }
+  .tile .tk { font-family: var(--mono); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); }
+  .tile h4 { font-family: var(--serif); font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0; }
+  .tile p { margin: 0; font-size: 20px; line-height: 1.45; color: var(--ink-soft); }
+  .slide.dark .tile p { color: var(--paper); opacity: 0.78; }
+
+  /* Browser/app chrome mock — used for Artifacts and Designer */
+  .chrome-frame {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px -40px rgba(26,24,20,0.35);
+    display: flex; flex-direction: column;
+  }
+  .chrome-frame .topbar {
+    background: var(--paper-2);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .chrome-frame .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--paper-3); }
+  .chrome-frame .url {
+    flex: 1;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--ink-soft);
+    background: var(--paper);
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    margin-left: 10px;
+  }
+  .chrome-frame .body { padding: 28px 30px; flex: 1; min-height: 0; }
+
+  /* Claude Designer screenshot placeholder */
+  .screen-ph {
+    background:
+      repeating-linear-gradient(45deg, rgba(196,98,58,0.06), rgba(196,98,58,0.06) 14px, transparent 14px, transparent 28px),
+      var(--paper-2);
+    border: 2px dashed rgba(196,98,58,0.45);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 24px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* Skill row */
+  .skill-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 20px;
+    padding: 20px 24px;
+    align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+  .slide.dark .skill-row { background: var(--ink-soft); border-color: rgba(246,241,231,0.12); }
+  .slide.cream2 .skill-row { background: var(--paper); }
+  .skill-row .icon {
+    width: 56px; height: 56px; border-radius: 12px;
+    background: var(--terra); color: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 28px; font-weight: 500;
+  }
+  .skill-row h5 { margin: 0 0 4px; font-family: var(--serif); font-weight: 500; font-size: 26px; }
+  .skill-row p  { margin: 0; font-size: 18px; color: var(--ink-soft); line-height: 1.35; }
+  .slide.dark .skill-row p { color: var(--paper); opacity: 0.75; }
+  .skill-row .toggle {
+    width: 52px; height: 30px; border-radius: 999px;
+    background: var(--terra); position: relative;
+  }
+  .skill-row .toggle::after {
+    content: ''; position: absolute; right: 3px; top: 3px;
+    width: 24px; height: 24px; border-radius: 50%; background: var(--paper);
+  }
+  .skill-row.off .toggle { background: var(--paper-3); }
+  .slide.dark .skill-row.off .toggle { background: rgba(246,241,231,0.2); }
+  .skill-row.off .toggle::after { left: 3px; right: auto; }
+
+  /* Connector pill grid */
+  .conn-pill {
+    padding: 14px 20px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    font-family: var(--sans);
+    font-size: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .slide.dark .conn-pill { background: var(--ink-soft); border-color: rgba(246,241,231,0.12); }
+  .conn-pill .sq { width: 26px; height: 26px; border-radius: 6px; background: var(--terra); flex-shrink: 0; }
+  .conn-pill.featured { border: 2px solid var(--terra); background: rgba(196,98,58,0.08); }
+
+  /* Coloring book / my practice tile */
+  .practice-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+  }
+  .slide.dark .practice-card { background: var(--ink-soft); border-color: rgba(246,241,231,0.12); }
+  .practice-card .num { font-family: var(--mono); font-size: 14px; color: var(--terra); letter-spacing: 0.1em; }
+  .practice-card h5 { margin: 0; font-family: var(--serif); font-size: 24px; font-weight: 500; line-height: 1.15; }
+  .practice-card p { margin: 0; font-size: 17px; line-height: 1.4; color: var(--ink-soft); }
+  .slide.dark .practice-card p { color: var(--paper); opacity: 0.75; }
+</style>
+<script type="application/json" id="speaker-notes">[]</script>
+</head>
+<body>
+
+<template id="__bundler_thumbnail" data-bg-color="#f6f1e7">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#f6f1e7"/>
+    <text x="600" y="380" text-anchor="middle" font-family="Georgia, serif" font-size="120" fill="#1a1814" font-style="italic">Claude</text>
+    <text x="600" y="500" text-anchor="middle" font-family="Georgia, serif" font-size="72" fill="#c4623a" font-style="italic">for L&amp;D</text>
+    <rect x="540" y="560" width="120" height="3" fill="#c4623a"/>
+  </svg>
+</template>
+
+<deck-stage width="1920" height="1080">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ACT 1 · WHY CLAUDE (not AI 101)  |  Slides 1–6  |  ~12 min
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<!-- 01 · Title -->
+<section class="slide cream2" data-label="01 Claude for L&D Professionals">
+  <div class="chrome"><span class="section-tag">ATD Houston · L&D SIG</span><span>April 2026</span></div>
+  <div style="margin-top: 120px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div class="eyebrow">A 60-minute working workshop</div>
+    <h1 class="title">Claude, <em style="font-style: italic; color: var(--terra);">for real L&amp;D work.</em></h1>
+    <div class="subtitle" style="max-width: 1400px;">
+      A working session on what Claude does that other tools don&rsquo;t &mdash; and how to put it to work today.
+    </div>
+    <div style="margin-top: 80px; display: flex; gap: 80px; align-items: baseline;">
+      <div>
+        <div class="mono" style="font-size: 16px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.55; margin-bottom: 8px;">Facilitator</div>
+        <div class="serif" style="font-size: 28px;">Tamara Thomas &middot; Principal, Learning &amp; Development</div>
+        <div class="serif" style="font-size: 22px; opacity: 0.7; margin-top: 4px;">Westlake Corporation</div>
+      </div>
+      <div>
+        <div class="mono" style="font-size: 16px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.55; margin-bottom: 8px;">Host</div>
+        <div class="serif" style="font-size: 28px;">ATD Houston &middot; Learning Tech SIG</div>
+      </div>
+      <div>
+        <div class="mono" style="font-size: 16px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.55; margin-bottom: 8px;">Duration</div>
+        <div class="serif" style="font-size: 28px;">60 minutes &middot; 2 activities</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>01 / 24</span></div>
+</section>
+
+<!-- 02 · The 60-Minute Agreement -->
+<section class="slide" data-label="02 The 60-Minute Agreement">
+  <div class="chrome"><span class="section-tag">Open</span><span>02 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Before we start</div>
+    <h2 class="slide-title">The <em>60-minute agreement.</em></h2>
+  </div>
+  <div class="grid-3" style="margin-top: 10px; gap: 40px;">
+    <div class="tile">
+      <div class="tk">You</div>
+      <h4>Hands on a device.</h4>
+      <p>Laptop preferred. You'll run two activities. I'll wait for you.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">Me</div>
+      <h4>Demo on a free account.</h4>
+      <p>Everything you&rsquo;ll see today, you can do on Claude&rsquo;s free plan &mdash; no credit card required.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">Us</div>
+      <h4>Questions out loud &mdash; or in the chat.</h4>
+      <p>If you&rsquo;re confused, someone else is too. Interrupt me or post in the chat. That&rsquo;s the deal.</p>
+    </div>
+  </div>
+  <div class="pro-note" style="margin-top: 60px; max-width: 1700px;">
+    <span class="label">A note on my credentials</span>
+    I&rsquo;m an <strong>explorer, not a guru</strong>. I&rsquo;ll show you what I&rsquo;ve found, honestly &mdash; including where I&rsquo;ve held back. You&rsquo;ll leave with things I actually do, not things I&rsquo;ve only read about.
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>02 / 24</span></div>
+</section>
+
+<!-- 03 · You Already Know AI. This is About Claude. -->
+<section class="slide dark" data-label="03 You Know AI. This Is About Claude.">
+  <div class="chrome"><span class="section-tag">Positioning</span><span>03 / 24</span></div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 1700px;">
+    <div class="eyebrow">What this hour is — and isn't</div>
+    <h2 class="slide-title" style="font-size: 84px;">You already know AI.<br/>This hour is about <em>what Claude does that the others don't.</em></h2>
+    <div class="grid-2" style="margin-top: 60px; gap: 72px;">
+      <div>
+        <div class="mono" style="font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); margin-bottom: 16px;">Skipping</div>
+        <ul class="marked" style="gap: 14px;">
+          <li style="font-size: 26px;">What a language model is</li>
+          <li style="font-size: 26px;">The prompt-engineering alphabet</li>
+          <li style="font-size: 26px;">Tool-by-tool comparisons</li>
+        </ul>
+      </div>
+      <div>
+        <div class="mono" style="font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); margin-bottom: 16px;">Going deep on</div>
+        <ul class="marked" style="gap: 14px;">
+          <li style="font-size: 26px;">Artifacts — build real things, not just drafts</li>
+          <li style="font-size: 26px;">Projects + Instructions that stick</li>
+          <li style="font-size: 26px;">Skills &amp; Connectors (now on free)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>03 / 24</span></div>
+</section>
+
+<!-- 04 · What Makes Claude Different -->
+<section class="slide" data-label="04 What Makes Claude Different">
+  <div class="chrome"><span class="section-tag">The Case</span><span>04 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Four things that are genuinely different</div>
+    <h2 class="slide-title">What <em>Claude</em> does that the others don't.</h2>
+  </div>
+  <div class="grid-4" style="margin-top: 10px;">
+    <div class="tile">
+      <div class="tk">01</div>
+      <h4>Large context window.</h4>
+      <p>Claude can take in a 60-page policy, three PDFs, and a full transcript in one session — and reason across all of it. The difference is how accurately it holds the whole document in mind, not just what was near the top.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">02</div>
+      <h4>Artifacts — not just drafts.</h4>
+      <p>Interactive quizzes, working widgets, real web pages. You leave with a tangible thing, ready to share — not a transcript to clean up later.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">03</div>
+      <h4>Writes like a person.</h4>
+      <p>Less AI-ese, more voice. Tell it how you talk and it holds the register — helpful when your name goes on it.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">04</div>
+      <h4>Remembers, when you set it up.</h4>
+      <p>Projects hold your files, your voice, your standards across conversations — so every chat isn't starting from zero.</p>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>04 / 24</span></div>
+</section>
+
+<!-- 05 · The Claude-Specific Prompt Moves -->
+<section class="slide cream2" data-label="05 Claude-Specific Prompt Moves">
+  <div class="chrome"><span class="section-tag">Prompt moves</span><span>05 / 24</span></div>
+  <div style="margin-top: 60px;">
+    <div class="eyebrow">Not a prompt alphabet — five moves that punch above their weight</div>
+    <h2 class="slide-title">Five moves that <em>change the output</em>.</h2>
+  </div>
+  <p style="font-size: 24px; line-height: 1.45; max-width: 1700px; margin: 8px 0 16px;">
+    The biggest shift isn&rsquo;t learning prompts &mdash; it&rsquo;s treating Claude as a <strong>thinking partner,</strong> not just an executor. These five moves are how you hold up your end of that conversation.
+  </p>
+  <div class="grid-2" style="gap: 64px; margin-top: 0;">
+    <ol class="numbered" style="gap: 22px;">
+      <li style="font-size: 28px;"><strong>Ask it to ask you.</strong><br/><span style="color: var(--ink-soft); font-size: 22px;">&ldquo;Before you draft, ask me 3 clarifying questions.&rdquo; Claude&rsquo;s best feature is its questions.</span></li>
+      <li style="font-size: 28px;"><strong>Name success criteria.</strong><br/><span style="color: var(--ink-soft); font-size: 22px;">&ldquo;It&rsquo;s good if every activity names an assessment moment.&rdquo; Claude hits what you name.</span></li>
+      <li style="font-size: 28px;"><strong>Ask for pushback.</strong><br/><span style="color: var(--ink-soft); font-size: 22px;">&ldquo;Disagree with me where I&rsquo;m wrong. Point out what I&rsquo;m missing.&rdquo; Overrides its default agreeableness.</span></li>
+      <li style="font-size: 28px;"><strong>Critique, then revise.</strong><br/><span style="color: var(--ink-soft); font-size: 22px;">&ldquo;What&rsquo;s weakest about this draft?&rdquo; &rarr; &ldquo;Now rewrite fixing those.&rdquo; Two-step beats one-shot.</span></li>
+      <li style="font-size: 28px;"><strong>One task per prompt.</strong><br/><span style="color: var(--ink-soft); font-size: 22px;">Focused prompts outperform compound ones. If you&rsquo;re asking for more than one thing, split it.</span></li>
+    </ol>
+    <div class="prompt-box" style="font-size: 21px;">
+<span class="tag">[ROLE]</span> Senior instructional designer.
+<span class="tag">[TASK]</span> Draft a 90-minute workshop outline
+on giving constructive feedback.
+<span class="tag">[AUDIENCE]</span> 20 new frontline managers in
+a healthcare setting. Half have never led
+a direct report.
+<span class="tag">[SUCCESS]</span> Every activity names an
+assessment moment. No lecture block
+longer than 10 minutes.
+<span class="tag">[FORMAT]</span> Table: time · activity ·
+objective · facilitator cue.
+
+<span class="dim">Before you draft, ask me 3 questions.
+Push back where my scope feels off.</span>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>05 / 24</span></div>
+</section>
+
+<!-- 06 · The 3-Use Rule -->
+<section class="slide dark" data-label="06 The 3-Use Rule">
+  <div class="chrome"><span class="section-tag">Principle</span><span>06 / 24</span></div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 1700px;">
+    <div class="eyebrow">Stop retyping the same instructions</div>
+    <h2 class="slide-title" style="font-size: 84px; margin-bottom: 28px;">Every time you type the same instructions twice, <em>you&rsquo;re leaving time on the table.</em></h2>
+    <p style="font-size: 30px; line-height: 1.4; max-width: 1500px; margin: 0 0 56px; opacity: 0.85;">
+      The first time is fine. The second time, save it. By the third time, it should live with Claude &mdash; as a Project or Skill &mdash; so you never type it again.
+    </p>
+    <div class="grid-3" style="gap: 36px;">
+      <div>
+        <div class="mono" style="font-size: 48px; font-weight: 500; color: var(--terra); line-height: 1;">01</div>
+        <div class="serif" style="font-size: 32px; margin-top: 12px;">Prompt</div>
+        <p style="font-size: 22px; line-height: 1.4; margin: 10px 0 0; opacity: 0.78;">You type it out. Useful once.</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size: 48px; font-weight: 500; color: var(--terra); line-height: 1;">02</div>
+        <div class="serif" style="font-size: 32px; margin-top: 12px;">Saved prompt</div>
+        <p style="font-size: 22px; line-height: 1.4; margin: 10px 0 0; opacity: 0.78;">A doc you paste from. Cheap, portable.</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size: 48px; font-weight: 500; color: var(--terra); line-height: 1;">03</div>
+        <div class="serif" style="font-size: 32px; margin-top: 12px;">Project or Skill</div>
+        <p style="font-size: 22px; line-height: 1.4; margin: 10px 0 0; opacity: 0.78;">Lives with Claude. Every chat inherits it.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>06 / 24</span></div>
+</section>
+
+<!-- ═════════════════════════════════════════════════════════════════════════
+     ACT 2 · HOW CLAUDE REMEMBERS YOU (Projects)  |  Slides 7–11  |  ~15 min
+     ═════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 07 · Projects — Claude's Memory -->
+<section class="slide" data-label="07 Projects — Claude's Memory">
+  <div class="chrome"><span class="section-tag">Act Two · Projects</span><span>07 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Stop re-explaining yourself every chat</div>
+    <h2 class="slide-title">Projects: <em>Claude&rsquo;s memory for your work.</em></h2>
+  </div>
+  <div class="grid-2" style="gap: 72px; align-items: start;">
+    <div>
+      <p style="font-size: 28px; line-height: 1.4; margin: 0 0 28px;">
+        A <strong>Project</strong> is a container. Drop in reference files, write instructions once, and every conversation inside that Project starts with all of it already loaded.
+      </p>
+      <ul class="marked" style="gap: 20px;">
+        <li style="font-size: 26px;">One Project per client, course, or recurring workstream</li>
+        <li style="font-size: 26px;">Attach your style guide, competency model, SME transcripts</li>
+        <li style="font-size: 26px;">Every chat inside inherits instructions &amp; context</li>
+        <li style="font-size: 26px;">Come back a month later — Claude remembers</li>
+      </ul>
+      <div class="pro-note" style="margin-top: 32px; max-width: 900px; font-size: 22px;">
+        <span class="label">Free tier</span>
+        Projects work on Free with smaller file and project caps. Pro raises the ceiling.
+      </div>
+      <div class="pro-note" style="margin-top: 16px; max-width: 900px; font-size: 22px;">
+        <span class="label">Pro tip</span>
+        You don&rsquo;t have to do everything in Claude. Use <strong>NotebookLM</strong> for research and source synthesis &mdash; it&rsquo;s free and unlimited. Bring the insights to Claude when you&rsquo;re ready to build.
+      </div>
+    </div>
+    <div style="background: var(--ink); color: var(--paper); padding: 40px; border-radius: 16px; display: flex; flex-direction: column; gap: 18px;">
+      <div class="mono" style="font-size: 16px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra);">Project · Onboarding Redesign</div>
+      <div class="serif" style="font-size: 28px; line-height: 1.2;">Project knowledge</div>
+      <div style="font-size: 18px; line-height: 1.5; opacity: 0.85; display: flex; flex-direction: column; gap: 8px; font-family: var(--mono);">
+        <div>📄  competency-model.pdf</div>
+        <div>📄  brand-voice-guide.md</div>
+        <div>📄  Q3-learner-interviews.docx</div>
+      </div>
+      <div class="hr" style="background: rgba(246,241,231,0.15);"></div>
+      <div class="serif" style="font-size: 24px; line-height: 1.2;">Instructions</div>
+      <div style="font-size: 18px; line-height: 1.5; opacity: 0.85;">
+        You help me redesign onboarding for new clinical managers. Reference the competency model. Plain language. When I ask for MCQs, include distractor rationales by default.
+      </div>
+      <div style="font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--paper); opacity: 0.55; font-family: var(--mono); margin-top: 8px;">3 files · 12 conversations</div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>07 / 24</span></div>
+</section>
+
+<!-- 08 · Project Instructions That Stick -->
+<section class="slide cream2" data-label="08 Project Instructions That Stick">
+  <div class="chrome"><span class="section-tag">Best Practice</span><span>08 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Instructions are where most people under-invest</div>
+    <h2 class="slide-title">Writing instructions <em>that actually stick.</em></h2>
+  </div>
+  <div class="grid-2" style="gap: 56px; margin-top: 10px;">
+    <div>
+      <div class="mono" style="font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px;">Treat it like an SOP</div>
+      <h3 class="serif" style="font-size: 36px; font-weight: 400; margin: 0 0 12px; line-height: 1.15;">Not a spell — a standing order.</h3>
+      <p style="font-size: 22px; line-height: 1.45; margin: 0;">If a new teammate joined your project tomorrow, what would you tell them on Day 1? That&rsquo;s what goes here. Concrete, specific, opinionated.</p>
+    </div>
+    <div>
+      <div class="mono" style="font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px;">Describe the role</div>
+      <h3 class="serif" style="font-size: 36px; font-weight: 400; margin: 0 0 12px; line-height: 1.15;">Who is Claude, for you?</h3>
+      <p style="font-size: 22px; line-height: 1.45; margin: 0;">&ldquo;You are my assessment reviewer.&rdquo; &ldquo;You are the skeptical SME.&rdquo; Name the hat &mdash; it shapes everything.</p>
+    </div>
+    <div>
+      <div class="mono" style="font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px;">Name the non-negotiables</div>
+      <h3 class="serif" style="font-size: 36px; font-weight: 400; margin: 0 0 12px; line-height: 1.15;">What should <em>always</em> happen?</h3>
+      <p style="font-size: 22px; line-height: 1.45; margin: 0;">&ldquo;Always flag jargon.&rdquo; &ldquo;Always include a learner persona.&rdquo; These are the house rules. Write them once, save hours.</p>
+    </div>
+    <div>
+      <div class="mono" style="font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px;">Show your voice</div>
+      <h3 class="serif" style="font-size: 36px; font-weight: 400; margin: 0 0 12px; line-height: 1.15;">Paste a paragraph <em>you wrote.</em></h3>
+      <p style="font-size: 22px; line-height: 1.45; margin: 0;">&ldquo;Match the voice of this sample.&rdquo; A short real example beats a dozen adjectives.</p>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>08 / 24</span></div>
+</section>
+
+<!-- 09 · An Instructions Template -->
+<section class="slide dark" data-label="09 An Instructions Template">
+  <div class="chrome"><span class="section-tag">Template</span><span>09 / 24</span></div>
+  <div style="margin-top: 70px;">
+    <div class="eyebrow">Copy. Fill in. Paste into your Project.</div>
+    <h2 class="slide-title" style="font-size: 64px; margin-bottom: 36px;">A fill-in-the-blank <em>starter.</em></h2>
+  </div>
+  <div class="prompt-box" style="font-size: 18px; line-height: 1.45; max-width: 1700px; padding: 28px 32px;">
+<span class="tag">[ROLE]</span>  You are my <span class="dim">______________</span> for <span class="dim">______________</span>.
+
+<span class="tag">[AUDIENCE]</span>  My learners are <span class="dim">______________</span>. They know <span class="dim">______________</span> but struggle with <span class="dim">______________</span>.
+
+<span class="tag">[ALWAYS DO]</span>
+  • Reference <span class="dim">[the attached file]</span> before you answer.
+  • <span class="dim">______________</span>
+  • <span class="dim">______________</span>
+
+<span class="tag">[NEVER DO]</span>
+  • Don't invent statistics or cite sources I haven't given you.
+  • <span class="dim">______________</span>
+
+<span class="tag">[VOICE]</span>  Match the tone of this sample: <span class="dim">"[paste 3–5 sentences you wrote.]"</span>
+
+<span class="tag">[DEFAULT FORMAT]</span>  Unless I say otherwise, give me <span class="dim">______________</span>.
+  </div>
+  <div style="margin-top: 20px; font-family: var(--mono); font-size: 16px; letter-spacing: 0.06em; color: var(--terra);">
+    → Copy of this template lives in your Take-Home Pack.
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>09 / 24</span></div>
+</section>
+
+<!-- 10 · Claude Instructions & Smart Defaults -->
+<section class="slide" data-label="10 Claude Instructions & Smart Defaults">
+  <div class="chrome"><span class="section-tag">Before You Build</span><span>10 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Two settings worth knowing before your first chat</div>
+    <h2 class="slide-title">Tell Claude who you are &mdash; <em>once.</em></h2>
+  </div>
+  <div class="grid-2" style="gap: 56px; margin-top: 10px;">
+    <div class="tile">
+      <div class="tk">Personal Instructions</div>
+      <h4>Your global defaults.</h4>
+      <p>Settings &rarr; Instructions. Applies to every chat &mdash; not just Projects. Set your role, your preferred format, and how you like to work. Write it once; it&rsquo;s always there.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">Project Instructions</div>
+      <h4>Scoped to one body of work.</h4>
+      <p>Personal = always on. Project = scoped to that workspace. Together, they mean Claude starts every conversation knowing who you are and what you&rsquo;re building &mdash; without you repeating yourself.</p>
+    </div>
+  </div>
+  <div class="pro-note" style="margin-top: 32px; max-width: 1700px; font-size: 22px;">
+    <span class="label">The Go Word</span>
+    Start any session with: <strong>&ldquo;Don&rsquo;t build anything yet. Ask me 3 clarifying questions first. I&rsquo;ll say GO when I&rsquo;m ready.&rdquo;</strong> &mdash; Stops Claude from generating before you&rsquo;ve given it all the context. Saves tokens, saves back-and-forth, gets better output on the first try.
+  </div>
+  <div class="grid-3" style="margin-top: 24px; gap: 20px;">
+    <div style="background: var(--paper-2); padding: 20px 22px; border: 1px solid var(--rule);">
+      <div class="mono" style="font-size: 13px; letter-spacing: 0.1em; color: var(--terra); margin-bottom: 8px;">USAGE TIP 01</div>
+      <p style="font-size: 18px; line-height: 1.4; margin: 0;">Turn off Connectors you aren&rsquo;t actively using &mdash; they consume context.</p>
+    </div>
+    <div style="background: var(--paper-2); padding: 20px 22px; border: 1px solid var(--rule);">
+      <div class="mono" style="font-size: 13px; letter-spacing: 0.1em; color: var(--terra); margin-bottom: 8px;">USAGE TIP 02</div>
+      <p style="font-size: 18px; line-height: 1.4; margin: 0;">Use NotebookLM for research first &mdash; bring the summary to Claude when you&rsquo;re ready to build.</p>
+    </div>
+    <div style="background: var(--paper-2); padding: 20px 22px; border: 1px solid var(--rule);">
+      <div class="mono" style="font-size: 13px; letter-spacing: 0.1em; color: var(--terra); margin-bottom: 8px;">USAGE TIP 03</div>
+      <p style="font-size: 18px; line-height: 1.4; margin: 0;">Be specific about output format and length &mdash; shorter instructions = fewer tokens used.</p>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>10 / 24</span></div>
+</section>
+
+<!-- 11 · Activity 1 -->
+<section class="slide terra" data-label="11 Activity 1 — Set Up a Project + Write a Prompt">
+  <div class="chrome"><span class="section-tag">Hands-on</span><span>11 / 24</span></div>
+  <div class="activity-frame" style="margin-top: 60px;">
+    <div class="activity-left">
+      <div class="kicker" style="color: var(--paper); opacity: 0.85;">Activity 01</div>
+      <div class="ablob" style="color: var(--paper);">01</div>
+      <div class="duration" style="color: var(--paper); opacity: 0.85;">10 minutes</div>
+    </div>
+    <div>
+      <h2 class="slide-title" style="color: var(--paper);">Set up your Project. <em>Write one great prompt.</em></h2>
+      <div class="grid-2" style="gap: 36px; margin-top: 16px;">
+        <div>
+          <div class="mono" style="font-size: 13px; letter-spacing: 0.12em; color: rgba(246,241,231,0.7); margin-bottom: 10px;">STEP 1 — CREATE YOUR PROJECT</div>
+          <ol class="numbered" style="gap: 12px;">
+            <li style="font-size: 22px; color: var(--paper);">Name it after real work you&rsquo;re doing this month.</li>
+            <li style="font-size: 22px; color: var(--paper);">Add 1&ndash;2 files. No files? Grab the samples from the chat.</li>
+            <li style="font-size: 22px; color: var(--paper);">Paste the instructions template. Fill in role + audience.</li>
+          </ol>
+          <div class="mono" style="font-size: 13px; letter-spacing: 0.12em; color: rgba(246,241,231,0.7); margin: 22px 0 10px;">STEP 2 — WRITE YOUR PROMPT</div>
+          <p style="font-size: 22px; color: var(--paper); margin: 0 0 14px; line-height: 1.35;">Use the go word + at least 2 of the 5 moves. Post your prompt in the chat.</p>
+          <div style="background: rgba(0,0,0,0.25); padding: 16px 20px; font-family: var(--mono); font-size: 15px; color: var(--paper); line-height: 1.55; border-left: 3px solid rgba(255,255,255,0.4);">
+            &ldquo;Don&rsquo;t start yet. You are my [role] helping me [task]. Before you begin, ask me 3 questions about [context]. I&rsquo;ll say GO when I&rsquo;m ready.&rdquo;
+          </div>
+        </div>
+        <div>
+          <div class="mono" style="font-size: 13px; letter-spacing: 0.12em; color: rgba(246,241,231,0.7); margin-bottom: 10px;">FIVE MOVES — ONE EXAMPLE EACH</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="background: rgba(255,255,255,0.12); padding: 12px 16px;">
+              <div class="mono" style="font-size: 11px; color: rgba(246,241,231,0.65); margin-bottom: 4px; letter-spacing: 0.1em;">ASK IT TO ASK YOU</div>
+              <div style="font-size: 18px; color: var(--paper);">&ldquo;Before you draft, ask me 3 questions about my learners.&rdquo;</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.12); padding: 12px 16px;">
+              <div class="mono" style="font-size: 11px; color: rgba(246,241,231,0.65); margin-bottom: 4px; letter-spacing: 0.1em;">NAME SUCCESS</div>
+              <div style="font-size: 18px; color: var(--paper);">&ldquo;It&rsquo;s good if every activity includes a reflection question.&rdquo;</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.12); padding: 12px 16px;">
+              <div class="mono" style="font-size: 11px; color: rgba(246,241,231,0.65); margin-bottom: 4px; letter-spacing: 0.1em;">ASK FOR PUSHBACK</div>
+              <div style="font-size: 18px; color: var(--paper);">&ldquo;Disagree with me where my scope is too broad.&rdquo;</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.12); padding: 12px 16px;">
+              <div class="mono" style="font-size: 11px; color: rgba(246,241,231,0.65); margin-bottom: 4px; letter-spacing: 0.1em;">CRITIQUE THEN REVISE</div>
+              <div style="font-size: 18px; color: var(--paper);">&ldquo;What&rsquo;s weakest about this outline?&rdquo; &rarr; &ldquo;Now fix those.&rdquo;</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.12); padding: 12px 16px;">
+              <div class="mono" style="font-size: 11px; color: rgba(246,241,231,0.65); margin-bottom: 4px; letter-spacing: 0.1em;">ONE TASK ONLY</div>
+              <div style="font-size: 18px; color: var(--paper);">&ldquo;Just draft the learning objectives &mdash; not the full outline.&rdquo;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>11 / 24</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ACT 3 · WHAT CLAUDE BUILDS (Artifacts)  |  Slides 12–13  |  ~15 min
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<!-- 12 · Artifacts — Think → Ship -->
+<section class="slide" data-label="12 Artifacts — Think → Ship">
+  <div class="chrome"><span class="section-tag">Act Three · Artifacts</span><span>12 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">The thing Claude does that you didn't know to ask for</div>
+    <h2 class="slide-title">Artifacts: <em>think, then ship.</em></h2>
+  </div>
+  <div class="grid-2" style="gap: 72px; align-items: start;">
+    <div>
+      <p style="font-size: 30px; line-height: 1.4; margin: 0 0 24px;">
+        An <strong>Artifact</strong> is a real, working thing &mdash; not a description of a thing. It appears in a side panel: a document, a web page, a live quiz, a small app. Built <em>inside the chat.</em> Ready to share the moment Claude finishes.
+      </p>
+      <ul class="marked" style="gap: 18px;">
+        <li style="font-size: 26px;">Not a draft to clean up later &mdash; a thing you can use today</li>
+        <li style="font-size: 26px;">Web pages &amp; interactive widgets</li>
+        <li style="font-size: 26px;">Quizzes, games, decision trees</li>
+        <li style="font-size: 26px;">Live previews you can click and edit</li>
+      </ul>
+      <div class="pro-note" style="margin-top: 28px; max-width: 900px; font-size: 20px;">
+        <span class="label">Important to know</span>
+        What Claude builds runs in the browser — no setup required. <strong>Front-end</strong> = the interactive experience (quiz, sim, widget). <strong>Back-end</strong> = saving scores, tracking data, connecting to your LMS. Claude builds the front end. For the back end, you&rsquo;d need a developer or a tool like Zapier. Sharing a conversation sim also requires the recipient to have a Claude account.
+      </div>
+      <div class="pro-note" style="margin-top: 16px; max-width: 900px; font-size: 20px;">
+        <span class="label">Free tier</span>
+        Artifacts are available on the free plan. You can build, share, and come back and edit them.
+      </div>
+    </div>
+
+    <div class="chrome-frame" style="height: 500px;">
+      <div class="topbar">
+        <span class="dot" style="background: #ff6b5b;"></span>
+        <span class="dot" style="background: #ffcf50;"></span>
+        <span class="dot" style="background: #4fc880;"></span>
+        <span class="url">claude.ai &nbsp;&middot;&nbsp; Artifact preview</span>
+      </div>
+      <div class="body" style="background: var(--paper-2); display: flex; flex-direction: column; gap: 18px;">
+        <div class="mono" style="font-size: 12px; letter-spacing: 0.14em; color: var(--terra);">INTERACTIVE QUIZ &middot; PREVIEW</div>
+        <div class="serif" style="font-size: 28px; line-height: 1.15;">Q2. A learner says &ldquo;I already know this.&rdquo; Your first move?</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="background: var(--paper); padding: 14px 18px; border: 1px solid var(--rule); font-size: 18px;">A. Skip ahead to the next module.</div>
+          <div style="background: var(--paper); padding: 14px 18px; border: 1px solid var(--rule); font-size: 18px;">B. Ask them to teach it back in 60 seconds.</div>
+          <div style="background: rgba(196,98,58,0.15); padding: 14px 18px; border: 1.5px solid var(--terra); font-size: 18px;">C. Ask which part they&rsquo;re weakest on.</div>
+          <div style="background: var(--paper); padding: 14px 18px; border: 1px solid var(--rule); font-size: 18px;">D. Give them the assessment now.</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--ink-soft); margin-top: auto;">
+          <span>02 / 05</span><span>Submit &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>12 / 24</span></div>
+</section>
+
+<!-- 13 · Six Artifacts + Activity 02 (merged) -->
+<section class="slide cream2" data-label="13 Activity 2 — Six Artifacts + Build One">
+  <div class="chrome"><span class="section-tag">Act Three · Artifacts</span><span>13 / 24</span></div>
+  <div style="margin-top: 56px;">
+    <div class="eyebrow">Six things you can build today &mdash; pick one for your next 10 minutes</div>
+    <h2 class="slide-title">What this <em>unlocks for you.</em></h2>
+  </div>
+  <div class="grid-3" style="margin-top: 10px; gap: 18px;">
+    <div class="tile" style="padding: 24px 22px;">
+      <div class="tk">Job aids</div>
+      <h4 style="font-size: 26px;">Interactive one-pagers.</h4>
+      <p style="font-size: 17px;">Decision trees, checklists with expanding details, and &ldquo;if this, then that&rdquo; flows &mdash; clickable, not PDF.</p>
+    </div>
+    <div class="tile" style="padding: 24px 22px;">
+      <div class="tk">Self-checks</div>
+      <h4 style="font-size: 26px;">5-question quizzes.</h4>
+      <p style="font-size: 17px;">Branching MCQs with explanations. Drop the link in a Teams channel; no LMS needed.</p>
+    </div>
+    <div class="tile" style="padding: 24px 22px;">
+      <div class="tk">Widgets</div>
+      <h4 style="font-size: 26px;">Calculators &amp; lookups.</h4>
+      <p style="font-size: 17px;">&ldquo;What does this policy mean for my situation?&rdquo; &mdash; a short tool that answers one question well.</p>
+    </div>
+    <div class="tile" style="padding: 24px 22px;">
+      <div class="tk">Simulations</div>
+      <h4 style="font-size: 26px;">Conversation practice.</h4>
+      <p style="font-size: 17px;">Scenario drills where Claude role-plays the difficult employee, customer, or stakeholder.</p>
+    </div>
+    <div class="tile" style="padding: 24px 22px;">
+      <div class="tk">Microsites</div>
+      <h4 style="font-size: 26px;">Single-page courses.</h4>
+      <p style="font-size: 17px;">A short program with modules, quizzes, and a completion screen &mdash; shareable as a link.</p>
+    </div>
+    <div class="tile" style="padding: 24px 22px;">
+      <div class="tk">Games</div>
+      <h4 style="font-size: 26px;">Low-stakes learning games.</h4>
+      <p style="font-size: 17px;">Flashcards, drag-and-drop sorts, memory matching. Surprisingly engaging, surprisingly fast to build.</p>
+    </div>
+  </div>
+  <!-- Activity bar -->
+  <div style="background: var(--terra); color: var(--paper); padding: 20px 32px; margin-top: 14px; display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <div class="mono" style="font-size: 12px; letter-spacing: 0.12em; opacity: 0.8; margin-bottom: 4px;">ACTIVITY 02 &middot; 10 MINUTES</div>
+      <div class="serif" style="font-size: 26px; line-height: 1.2;">Pick one. Build it inside your Project. Post the link in the chat when you&rsquo;re done. First iteration &mdash; don&rsquo;t polish. Ship &amp; react.</div>
+    </div>
+    <div class="mono" style="font-size: 64px; font-weight: 500; opacity: 0.25; line-height: 1; margin-left: 40px;">02</div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free</span><span>13 / 24</span></div>
+</section>
+
+<!-- ═════════════════════════════════════════════════════════════════════════
+     ACT 4 · WHAT CLAUDE CONNECTS TO (Skills + Connectors)  |  Slides 14–16  |  ~8 min
+     ═════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 14 · Skills — Claude's Saved Procedures -->
+<section class="slide" data-label="14 Skills — Claude's Saved Procedures">
+  <div class="chrome"><span class="section-tag">Act Four · Skills</span><span>14 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">The 3-use rule, made permanent</div>
+    <h2 class="slide-title">Skills: <em>procedures Claude runs for you.</em></h2>
+  </div>
+  <div class="grid-2" style="gap: 72px; align-items: start;">
+    <div>
+      <p style="font-size: 28px; line-height: 1.4; margin: 0 0 28px;">
+        A <strong>Skill</strong> is a procedure Claude knows how to run — reliably, the same way, every time. You or Anthropic define it once; Claude uses it automatically when it&rsquo;s relevant.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 18px; margin-top: 10px;">
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+          <div class="mono" style="font-size: 20px; color: var(--terra); min-width: 48px; font-weight: 500;">01</div>
+          <div>
+            <div class="serif" style="font-size: 26px; line-height: 1.2;">Prompts</div>
+            <p style="margin: 4px 0 0; font-size: 20px; color: var(--ink-soft);">Live in one chat. Gone when you close the tab.</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+          <div class="mono" style="font-size: 20px; color: var(--terra); min-width: 48px; font-weight: 500;">02</div>
+          <div>
+            <div class="serif" style="font-size: 26px; line-height: 1.2;">Projects</div>
+            <p style="margin: 4px 0 0; font-size: 20px; color: var(--ink-soft);">Persistent context for one body of work.</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: flex-start; padding: 14px 18px; background: rgba(196,98,58,0.1); border-left: 3px solid var(--terra);">
+          <div class="mono" style="font-size: 20px; color: var(--terra); min-width: 48px; font-weight: 500;">03</div>
+          <div>
+            <div class="serif" style="font-size: 26px; line-height: 1.2;">Skills</div>
+            <p style="margin: 4px 0 0; font-size: 20px; color: var(--ink-soft);">A saved procedure Claude runs across <em>any</em> chat. The recipe lives with Claude &mdash; not in your notes.</p>
+          </div>
+        </div>
+      </div>
+      <div class="pro-note" style="margin-top: 32px; max-width: 900px; font-size: 22px;">
+        <span class="label">New on free tier</span>
+        Anthropic&rsquo;s built-in Skill library is now available on the free plan. You can also create your own &mdash; and find community Skills in shared GitHub repositories. Review what a Skill does before enabling it.
+      </div>
+    </div>
+    <div class="chrome-frame" style="height: 560px;">
+      <div class="topbar">
+        <span class="dot" style="background: #ff6b5b;"></span>
+        <span class="dot" style="background: #ffcf50;"></span>
+        <span class="dot" style="background: #4fc880;"></span>
+        <span class="url">claude.ai &nbsp;&middot;&nbsp; Settings › Skills</span>
+      </div>
+      <div class="body" style="background: var(--paper-2); display: flex; flex-direction: column; gap: 12px; padding: 22px;">
+        <div class="mono" style="font-size: 12px; letter-spacing: 0.14em; color: var(--terra); margin-bottom: 6px;">BUILT-IN SKILLS</div>
+        <div class="skill-row" style="padding: 14px 18px;">
+          <div class="icon" style="width: 44px; height: 44px; font-size: 22px;">📄</div>
+          <div><h5 style="font-size: 20px;">Word / PowerPoint / PDF</h5><p style="font-size: 15px;">Create, edit, and export real Office documents and PDFs.</p></div>
+          <div class="toggle" style="width: 42px; height: 24px;"></div>
+        </div>
+        <div class="skill-row" style="padding: 14px 18px;">
+          <div class="icon" style="width: 44px; height: 44px; font-size: 22px;">📊</div>
+          <div><h5 style="font-size: 20px;">Excel / Data Analysis</h5><p style="font-size: 15px;">Read spreadsheets, build charts, summarize patterns.</p></div>
+          <div class="toggle" style="width: 42px; height: 24px;"></div>
+        </div>
+        <div class="skill-row off" style="padding: 14px 18px;">
+          <div class="icon" style="width: 44px; height: 44px; font-size: 22px;">🎨</div>
+          <div><h5 style="font-size: 20px;">Claude Designer</h5><p style="font-size: 15px;">Visual design via Canva partnership. Full features on Max plan.</p></div>
+          <div class="toggle" style="width: 42px; height: 24px;"></div>
+        </div>
+        <div class="skill-row off" style="padding: 14px 18px;">
+          <div class="icon" style="width: 44px; height: 44px; font-size: 22px;">+</div>
+          <div><h5 style="font-size: 20px;">Create your own</h5><p style="font-size: 15px;">Describe a procedure; Claude does it every time.</p></div>
+          <div class="toggle" style="width: 42px; height: 24px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>14 / 24</span></div>
+</section>
+
+<!-- 15 · Connectors -->
+<section class="slide cream2" data-label="15 Connectors — Bring Your Tools In">
+  <div class="chrome"><span class="section-tag">Act Four · Connectors</span><span>15 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Claude doesn't have to be a silo</div>
+    <h2 class="slide-title">Connectors: <em>bring your tools in.</em></h2>
+  </div>
+  <div class="grid-2" style="gap: 64px; align-items: start; margin-top: 10px;">
+    <div>
+      <p style="font-size: 26px; line-height: 1.4; margin: 0 0 28px;">
+        A <strong>Connector</strong> lets Claude read from or write to another tool you already use. One is <strong>free &amp; the demo today:</strong>
+      </p>
+      <div style="background: var(--paper); border: 2px solid var(--terra); padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+        <div class="mono" style="font-size: 14px; letter-spacing: 0.14em; color: var(--terra);">FEATURED &middot; FREE</div>
+        <h3 class="serif" style="font-size: 36px; font-weight: 400; margin: 0; line-height: 1.1;">Canva.</h3>
+        <p style="font-size: 20px; margin: 0; color: var(--ink-soft); line-height: 1.4;">Tell Claude what you want; it builds, edits, and pushes real designs into your Canva account. For an L&amp;D team that lives in Canva &mdash; this is the one.</p>
+        <div class="mono" style="font-size: 13px; letter-spacing: 0.1em; color: var(--terra); margin-top: 4px;">&rarr; LIVE DEMO IN 2 MIN</div>
+      </div>
+      <p style="font-size: 22px; line-height: 1.4; margin: 28px 0 0; color: var(--ink-soft);">
+        Plus a growing library of others &mdash; a mix of free and paid-tier. Worth browsing once you&rsquo;re past the basics.
+      </p>
+    </div>
+    <div>
+      <div class="mono" style="font-size: 14px; letter-spacing: 0.14em; color: var(--terra); margin-bottom: 14px;">A TASTE OF THE LIBRARY</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="conn-pill featured"><span class="sq"></span>Canva</div>
+        <div class="conn-pill"><span class="sq"></span>Google Drive</div>
+        <div class="conn-pill"><span class="sq"></span>Notion</div>
+        <div class="conn-pill"><span class="sq"></span>Slack</div>
+        <div class="conn-pill"><span class="sq"></span>Gmail</div>
+        <div class="conn-pill"><span class="sq"></span>Google Calendar</div>
+        <div class="conn-pill"><span class="sq"></span>GitHub</div>
+        <div class="conn-pill"><span class="sq"></span>Asana</div>
+        <div class="conn-pill"><span class="sq"></span>Linear</div>
+        <div class="conn-pill"><span class="sq"></span>Jira</div>
+        <div class="conn-pill"><span class="sq"></span>Zapier</div>
+        <div class="conn-pill"><span class="sq" style="background: var(--paper-3);"></span><span style="color: var(--ink-soft);">&hellip; and dozens more</span></div>
+      </div>
+      <p style="font-size: 18px; line-height: 1.4; margin: 24px 0 0; color: var(--ink-soft);">
+        Availability and free-tier access varies by connector. Check Settings &rsaquo; Connectors to see what&rsquo;s on for you.
+      </p>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>15 / 24</span></div>
+</section>
+
+<!-- 16 · Canva Demo — in the moment -->
+<section class="slide dark" data-label="16 Canva Demo">
+  <div class="chrome"><span class="section-tag">Live</span><span>16 / 24</span></div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div class="eyebrow">Switching to my screen</div>
+    <h2 class="slide-title" style="font-size: 96px;">Canva, live.</h2>
+    <p style="font-size: 32px; line-height: 1.35; max-width: 1500px; margin: 20px 0 48px; opacity: 0.85;">
+      I&rsquo;ll ask Claude to turn a learning objective into a one-page Canva asset &mdash; and we&rsquo;ll watch it happen. Watch for <em style="color: var(--terra); font-style: italic;">what I don&rsquo;t have to do</em>.
+    </p>
+    <div class="grid-3" style="gap: 28px;">
+      <div style="border: 1px solid rgba(246,241,231,0.2); padding: 22px;">
+        <div class="mono" style="font-size: 14px; letter-spacing: 0.12em; color: var(--terra); margin-bottom: 8px;">WATCH FOR</div>
+        <div class="serif" style="font-size: 22px; line-height: 1.2;">No tab-switching.</div>
+      </div>
+      <div style="border: 1px solid rgba(246,241,231,0.2); padding: 22px;">
+        <div class="mono" style="font-size: 14px; letter-spacing: 0.12em; color: var(--terra); margin-bottom: 8px;">WATCH FOR</div>
+        <div class="serif" style="font-size: 22px; line-height: 1.2;">I edit with words, not clicks.</div>
+      </div>
+      <div style="border: 1px solid rgba(246,241,231,0.2); padding: 22px;">
+        <div class="mono" style="font-size: 14px; letter-spacing: 0.12em; color: var(--terra); margin-bottom: 8px;">WATCH FOR</div>
+        <div class="serif" style="font-size: 22px; line-height: 1.2;">The final file lands in <em>my</em> Canva account.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; canva connector &middot; free</span><span>16 / 24</span></div>
+</section>
+
+<!-- ═════════════════════════════════════════════════════════════════════════
+     ACT 5 · THE NEW THING + REAL TALK  |  Slides 17–20  |  ~5 min
+     ═════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 17 · Claude Designer — Pay Attention to This -->
+<section class="slide" data-label="17 Claude Designer">
+  <div class="chrome"><span class="section-tag">Act Five · What's New</span><span>17 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Dropped a few days ago. You should know about it.</div>
+    <h2 class="slide-title">Claude Designer &mdash; <em>pay attention to this.</em></h2>
+  </div>
+  <div class="grid-2" style="gap: 64px; align-items: start; margin-top: 10px;">
+    <div>
+      <p style="font-size: 26px; line-height: 1.4; margin: 0 0 24px;">
+        A new Claude capability, in partnership with <strong>Canva</strong>, that turns a conversation into polished, on-brand visual design. Slides. Posters. Social assets. Print.
+      </p>
+      <ul class="marked" style="gap: 16px;">
+        <li style="font-size: 22px;">Describe what you need &mdash; Claude designs it</li>
+        <li style="font-size: 22px;">Iterate in plain language, not layer panels</li>
+        <li style="font-size: 22px;">Files land in your Canva account, editable</li>
+        <li style="font-size: 22px;">Brand kits &amp; templates work out of the box</li>
+      </ul>
+      <div class="pro-note" style="margin-top: 28px; max-width: 900px; font-size: 21px;">
+        <span class="label">Why it matters for L&amp;D</span>
+        For e-authoring, visual job aids, and campaign graphics &mdash; this reframes what a small team can produce. Worth watching closely even if you don&rsquo;t touch it today.
+      </div>
+      <div class="pro-note" style="margin-top: 16px; max-width: 900px; font-size: 21px; border-left: 3px solid var(--terra);">
+        <span class="label">Heads up on access</span>
+        Claude Designer is extremely limited on the free and Pro plans. Full functionality requires a <strong>Max plan or higher</strong>. Worth exploring &mdash; but set expectations before you pilot it with your team.
+      </div>
+    </div>
+    <div style="display: grid; grid-template-rows: 1fr 1fr; gap: 16px; height: 540px;">
+      <div class="screen-ph">
+        Screenshot 01 &mdash; Claude Designer home<br/>
+        <span style="opacity: 0.6;">[facilitator to drop in]</span>
+      </div>
+      <div class="screen-ph">
+        Screenshot 02 &mdash; A generated slide deck<br/>
+        <span style="opacity: 0.6;">[facilitator to drop in]</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; claude designer</span><span>17 / 24</span></div>
+</section>
+
+<!-- 18 · Claude Designer for L&D -->
+<section class="slide cream2" data-label="18 Claude Designer for L&D">
+  <div class="chrome"><span class="section-tag">Implications</span><span>18 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">If you take nothing else from this hour — take this</div>
+    <h2 class="slide-title">This <em>replaces</em> several tools you use now.</h2>
+  </div>
+  <div class="grid-3" style="margin-top: 10px; gap: 28px;">
+    <div class="tile">
+      <div class="tk">01</div>
+      <h4>E-authoring, simplified.</h4>
+      <p>Articulate, Rise, Vyond &mdash; a chunk of what they do becomes a conversation. Not everything. But enough to notice.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">02</div>
+      <h4>The visual designer bottleneck.</h4>
+      <p>You stop waiting in a queue for a one-pager or a social asset. You describe it; it exists.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">03</div>
+      <h4>Iteration cost drops.</h4>
+      <p>&ldquo;Make it more somber.&rdquo; &ldquo;Use the client&rsquo;s brand.&rdquo; &ldquo;Swap this photo.&rdquo; &mdash; minutes, not meetings.</p>
+    </div>
+  </div>
+  <div class="pro-note" style="margin-top: 56px; max-width: 1700px; font-size: 24px;">
+    <span class="label">My honest take</span>
+    I&rsquo;ve explored this <em>just enough</em> to know it&rsquo;s important. I&rsquo;m not selling you a workflow I&rsquo;ve mastered &mdash; I&rsquo;m telling you to watch it closely, try it, and form your own opinion before your procurement committee does.
+  </div>
+  <div class="footer"><span>claude.ai &middot; claude designer</span><span>18 / 24</span></div>
+</section>
+
+<!-- 19 · What Claude Gets Wrong -->
+<section class="slide dark" data-label="19 What Claude Gets Wrong">
+  <div class="chrome"><span class="section-tag">Real Talk</span><span>19 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">The parts they don't put in the ad</div>
+    <h2 class="slide-title">What Claude <em>gets wrong.</em></h2>
+  </div>
+  <div class="grid-3" style="margin-top: 10px; gap: 28px;">
+    <div class="tile">
+      <div class="tk">01</div>
+      <h4>Citations &amp; specifics.</h4>
+      <p>It will invent a plausible-sounding source. Verify every stat, every study, every regulation against a primary source.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">02</div>
+      <h4>Your context.</h4>
+      <p>It doesn&rsquo;t know your org, your learners, or your politics. You have to tell it. Every time, until you save it.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">03</div>
+      <h4>Recency.</h4>
+      <p>Its training has a cutoff. For anything that changed this quarter, paste the source in &mdash; don&rsquo;t ask it to remember.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">04</div>
+      <h4>Deep subject-matter judgment.</h4>
+      <p>It drafts like a smart generalist. For nuance &mdash; compliance, clinical, legal &mdash; you&rsquo;re still the SME.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">05</div>
+      <h4>Agreeableness.</h4>
+      <p>Default mode is &ldquo;helpful.&rdquo; Tell it to push back, or it&rsquo;ll validate a wobbly idea.</p>
+    </div>
+    <div class="tile">
+      <div class="tk">06</div>
+      <h4>Your learners.</h4>
+      <p>It models a generic professional. A real learner is messier, more specific, and more interesting. Keep them in the loop.</p>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>19 / 24</span></div>
+</section>
+
+<!-- 20 · Responsible Use -->
+<section class="slide" data-label="20 Responsible Use">
+  <div class="chrome"><span class="section-tag">Guardrails</span><span>20 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Three guardrails, non-negotiable</div>
+    <h2 class="slide-title">Responsible use, <em>in L&amp;D.</em></h2>
+  </div>
+  <div class="grid-3" style="margin-top: 10px; gap: 32px;">
+    <div class="card">
+      <div class="card-eyebrow">01 &middot; Data</div>
+      <h3>Don&rsquo;t paste what you wouldn&rsquo;t email.</h3>
+      <p>No PII. No salaries. No identifying performance data. Treat the chat box like an outgoing message to a vendor. Check your AI policy &mdash; assume one is coming if there isn&rsquo;t.</p>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">02 &middot; Attribution</div>
+      <h3>You are the author.</h3>
+      <p>Claude drafts. You decide. Your name goes on the deliverable &mdash; and so does the responsibility for what it says. Be transparent with learners when AI helped produce content.</p>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">03 &middot; Judgment</div>
+      <h3>Verify before you ship.</h3>
+      <p>Anything a learner will cite &mdash; statistics, regulations, case studies &mdash; gets checked against a primary source. Every time. No exceptions.</p>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>20 / 24</span></div>
+</section>
+
+<!-- ═════════════════════════════════════════════════════════════════════════
+     ACT 6 · YOUR TURN  |  Slides 21–24
+     ═════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 21 · My Practice — Explorer, Not Guru -->
+<section class="slide cream2" data-label="21 My Practice — Explorer, Not Guru">
+  <div class="chrome"><span class="section-tag">My Practice</span><span>21 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">What I've actually built — on the Pro plan, no agents</div>
+    <h2 class="slide-title">Explorer, <em>not guru.</em></h2>
+  </div>
+  <p style="font-size: 26px; line-height: 1.4; max-width: 1700px; margin: 0 0 32px;">
+    I&rsquo;ve been taking my time &mdash; deliberately. No agents. No Cowork. No Max plan. Just Pro and a willingness to try. Six things I&rsquo;ve actually shipped:
+  </p>
+  <div class="grid-3" style="gap: 20px;">
+    <div class="practice-card">
+      <div class="num">01</div>
+      <h5>Ideas &rarr; Notion pipeline.</h5>
+      <p>A workflow that captures ideas from my Claude chats and lands them as rows in a Notion database &mdash; so nothing good gets lost in a transcript.</p>
+    </div>
+    <div class="practice-card">
+      <div class="num">02</div>
+      <h5>Self-documenting projects.</h5>
+      <p>Every project I run lives in Notion &mdash; and I haven&rsquo;t written the documentation. Claude builds and updates the project pages for me.</p>
+    </div>
+    <div class="practice-card">
+      <div class="num">03</div>
+      <h5>Small-business websites.</h5>
+      <p>Real sites, real clients, in production. Built with Claude Code as a VS Code extension &mdash; no terminal required.</p>
+    </div>
+    <div class="practice-card">
+      <div class="num">04</div>
+      <h5>Coloring book generator.</h5>
+      <p>Submit an idea; get an entire printable coloring book back. End-to-end, from concept to PDF.</p>
+    </div>
+    <div class="practice-card">
+      <div class="num">05</div>
+      <h5>Curated YouTube player.</h5>
+      <p>A site that embeds and organizes hand-picked YouTube videos in a custom player &mdash; my own little watch-list shaped like a tool.</p>
+    </div>
+    <div class="practice-card" style="background: rgba(196,98,58,0.08); border-color: var(--terra);">
+      <div class="num" style="color: var(--terra);">06</div>
+      <h5>What I <em style="color: var(--terra);">haven&rsquo;t</em> done.</h5>
+      <p>Agents. Skills at scale. Claude Desktop. The &ldquo;full steam ahead&rdquo; stuff. I&rsquo;m not rushing. Neither should you.</p>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; pro</span><span>21 / 24</span></div>
+</section>
+
+<!-- 22 · Your 7-Day Plan -->
+<section class="slide" data-label="22 Your 7-Day Plan">
+  <div class="chrome"><span class="section-tag">Start here</span><span>22 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Small commitments. Compound returns.</div>
+    <h2 class="slide-title">Your <em>7-day</em> plan.</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px; margin-top: 10px;">
+    <div class="tile" style="padding: 22px 20px;">
+      <div class="tk">Day 1</div>
+      <h4 style="font-size: 22px;">Ship the Artifact you built today.</h4>
+      <p style="font-size: 15px;">Share it with one teammate. Watch them use it.</p>
+    </div>
+    <div class="tile" style="padding: 22px 20px;">
+      <div class="tk">Day 2</div>
+      <h4 style="font-size: 22px;">Add files to your Project.</h4>
+      <p style="font-size: 15px;">Style guide, one reference doc. Re-run the same ask.</p>
+    </div>
+    <div class="tile" style="padding: 22px 20px;">
+      <div class="tk">Day 3</div>
+      <h4 style="font-size: 22px;">Turn on Canva.</h4>
+      <p style="font-size: 15px;">One asset, start to finish, through Claude only.</p>
+    </div>
+    <div class="tile" style="padding: 22px 20px;">
+      <div class="tk">Day 4</div>
+      <h4 style="font-size: 22px;">Run a critique-revise.</h4>
+      <p style="font-size: 15px;">Take a real draft. &ldquo;What&rsquo;s weakest?&rdquo; &rarr; revise.</p>
+    </div>
+    <div class="tile" style="padding: 22px 20px;">
+      <div class="tk">Day 5</div>
+      <h4 style="font-size: 22px;">Try one built-in Skill.</h4>
+      <p style="font-size: 15px;">Settings &rarr; Skills. Pick one. Use it on real work.</p>
+    </div>
+    <div class="tile" style="padding: 22px 20px;">
+      <div class="tk">Day 6</div>
+      <h4 style="font-size: 22px;">Play with Claude Designer.</h4>
+      <p style="font-size: 15px;">10 minutes. Form your own opinion. That&rsquo;s it.</p>
+    </div>
+    <div class="tile" style="padding: 22px 20px; background: rgba(196,98,58,0.1); border-color: var(--terra);">
+      <div class="tk">Day 7</div>
+      <h4 style="font-size: 22px;">Teach it to someone.</h4>
+      <p style="font-size: 15px;">20 minutes, one colleague. Teaching is how it sticks.</p>
+    </div>
+  </div>
+  <div class="pro-note" style="margin-top: 56px; max-width: 1700px; font-size: 22px;">
+    <span class="label">The one habit worth stealing</span>
+    Typed the same instructions three times? Save them &mdash; as a Project, a Skill, or a pasted template. That&rsquo;s where the leverage lives.
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>22 / 24</span></div>
+</section>
+
+<!-- 23 · What's in Your Take-Home Pack -->
+<section class="slide dark" data-label="23 Your Take-Home Pack">
+  <div class="chrome"><span class="section-tag">Take-home</span><span>23 / 24</span></div>
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Everything you need to keep going after today</div>
+    <h2 class="slide-title">What&rsquo;s <em>in your Take-Home Pack.</em></h2>
+  </div>
+  <div class="grid-2" style="gap: 64px; align-items: start;">
+    <div>
+      <ol class="numbered" style="gap: 22px;">
+        <li style="font-size: 26px;"><strong>12 ready-to-paste prompts.</strong><br/><span style="opacity: 0.75; font-size: 20px;">For assessments, feedback, SME conversations, microlearning.</span></li>
+        <li style="font-size: 26px;"><strong>Project Instructions template.</strong><br/><span style="opacity: 0.75; font-size: 20px;">The fill-in-the-blank starter from slide 9, ready to copy.</span></li>
+        <li style="font-size: 26px;"><strong>Six Artifact starter prompts.</strong><br/><span style="opacity: 0.75; font-size: 20px;">One copy-paste prompt for each artifact type, with connector enhancement tips.</span></li>
+        <li style="font-size: 26px;"><strong>20 + 20 idea lists.</strong><br/><span style="opacity: 0.75; font-size: 20px;">20 quick-ship ideas for L&amp;D work (mapped to ADDIE) + 20 for your personal productivity.</span></li>
+        <li style="font-size: 26px;"><strong>7-day challenge + habits.</strong><br/><span style="opacity: 0.75; font-size: 20px;">The plan from the last slide, trackable. Ten habits that compound quietly.</span></li>
+      </ol>
+    </div>
+    <div>
+      <div style="background: var(--terra); color: var(--paper); padding: 32px; margin-bottom: 24px;">
+        <div class="mono" style="font-size: 14px; letter-spacing: 0.14em; margin-bottom: 10px; opacity: 0.85;">BONUS APPENDIX</div>
+        <h3 class="serif" style="font-size: 38px; font-weight: 400; margin: 0 0 12px; line-height: 1.1;">Getting started with Claude Code &mdash; for the curious.</h3>
+        <p style="font-size: 20px; line-height: 1.4; margin: 0; opacity: 0.92;">
+          My exact setup: Claude Code as a VS Code extension. No terminal. The same way I build the websites. Tell Claude what you want to accomplish &mdash; let it walk you through the rest.
+        </p>
+      </div>
+      <div style="border: 1px solid rgba(246,241,231,0.2); padding: 28px;">
+        <div class="mono" style="font-size: 14px; letter-spacing: 0.14em; color: var(--terra); margin-bottom: 10px;">PRE-WORK GUIDE</div>
+        <h3 class="serif" style="font-size: 30px; font-weight: 400; margin: 0 0 10px; line-height: 1.15;">Already in your inbox.</h3>
+        <p style="font-size: 18px; line-height: 1.45; margin: 0; opacity: 0.82;">Account setup, Project checklist, and the pre-workshop reading &mdash; sent the week before so we spent the hour on the good stuff.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>claude.ai &middot; free &amp; pro</span><span>23 / 24</span></div>
+</section>
+
+<!-- 24 · Questions -->
+<section class="slide terra" data-label="24 Questions">
+  <div class="chrome"><span class="section-tag">Close</span><span>24 / 24</span></div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 1700px;">
+    <div class="eyebrow" style="color: var(--paper); opacity: 0.9;">Your questions. My honest answers.</div>
+    <h1 class="title" style="font-size: 200px; color: var(--paper);">What&rsquo;s <em style="color: var(--paper); font-style: italic; text-decoration: underline; text-decoration-thickness: 6px; text-underline-offset: 18px;">on your mind?</em></h1>
+    <p style="font-size: 32px; line-height: 1.35; margin: 40px 0 0; max-width: 1400px; color: var(--paper); opacity: 0.9;">
+      Including the ones I don&rsquo;t know the answer to. Especially those.
+    </p>
+    <div style="margin-top: 80px; display: flex; gap: 64px; align-items: baseline; flex-wrap: wrap;">
+      <div>
+        <div class="mono" style="font-size: 16px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; color: var(--paper); margin-bottom: 8px;">Find me after</div>
+        <div class="serif" style="font-size: 26px; color: var(--paper);">Tamara Thomas &middot; Principal, L&amp;D &middot; Westlake Corporation</div>
+        <div class="serif" style="font-size: 20px; color: var(--paper); opacity: 0.85; margin-top: 6px;">tthomas1@westlake.com &nbsp;&middot;&nbsp; tamara_thomas@live.com</div>
+        <div class="serif" style="font-size: 18px; color: var(--paper); opacity: 0.65; margin-top: 4px;">linkedin.com/in/[UPDATE BEFORE SESSION]</div>
+      </div>
+      <div>
+        <div class="mono" style="font-size: 16px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; color: var(--paper); margin-bottom: 8px;">Take-Home Pack</div>
+        <div class="serif" style="font-size: 28px; color: var(--paper);">Sent tonight.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span style="color: var(--paper); opacity: 0.7;">ATD Houston &middot; L&amp;D SIG</span><span style="color: var(--paper); opacity: 0.7;">Thank you &middot; 24 / 24</span></div>
+</section>
+
+</deck-stage>
+</body>
+</html>

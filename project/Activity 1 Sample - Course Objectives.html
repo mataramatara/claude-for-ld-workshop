@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Sample Course Objectives — Activity 1 Starter File</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  html, body { background: var(--paper); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 72px 56px 100px;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .banner {
+    background: var(--terra);
+    color: var(--paper);
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    display: inline-block;
+    border-radius: 3px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin: 0 0 40px;
+    line-height: 1.45;
+  }
+  .meta-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .meta-cell {
+    padding: 16px 18px;
+    border: 1px solid var(--rule);
+  }
+  .meta-cell .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .meta-cell .value {
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    margin: 36px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin: 28px 0 10px;
+  }
+  p { margin: 0 0 14px; }
+  .obj-card {
+    border: 1px solid var(--rule);
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .obj-num {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--terra);
+    line-height: 1;
+    padding-top: 4px;
+  }
+  .obj-text {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 6px;
+  }
+  .obj-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .obj-meta span { padding: 2px 6px; background: var(--paper-2); border-radius: 2px; }
+  .terminal-obj {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 22px 26px;
+    margin: 28px 0 0;
+  }
+  .terminal-obj .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--paper);
+    opacity: 0.6;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .terminal-obj .text {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+  .note {
+    background: var(--paper-2);
+    border-left: 3px solid var(--terra);
+    padding: 14px 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 24px 0;
+    color: var(--ink-soft);
+  }
+  .note strong { color: var(--ink); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 16px 0 28px;
+  }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  td {
+    padding: 12px 12px;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    line-height: 1.45;
+  }
+  tr:nth-child(even) td { background: var(--paper-2); }
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 0.07em;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">Activity 1 Sample File — Drop into your Claude Project</div>
+
+<h1>Course Learning Objectives</h1>
+<p class="lede">Terminal and enabling objectives for a manager development program. Drop this into your Claude Project so every output is anchored to measurable outcomes.</p>
+
+<div class="meta-row">
+  <div class="meta-cell">
+    <span class="label">Program</span>
+    <span class="value">Leading with Clarity: A Manager Essentials Series</span>
+  </div>
+  <div class="meta-cell">
+    <span class="label">Audience</span>
+    <span class="value">First-year people managers, individual contributor promotions</span>
+  </div>
+  <div class="meta-cell">
+    <span class="label">Format · Duration</span>
+    <span class="value">4-module blended program · 8 hours total · 90-day arc</span>
+  </div>
+</div>
+
+<!-- TERMINAL OBJECTIVE -->
+<div class="terminal-obj">
+  <span class="label">Terminal Objective — The whole program</span>
+  <div class="text">By the end of this program, participants will be able to manage the day-to-day performance and development of a direct report team using structured feedback, coaching conversations, and clear expectations — demonstrating measurable improvement in team engagement scores and direct report performance within 90 days.</div>
+</div>
+
+<!-- MODULE 1 -->
+<h2>Module 1 — Setting Clear Expectations</h2>
+<p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 20px;">Duration: 90 minutes · Format: Instructor-led workshop · Assessment: Role-play with observer feedback</p>
+
+<h3>Enabling Objectives</h3>
+
+<div class="obj-card">
+  <div class="obj-num">1.1</div>
+  <div>
+    <p class="obj-text">Given a new or shifting project, participants will be able to write a clear expectations brief that specifies deliverables, standards, timeline, and decision authority — in 30 minutes or fewer.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Apply</span>
+      <span>Method: Job aid + practice</span>
+      <span>Assessment: Brief review + peer critique</span>
+    </div>
+  </div>
+</div>
+
+<div class="obj-card">
+  <div class="obj-num">1.2</div>
+  <div>
+    <p class="obj-text">Participants will be able to distinguish between an ambiguous expectation and a clear one, identifying at least 3 gaps in a provided example brief before revision.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Analyze</span>
+      <span>Method: Case study</span>
+      <span>Assessment: Gap-identification exercise</span>
+    </div>
+  </div>
+</div>
+
+<div class="obj-card">
+  <div class="obj-num">1.3</div>
+  <div>
+    <p class="obj-text">Participants will be able to deliver an expectations conversation using a structured format (context → deliverable → standard → check for understanding) in a role-play scenario rated as "clear" by the observer.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Apply</span>
+      <span>Method: Observed role-play</span>
+      <span>Assessment: Observer checklist</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODULE 2 -->
+<h2>Module 2 — Delivering Effective Feedback</h2>
+<p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 20px;">Duration: 2 hours · Format: Blended (30-min async pre-work + 90-min live session) · Assessment: Observed feedback conversation</p>
+
+<h3>Enabling Objectives</h3>
+
+<div class="obj-card">
+  <div class="obj-num">2.1</div>
+  <div>
+    <p class="obj-text">Participants will be able to construct a feedback statement using the SBI model (Situation–Behavior–Impact) for both positive and developmental feedback scenarios, with specific behavioral evidence.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Apply</span>
+      <span>Method: Model practice + cases</span>
+      <span>Assessment: Written feedback drafts</span>
+    </div>
+  </div>
+</div>
+
+<div class="obj-card">
+  <div class="obj-num">2.2</div>
+  <div>
+    <p class="obj-text">Participants will be able to identify and correct 4 common feedback errors (vague language, judgment instead of behavior, sandwich framing, no follow-up) when reviewing sample feedback transcripts.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Evaluate</span>
+      <span>Method: Transcript critique</span>
+      <span>Assessment: Error identification exercise</span>
+    </div>
+  </div>
+</div>
+
+<div class="obj-card">
+  <div class="obj-num">2.3</div>
+  <div>
+    <p class="obj-text">In a live role-play, participants will be able to deliver a developmental feedback conversation that includes an SBI statement, an invitation for the direct report to respond, and a mutually agreed next step.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Apply</span>
+      <span>Method: Live role-play</span>
+      <span>Assessment: Observer rubric + self-assessment</span>
+    </div>
+  </div>
+</div>
+
+<div class="obj-card">
+  <div class="obj-num">2.4</div>
+  <div>
+    <p class="obj-text">Participants will be able to explain why delivering positive feedback with specificity improves retention and performance, citing at least one mechanism from the session content.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Explain</span>
+      <span>Method: Discussion</span>
+      <span>Assessment: Post-discussion reflection prompt</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODULE 3 -->
+<h2>Module 3 — Coaching Through Performance Gaps</h2>
+<p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 20px;">Duration: 2.5 hours · Format: Instructor-led + simulation · Assessment: Coaching conversation simulation</p>
+
+<h3>Enabling Objectives</h3>
+
+<div class="obj-card">
+  <div class="obj-num">3.1</div>
+  <div>
+    <p class="obj-text">Participants will be able to distinguish between a performance issue that warrants coaching and one that warrants a direct instruction or corrective action, given 5 scenario descriptions.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Analyze</span>
+      <span>Method: Scenario sort</span>
+      <span>Assessment: Decision accuracy (4 of 5 correct)</span>
+    </div>
+  </div>
+</div>
+
+<div class="obj-card">
+  <div class="obj-num">3.2</div>
+  <div>
+    <p class="obj-text">Participants will be able to conduct a 10-minute coaching conversation using a structured framework (clarify the gap → explore root cause → identify options → commit to action), without redirecting to "here's what I would do."</p>
+    <div class="obj-meta">
+      <span>Bloom's: Apply</span>
+      <span>Method: Coaching simulation</span>
+      <span>Assessment: Observer checklist + self-rating</span>
+    </div>
+  </div>
+</div>
+
+<div class="obj-card">
+  <div class="obj-num">3.3</div>
+  <div>
+    <p class="obj-text">Participants will be able to prepare for a "below expectations" performance conversation, including documentation of the pattern, a draft of the conversation opening, and a proposed follow-up plan.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Apply</span>
+      <span>Method: Prep exercise + peer review</span>
+      <span>Assessment: Preparation checklist review</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODULE 4 -->
+<h2>Module 4 — Building the Habit: 30-Day Practice Plan</h2>
+<p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 20px;">Duration: 2 hours · Format: Action planning workshop + 30-day check-in structure · Assessment: 30-day behavior self-report</p>
+
+<h3>Enabling Objectives</h3>
+
+<div class="obj-card">
+  <div class="obj-num">4.1</div>
+  <div>
+    <p class="obj-text">Participants will be able to build a personal 30-day practice plan that identifies 3 specific manager behaviors to build, the situations they'll practice them in, and a tracking method that takes fewer than 5 minutes per week.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Create</span>
+      <span>Method: Action planning workshop</span>
+      <span>Assessment: Plan review by facilitator</span>
+    </div>
+  </div>
+</div>
+
+<div class="obj-card">
+  <div class="obj-num">4.2</div>
+  <div>
+    <p class="obj-text">Participants will be able to identify 2 accountability structures (a peer manager, a mentor, a check-in cadence) that will support their practice over the 30-day period.</p>
+    <div class="obj-meta">
+      <span>Bloom's: Apply</span>
+      <span>Method: Partner matching activity</span>
+      <span>Assessment: Accountability commitments sheet</span>
+    </div>
+  </div>
+</div>
+
+<!-- ASSESSMENT SUMMARY -->
+<h2>Assessment Summary</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Module</th>
+      <th>Assessment Method</th>
+      <th>Passing Standard</th>
+      <th>Evaluator</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1 — Setting Expectations</td>
+      <td>Expectations brief + observed role-play</td>
+      <td>Observer rates conversation as "clear" on 3 of 4 criteria</td>
+      <td>Peer observer + facilitator</td>
+    </tr>
+    <tr>
+      <td>2 — Delivering Feedback</td>
+      <td>Written feedback drafts + live role-play</td>
+      <td>SBI model correctly applied; observer rubric score ≥ 3/4</td>
+      <td>Facilitator + peer</td>
+    </tr>
+    <tr>
+      <td>3 — Coaching</td>
+      <td>Scenario sort + coaching simulation</td>
+      <td>Scenario sort: 4 of 5 correct; simulation: no redirecting to advice</td>
+      <td>Facilitator</td>
+    </tr>
+    <tr>
+      <td>4 — Practice Plan</td>
+      <td>30-day plan + accountability commitments</td>
+      <td>Plan includes 3 behaviors, 3 situations, and a tracking method</td>
+      <td>Facilitator review</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Note for Claude:</strong> When generating content for this program, always connect activities back to the specific enabling objectives above. Content that doesn't map to an objective shouldn't be in the program. If I ask for a new activity or assessment, ask me which objective it serves before drafting.
+</div>
+
+<footer>Course Objectives — Leading with Clarity: Manager Essentials · Sample starter file for Claude Project · Drop into your Project's Files tab before Activity 1</footer>
+
+</body>
+</html>
