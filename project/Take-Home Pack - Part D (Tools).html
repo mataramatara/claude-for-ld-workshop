@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tools &amp; Efficiency — Take-Home Pack Part D</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Claude for L&D Professionals — workshop design system
+   Warm-professional. Cream + terracotta + ink. Source Serif + Inter Tight.
+   ───────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Inter+Tight:wght@300..800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Palette */
+  --ink:        #1a1814;           /* near-black with warmth */
+  --ink-soft:   #3a352e;
+  --paper:      #f6f1e7;           /* warm cream page */
+  --paper-2:    #ece4d3;           /* deeper cream for contrast blocks */
+  --paper-3:    #ddd1b8;
+  --terra:      #c4623a;           /* muted terracotta accent */
+  --terra-deep: #8f3f22;
+  --moss:       #5e6b3a;           /* secondary accent (sparingly) */
+  --rule:       rgba(26, 24, 20, 0.16);
+  --rule-soft:  rgba(26, 24, 20, 0.08);
+
+  /* Type */
+  --serif: 'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --sans:  'Inter Tight', -apple-system, system-ui, sans-serif;
+  --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+
+html, body { margin: 0; padding: 0; background: #0c0b0a; }
+* { box-sizing: border-box; }
+
+/* Slide base — every <section> child of <deck-stage> gets this */
+.slide {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  padding: 100px 100px 80px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.slide.dark   { background: var(--ink);    color: var(--paper); }
+.slide.cream2 { background: var(--paper-2); }
+.slide.terra  { background: var(--terra);  color: var(--paper); }
+
+/* Slide chrome — tiny section tag + number in the corner */
+.chrome {
+  position: absolute;
+  top: 44px;
+  left: 100px;
+  right: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.5;
+}
+.slide.dark  .chrome { color: var(--paper); opacity: 0.55; }
+.slide.terra .chrome { color: var(--paper); opacity: 0.7; }
+.chrome .section-tag::before { content: '— '; }
+
+/* Footer brand line */
+.footer {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  opacity: 0.4;
+}
+.slide.dark  .footer { color: var(--paper); opacity: 0.5; }
+.slide.terra .footer { color: var(--paper); opacity: 0.7; }
+
+/* Typography primitives */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 32px;
+}
+.slide.terra .eyebrow { color: var(--paper); opacity: 0.85; }
+.slide.dark  .eyebrow { color: var(--terra); }
+
+h1.title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 108px;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0 0 32px;
+  text-wrap: pretty;
+}
+h2.slide-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 72px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0 0 52px;
+  text-wrap: pretty;
+}
+h2.slide-title em { font-style: italic; color: var(--terra); }
+.slide.dark  h2.slide-title em { color: var(--terra); }
+.slide.terra h2.slide-title em { color: var(--paper); font-style: italic; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 10px; }
+
+.subtitle {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 44px;
+  line-height: 1.2;
+  margin: 0 0 36px;
+  color: var(--ink-soft);
+}
+.slide.dark  .subtitle { color: var(--paper); opacity: 0.75; }
+.slide.terra .subtitle { color: var(--paper); opacity: 0.9; }
+
+.body {
+  font-size: 34px;
+  line-height: 1.35;
+  font-weight: 400;
+  max-width: 1400px;
+  text-wrap: pretty;
+}
+.small {
+  font-size: 28px;
+  line-height: 1.4;
+}
+
+/* Lists — reset UA styles, use custom markers */
+ul.plain, ol.plain { list-style: none; padding: 0; margin: 0; }
+ul.marked {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+ul.marked li {
+  font-size: 34px;
+  line-height: 1.35;
+  padding-left: 44px;
+  position: relative;
+  text-wrap: pretty;
+}
+ul.marked li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18px;
+  width: 22px;
+  height: 3px;
+  background: var(--terra);
+}
+.slide.terra ul.marked li::before { background: var(--paper); }
+.slide.dark ul.marked li::before { background: var(--terra); }
+
+/* Numbered list */
+ol.numbered {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+ol.numbered li {
+  counter-increment: step;
+  font-size: 32px;
+  line-height: 1.35;
+  padding-left: 80px;
+  position: relative;
+  text-wrap: pretty;
+}
+ol.numbered li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--terra);
+  letter-spacing: 0.02em;
+}
+
+/* Pro unlock badge — inline Pro-only callout */
+.pro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1.5px solid var(--terra);
+  color: var(--terra);
+  border-radius: 999px;
+  font-weight: 500;
+}
+.pro-badge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--terra);
+  border-radius: 50%;
+}
+
+/* Inline pro-note block */
+.pro-note {
+  margin-top: 40px;
+  padding: 28px 32px;
+  background: var(--paper-2);
+  border-left: 4px solid var(--terra);
+  font-size: 26px;
+  line-height: 1.4;
+  max-width: 1200px;
+}
+.pro-note .label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 8px;
+}
+
+/* Cards — used for comparison grids */
+.card {
+  background: var(--paper);
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid var(--rule);
+}
+.slide.cream2 .card { background: var(--paper); }
+.slide.dark .card { background: var(--ink-soft); border-color: rgba(246,241,231,0.12); color: var(--paper); }
+
+.card .card-eyebrow {
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+.card h3 {
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.1;
+}
+.card p {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+.slide.dark .card p { color: var(--paper); opacity: 0.78; }
+
+/* Big display number */
+.bignum {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 280px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--terra);
+}
+.bignum-lg {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 420px;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--terra);
+}
+
+/* Hairline horizontal rule */
+.hr {
+  height: 1px;
+  background: var(--rule);
+  border: 0;
+  margin: 0;
+}
+.slide.dark .hr { background: rgba(246,241,231,0.15); }
+.slide.terra .hr { background: rgba(246,241,231,0.35); }
+
+/* Activity slide frame */
+.activity-frame {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 80px;
+  height: 100%;
+  align-content: start;
+}
+.activity-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.activity-left .kicker {
+  font-family: var(--mono);
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+.activity-left .ablob {
+  font-family: var(--serif);
+  font-size: 200px;
+  line-height: 0.9;
+  color: var(--ink);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+}
+.activity-left .duration {
+  font-family: var(--mono);
+  font-size: 22px;
+  color: var(--ink-soft);
+  margin-top: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* Quote */
+.quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 64px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  max-width: 1500px;
+}
+.quote-attrib {
+  font-family: var(--mono);
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 40px;
+  color: var(--ink-soft);
+}
+.slide.dark .quote-attrib { color: var(--paper); opacity: 0.7; }
+
+/* Prompt example box — mimics a terminal / chat input */
+.prompt-box {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 24px;
+  line-height: 1.5;
+  padding: 36px 40px;
+  border-radius: 14px;
+  max-width: 1400px;
+  position: relative;
+  white-space: pre-wrap;
+}
+.prompt-box::before {
+  content: 'PROMPT';
+  position: absolute;
+  top: -13px;
+  left: 28px;
+  background: var(--terra);
+  color: var(--paper);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.prompt-box .tag { color: var(--terra); }
+.prompt-box .dim { opacity: 0.55; }
+
+/* Section divider slide */
+.section-divider {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 100px;
+}
+.section-divider .sec-num {
+  font-family: var(--mono);
+  font-size: 36px;
+  letter-spacing: 0.18em;
+  margin-bottom: 60px;
+  opacity: 0.6;
+}
+.section-divider .sec-title {
+  font-family: var(--serif);
+  font-size: 160px;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  text-wrap: balance;
+  max-width: 1500px;
+}
+.section-divider .sec-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 40px;
+  line-height: 1.3;
+  margin-top: 40px;
+  max-width: 1100px;
+  opacity: 0.8;
+}
+
+/* Grid helpers */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+
+/* Utility */
+.stack { display: flex; flex-direction: column; }
+.row { display: flex; align-items: center; }
+.grow { flex: 1; }
+.gap-sm { gap: 16px; }
+.gap-md { gap: 28px; }
+.gap-lg { gap: 48px; }
+.mt-sm { margin-top: 16px; }
+.mt-md { margin-top: 32px; }
+.mt-lg { margin-top: 56px; }
+
+.terra-text { color: var(--terra); }
+.italic { font-style: italic; }
+.serif { font-family: var(--serif); }
+.mono  { font-family: var(--mono); }
+
+</style>
+<style>
+  html, body { background: var(--paper); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 56px 120px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  @media print {
+    body { max-width: 7.2in; padding: 0.55in 0.6in; font-size: 11pt; }
+    .page-break { break-before: page; page-break-before: always; }
+  }
+  header.doc-head {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  h1.doc-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 52px;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  h1.doc-title em { color: var(--terra); font-style: italic; }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 21px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    max-width: 720px;
+  }
+  h2.section {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin: 56px 0 8px;
+  }
+  .section-kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .section-lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+    max-width: 720px;
+  }
+  h3.prompt-title {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 17px;
+    margin: 28px 0 4px;
+  }
+  .prompt-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .prompt-body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+    padding: 18px 20px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    margin: 0 0 14px;
+  }
+  .prompt-body .fill { color: var(--terra); font-style: italic; }
+  .why {
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin: 0 0 8px;
+    padding-left: 14px;
+    border-left: 2px solid var(--rule);
+  }
+  .challenge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .challenge-card {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 10px; min-height: 200px;
+  }
+  .challenge-card.accent { background: var(--terra); color: var(--paper); border-color: var(--terra); }
+  .challenge-card .day { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; color: var(--terra); }
+  .challenge-card.accent .day { color: var(--paper); opacity: 0.85; }
+  .challenge-card h4 { font-family: var(--serif); font-size: 24px; font-weight: 400; line-height: 1.1; margin: 0; }
+  .challenge-card p { font-size: 13.5px; line-height: 1.45; margin: 0; color: var(--ink-soft); }
+  .challenge-card.accent p { color: var(--paper); opacity: 0.9; }
+  .checkbox { width: 18px; height: 18px; border: 1.5px solid var(--ink); border-radius: 3px; margin-top: auto; align-self: flex-end; }
+  .challenge-card.accent .checkbox { border-color: var(--paper); }
+  .reflect-block { padding: 22px 24px; border: 1px solid var(--rule); margin-bottom: 18px; background: var(--paper); }
+  .reflect-block .q { font-family: var(--serif); font-size: 20px; font-style: italic; font-weight: 300; line-height: 1.35; margin: 0 0 10px; }
+  .write-lines {
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 27px, var(--rule-soft) 27px, var(--rule-soft) 28px);
+    height: 112px; margin-top: 8px;
+  }
+  .habits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; margin-top: 20px; }
+  .habit { padding: 16px 0; border-bottom: 1px solid var(--rule-soft); display: grid; grid-template-columns: 36px 1fr; gap: 12px; }
+  .habit .hn { font-family: var(--mono); font-size: 13px; color: var(--terra); letter-spacing: 0.08em; padding-top: 2px; }
+  .habit h5 { font-family: var(--sans); font-weight: 600; font-size: 15px; margin: 0 0 4px; }
+  .habit p { font-size: 13.5px; line-height: 1.45; margin: 0; color: var(--ink-soft); }
+  .artifact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 24px; }
+  .artifact-card { border: 1px solid var(--rule); padding: 22px 24px 20px; }
+  .artifact-card .artifact-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); margin-bottom: 6px; display: block; }
+  .artifact-card h4 { font-family: var(--serif); font-size: 22px; font-weight: 400; margin: 0 0 8px; line-height: 1.15; }
+  .artifact-card .artifact-desc { font-size: 13px; line-height: 1.45; color: var(--ink-soft); margin: 0 0 12px; }
+  .artifact-connector { background: var(--paper-2); border-left: 2px solid var(--terra); padding: 8px 12px; font-size: 12px; line-height: 1.45; margin-top: 10px; color: var(--ink-soft); }
+  .artifact-connector strong { color: var(--ink); }
+  .ideas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; margin-top: 20px; }
+  .idea-item { padding: 12px 0; border-bottom: 1px solid var(--rule-soft); display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
+  .idea-item .in { font-family: var(--mono); font-size: 11px; color: var(--terra); padding-top: 2px; }
+  .idea-item h5 { font-family: var(--sans); font-weight: 600; font-size: 14px; margin: 0 0 2px; }
+  .idea-item p { font-size: 12.5px; line-height: 1.4; margin: 0; color: var(--ink-soft); }
+  .blooper-card { border: 1px solid var(--rule); padding: 20px 24px; margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .blooper-card .blooper-prompt { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.45; color: var(--ink-soft); border-left: 2px solid var(--rule); padding-left: 12px; }
+  .blooper-card .blooper-reply { font-size: 13.5px; line-height: 1.5; background: var(--paper-2); padding: 12px 14px; border-radius: 4px; }
+  .blooper-card .blooper-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); display: block; margin-bottom: 5px; }
+  footer.doc-foot { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ink-soft); display: flex; justify-content: space-between; }
+  .checklist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
+  .checklist li { display: flex; gap: 10px; align-items: baseline; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--rule-soft); }
+  .checklist li::before { content: '\25A1'; font-family: var(--mono); color: var(--terra); font-size: 14px; flex-shrink: 0; }
+  .moment-card { border: 1px solid var(--rule); padding: 24px 28px; margin-bottom: 18px; }
+  .moment-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); margin-bottom: 6px; }
+  .moment-title { font-family: var(--serif); font-size: 22px; font-weight: 400; margin: 0 0 12px; line-height: 1.2; }
+  .moment-body { font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); margin: 0; }
+  .moment-quote { font-family: var(--mono); font-size: 12px; background: var(--paper-2); border-left: 3px solid var(--terra); padding: 10px 14px; margin: 12px 0; line-height: 1.5; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <span class="tag">Take-Home Pack &middot; Part D · Tools</span>
+  <span class="meta">ATD Houston &middot; Technology SIG &middot; April 2026</span>
+</header>
+
+<h1 class="doc-title">Tools &amp; Efficiency<br/><em>Part D.</em></h1>
+
+<p class="lede">How to use Claude more efficiently, best practices for connector permissions, and an overview of what GitHub gives you for free.</p>
+
+<h2 class="section"><span class="section-kicker">Part Eight · Work smarter</span>Using Claude without burning through your plan.</h2>
+<p class="section-lede">A few habits that stretch your plan further — and improve your results.</p>
+
+<div style="display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 24px;">
+
+  <div style="border: 1px solid var(--rule); padding: 22px 24px;">
+    <div class="tag" style="margin-bottom: 8px;">01 · The Go Word</div>
+    <p style="margin: 0 0 8px; font-size: 13pt; line-height: 1.5;">Add this to your Personal Preferences: <em>"Before you build or draft anything, ask me clarifying questions. I'll say GO when I'm ready."</em></p>
+    <p style="margin: 0; font-size: 12pt; color: var(--ink-soft); line-height: 1.45;">This prevents Claude from generating a full output before you've given it all the context — which means you won't spend a message correcting a response that was already wrong. Fewer iterations. Better results on the first try.</p>
+  </div>
+
+  <div style="border: 1px solid var(--rule); padding: 22px 24px;">
+    <div class="tag" style="margin-bottom: 8px;">02 · Be specific about format and length</div>
+    <p style="margin: 0 0 8px; font-size: 13pt; line-height: 1.5;">Shorter prompts asking for shorter outputs use fewer resources and often produce cleaner results.</p>
+    <p style="margin: 0; font-size: 12pt; color: var(--ink-soft); line-height: 1.45;">Add a length constraint: <em>"150 words or fewer," "three bullet points," "one paragraph."</em> You'll get what you need without the filler.</p>
+  </div>
+
+  <div style="border: 1px solid var(--rule); padding: 22px 24px;">
+    <div class="tag" style="margin-bottom: 8px;">03 · Use Markdown files to save on usage</div>
+    <p style="margin: 0 0 8px; font-size: 13pt; line-height: 1.5;"><strong>What is a Markdown file?</strong> A .md file is plain text with simple formatting symbols — # for headings, ** for bold, - for lists. Claude reads and writes Markdown naturally.</p>
+    <p style="margin: 0 0 8px; font-size: 12pt; color: var(--ink-soft); line-height: 1.45;"><strong>Why it saves usage:</strong> When you save context as a .md file in your Project knowledge, Claude can reference it precisely without you re-explaining in each chat. Shorter conversations, better responses, fewer wasted messages.</p>
+    <p style="margin: 0; font-size: 12pt; color: var(--ink-soft); line-height: 1.45;"><strong>Best for:</strong> Instructions, style guides, research notes, outlines, reference material — anything you'd otherwise paste repeatedly. Create one in any text editor and save as filename.md.</p>
+  </div>
+
+  <div style="border: 1px solid var(--rule); padding: 22px 24px; background: var(--paper-2);">
+    <div class="tag" style="margin-bottom: 8px;">04 · Use NotebookLM for research, Claude for building</div>
+    <p style="margin: 0 0 8px; font-size: 13pt; line-height: 1.5;">NotebookLM (Google, free and unlimited) is exceptional for uploading source documents and synthesizing research.</p>
+    <p style="margin: 0; font-size: 12pt; color: var(--ink-soft); line-height: 1.45;">Do your research and synthesis there. Then bring the polished summary into Claude when you're ready to design or build. Two tools, each doing what it does best.</p>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 9 · Connector Permissions Best Practices
+     ══════════════════════════════════════════════════════════════════ -->
+
+<h2 class="section"><span class="section-kicker">Part Nine · Connectors</span>Before you authorize a Connector.</h2>
+<p class="section-lede">When you connect Claude to an external tool, you're giving it access to read — and sometimes write — in that tool.</p>
+
+<ol style="margin: 0; padding-left: 22px; font-size: 12pt; line-height: 1.7;">
+  <li style="margin-bottom: 14px;"><strong>Only enable what you're actively using.</strong> Less access is always safer — re-enable when you're ready to use it.</li>
+  <li style="margin-bottom: 14px;"><strong>Check what level of access each Connector requests.</strong> Some are read-only. Others are read-write (Claude can also create, edit, or delete). Know the difference before you click Authorize.</li>
+  <li style="margin-bottom: 14px;"><strong>For workplace tools — Slack, Google Drive, Gmail — think it through.</strong> Are you comfortable with Claude being able to see everything in this account? If not, use a personal account or scope the access.</li>
+  <li style="margin-bottom: 14px;"><strong>Turn off Connectors between sessions.</strong> You don't need them running in the background when you're not actively working.</li>
+  <li style="margin-bottom: 0;"><strong>If something feels off, revoke the access.</strong> You can disconnect any Connector at any time from the Connectors settings. No harm done.</li>
+</ol>
+
+<div style="margin-top: 22px; padding: 16px 20px; background: var(--paper-2); border-left: 3px solid var(--terra); font-size: 11.5pt; line-height: 1.5;">
+  Connectors make Claude dramatically more powerful. The caution here isn't about avoiding them — it's about using them intentionally.
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 10 · GitHub Overview
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<h2 class="section"><span class="section-kicker">Part Ten · GitHub</span>What GitHub is. Why it matters. How hard it is.</h2>
+<p class="section-lede">You don't need to know how to code to use GitHub. You need to know it exists and what it gives you for free.</p>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-top: 24px;">
+  <div style="border: 1px solid var(--rule); padding: 20px 22px;">
+    <div class="tag" style="margin-bottom: 8px;">What it is</div>
+    <p style="margin: 0; font-size: 13pt; line-height: 1.45;">A place to store projects and code — think Google Drive, but for websites and apps. It keeps a full version history of everything you've ever saved.</p>
+  </div>
+  <div style="border: 1px solid var(--rule); padding: 20px 22px;">
+    <div class="tag" style="margin-bottom: 8px;">What it gives you</div>
+    <p style="margin: 0; font-size: 13pt; line-height: 1.45;"><strong>GitHub Pages</strong> — free website hosting. Any site you build with Claude can go live at a public URL with a few clicks. No monthly hosting fees.</p>
+  </div>
+  <div style="border: 1px solid var(--rule); padding: 20px 22px;">
+    <div class="tag" style="margin-bottom: 8px;">How hard it is</div>
+    <p style="margin: 0; font-size: 13pt; line-height: 1.45;">I log on, click a button or two, and leave the technical stuff to learn later. You don't need to be technical to start.</p>
+  </div>
+</div>
+
+<h3 style="font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 32px 0 12px;">The three things to know</h3>
+<ol style="margin: 0; padding-left: 22px; font-size: 12pt; line-height: 1.7;">
+  <li style="margin-bottom: 10px;"><strong>GitHub is free to sign up.</strong> Free private and public repositories, free version history, free GitHub Pages hosting. Start at github.com.</li>
+  <li style="margin-bottom: 10px;"><strong>GitHub Pages makes your Artifact shareable without a Claude account.</strong> Upload an HTML file and share the link with anyone — they don't need Claude to view it. This is how you get a real standalone deliverable out the door.</li>
+  <li style="margin-bottom: 10px;"><strong>Version history is your undo button.</strong> Every time you save, GitHub keeps the old version. If something breaks, you can go back.</li>
+</ol>
+
+<div style="margin-top: 18px; padding: 16px 20px; background: var(--paper-2); border-left: 3px solid var(--terra); font-size: 11.5pt; line-height: 1.5; margin-bottom: 16px;">
+  If you're curious about GitHub, ask Claude to walk you through setting it up. It will tell you exactly what to do, step by step, and explain the purpose of each step as you go.
+</div>
+
+<div style="padding: 16px 20px; background: rgba(196,98,58,0.08); border-left: 3px solid var(--terra); font-size: 11.5pt; line-height: 1.55;">
+  <strong>Hidden gem:</strong> GitHub is full of people sharing their ideas, documentation, workflows, and prompts in public repositories — for free. Search GitHub for topics like "instructional design prompts," "Claude workflows," or "L&D AI tools" and you'll find real practitioners sharing what actually works. You can browse, copy, and adapt anything in a public repo. It's one of the most underused learning resources out there.
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 11 · 20 Ideas for Learning Professionals
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+
+<footer class="doc-foot">
+  <span>Claude for L&amp;D · Tamara Thomas · tthomas1@westlake.com · ATD Houston Technology SIG</span>
+  <span>April 2026</span>
+</footer>
+</body>
+</html>

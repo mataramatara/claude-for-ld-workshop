@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>The L&amp;D Prompt Library — Take-Home Pack Part A</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Claude for L&D Professionals — workshop design system
+   Warm-professional. Cream + terracotta + ink. Source Serif + Inter Tight.
+   ───────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Inter+Tight:wght@300..800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Palette */
+  --ink:        #1a1814;           /* near-black with warmth */
+  --ink-soft:   #3a352e;
+  --paper:      #f6f1e7;           /* warm cream page */
+  --paper-2:    #ece4d3;           /* deeper cream for contrast blocks */
+  --paper-3:    #ddd1b8;
+  --terra:      #c4623a;           /* muted terracotta accent */
+  --terra-deep: #8f3f22;
+  --moss:       #5e6b3a;           /* secondary accent (sparingly) */
+  --rule:       rgba(26, 24, 20, 0.16);
+  --rule-soft:  rgba(26, 24, 20, 0.08);
+
+  /* Type */
+  --serif: 'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --sans:  'Inter Tight', -apple-system, system-ui, sans-serif;
+  --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+
+html, body { margin: 0; padding: 0; background: #0c0b0a; }
+* { box-sizing: border-box; }
+
+/* Slide base — every <section> child of <deck-stage> gets this */
+.slide {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  padding: 100px 100px 80px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.slide.dark   { background: var(--ink);    color: var(--paper); }
+.slide.cream2 { background: var(--paper-2); }
+.slide.terra  { background: var(--terra);  color: var(--paper); }
+
+/* Slide chrome — tiny section tag + number in the corner */
+.chrome {
+  position: absolute;
+  top: 44px;
+  left: 100px;
+  right: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.5;
+}
+.slide.dark  .chrome { color: var(--paper); opacity: 0.55; }
+.slide.terra .chrome { color: var(--paper); opacity: 0.7; }
+.chrome .section-tag::before { content: '— '; }
+
+/* Footer brand line */
+.footer {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  opacity: 0.4;
+}
+.slide.dark  .footer { color: var(--paper); opacity: 0.5; }
+.slide.terra .footer { color: var(--paper); opacity: 0.7; }
+
+/* Typography primitives */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 32px;
+}
+.slide.terra .eyebrow { color: var(--paper); opacity: 0.85; }
+.slide.dark  .eyebrow { color: var(--terra); }
+
+h1.title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 108px;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0 0 32px;
+  text-wrap: pretty;
+}
+h2.slide-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 72px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0 0 52px;
+  text-wrap: pretty;
+}
+h2.slide-title em { font-style: italic; color: var(--terra); }
+.slide.dark  h2.slide-title em { color: var(--terra); }
+.slide.terra h2.slide-title em { color: var(--paper); font-style: italic; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 10px; }
+
+.subtitle {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 44px;
+  line-height: 1.2;
+  margin: 0 0 36px;
+  color: var(--ink-soft);
+}
+.slide.dark  .subtitle { color: var(--paper); opacity: 0.75; }
+.slide.terra .subtitle { color: var(--paper); opacity: 0.9; }
+
+.body {
+  font-size: 34px;
+  line-height: 1.35;
+  font-weight: 400;
+  max-width: 1400px;
+  text-wrap: pretty;
+}
+.small {
+  font-size: 28px;
+  line-height: 1.4;
+}
+
+/* Lists — reset UA styles, use custom markers */
+ul.plain, ol.plain { list-style: none; padding: 0; margin: 0; }
+ul.marked {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+ul.marked li {
+  font-size: 34px;
+  line-height: 1.35;
+  padding-left: 44px;
+  position: relative;
+  text-wrap: pretty;
+}
+ul.marked li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18px;
+  width: 22px;
+  height: 3px;
+  background: var(--terra);
+}
+.slide.terra ul.marked li::before { background: var(--paper); }
+.slide.dark ul.marked li::before { background: var(--terra); }
+
+/* Numbered list */
+ol.numbered {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+ol.numbered li {
+  counter-increment: step;
+  font-size: 32px;
+  line-height: 1.35;
+  padding-left: 80px;
+  position: relative;
+  text-wrap: pretty;
+}
+ol.numbered li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--terra);
+  letter-spacing: 0.02em;
+}
+
+/* Pro unlock badge — inline Pro-only callout */
+.pro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1.5px solid var(--terra);
+  color: var(--terra);
+  border-radius: 999px;
+  font-weight: 500;
+}
+.pro-badge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--terra);
+  border-radius: 50%;
+}
+
+/* Inline pro-note block */
+.pro-note {
+  margin-top: 40px;
+  padding: 28px 32px;
+  background: var(--paper-2);
+  border-left: 4px solid var(--terra);
+  font-size: 26px;
+  line-height: 1.4;
+  max-width: 1200px;
+}
+.pro-note .label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 8px;
+}
+
+/* Cards — used for comparison grids */
+.card {
+  background: var(--paper);
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid var(--rule);
+}
+.slide.cream2 .card { background: var(--paper); }
+.slide.dark .card { background: var(--ink-soft); border-color: rgba(246,241,231,0.12); color: var(--paper); }
+
+.card .card-eyebrow {
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+.card h3 {
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.1;
+}
+.card p {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+.slide.dark .card p { color: var(--paper); opacity: 0.78; }
+
+/* Big display number */
+.bignum {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 280px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--terra);
+}
+.bignum-lg {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 420px;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--terra);
+}
+
+/* Hairline horizontal rule */
+.hr {
+  height: 1px;
+  background: var(--rule);
+  border: 0;
+  margin: 0;
+}
+.slide.dark .hr { background: rgba(246,241,231,0.15); }
+.slide.terra .hr { background: rgba(246,241,231,0.35); }
+
+/* Activity slide frame */
+.activity-frame {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 80px;
+  height: 100%;
+  align-content: start;
+}
+.activity-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.activity-left .kicker {
+  font-family: var(--mono);
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+.activity-left .ablob {
+  font-family: var(--serif);
+  font-size: 200px;
+  line-height: 0.9;
+  color: var(--ink);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+}
+.activity-left .duration {
+  font-family: var(--mono);
+  font-size: 22px;
+  color: var(--ink-soft);
+  margin-top: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* Quote */
+.quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 64px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  max-width: 1500px;
+}
+.quote-attrib {
+  font-family: var(--mono);
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 40px;
+  color: var(--ink-soft);
+}
+.slide.dark .quote-attrib { color: var(--paper); opacity: 0.7; }
+
+/* Prompt example box — mimics a terminal / chat input */
+.prompt-box {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 24px;
+  line-height: 1.5;
+  padding: 36px 40px;
+  border-radius: 14px;
+  max-width: 1400px;
+  position: relative;
+  white-space: pre-wrap;
+}
+.prompt-box::before {
+  content: 'PROMPT';
+  position: absolute;
+  top: -13px;
+  left: 28px;
+  background: var(--terra);
+  color: var(--paper);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.prompt-box .tag { color: var(--terra); }
+.prompt-box .dim { opacity: 0.55; }
+
+/* Section divider slide */
+.section-divider {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 100px;
+}
+.section-divider .sec-num {
+  font-family: var(--mono);
+  font-size: 36px;
+  letter-spacing: 0.18em;
+  margin-bottom: 60px;
+  opacity: 0.6;
+}
+.section-divider .sec-title {
+  font-family: var(--serif);
+  font-size: 160px;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  text-wrap: balance;
+  max-width: 1500px;
+}
+.section-divider .sec-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 40px;
+  line-height: 1.3;
+  margin-top: 40px;
+  max-width: 1100px;
+  opacity: 0.8;
+}
+
+/* Grid helpers */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+
+/* Utility */
+.stack { display: flex; flex-direction: column; }
+.row { display: flex; align-items: center; }
+.grow { flex: 1; }
+.gap-sm { gap: 16px; }
+.gap-md { gap: 28px; }
+.gap-lg { gap: 48px; }
+.mt-sm { margin-top: 16px; }
+.mt-md { margin-top: 32px; }
+.mt-lg { margin-top: 56px; }
+
+.terra-text { color: var(--terra); }
+.italic { font-style: italic; }
+.serif { font-family: var(--serif); }
+.mono  { font-family: var(--mono); }
+
+</style>
+<style>
+  html, body { background: var(--paper); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 56px 120px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  @media print {
+    body { max-width: 7.2in; padding: 0.55in 0.6in; font-size: 11pt; }
+    .page-break { break-before: page; page-break-before: always; }
+  }
+  header.doc-head {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  h1.doc-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 52px;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  h1.doc-title em { color: var(--terra); font-style: italic; }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 21px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    max-width: 720px;
+  }
+  h2.section {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin: 56px 0 8px;
+  }
+  .section-kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .section-lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+    max-width: 720px;
+  }
+  h3.prompt-title {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 17px;
+    margin: 28px 0 4px;
+  }
+  .prompt-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .prompt-body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+    padding: 18px 20px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    margin: 0 0 14px;
+  }
+  .prompt-body .fill { color: var(--terra); font-style: italic; }
+  .why {
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin: 0 0 8px;
+    padding-left: 14px;
+    border-left: 2px solid var(--rule);
+  }
+  .challenge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .challenge-card {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 10px; min-height: 200px;
+  }
+  .challenge-card.accent { background: var(--terra); color: var(--paper); border-color: var(--terra); }
+  .challenge-card .day { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; color: var(--terra); }
+  .challenge-card.accent .day { color: var(--paper); opacity: 0.85; }
+  .challenge-card h4 { font-family: var(--serif); font-size: 24px; font-weight: 400; line-height: 1.1; margin: 0; }
+  .challenge-card p { font-size: 13.5px; line-height: 1.45; margin: 0; color: var(--ink-soft); }
+  .challenge-card.accent p { color: var(--paper); opacity: 0.9; }
+  .checkbox { width: 18px; height: 18px; border: 1.5px solid var(--ink); border-radius: 3px; margin-top: auto; align-self: flex-end; }
+  .challenge-card.accent .checkbox { border-color: var(--paper); }
+  .reflect-block { padding: 22px 24px; border: 1px solid var(--rule); margin-bottom: 18px; background: var(--paper); }
+  .reflect-block .q { font-family: var(--serif); font-size: 20px; font-style: italic; font-weight: 300; line-height: 1.35; margin: 0 0 10px; }
+  .write-lines {
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 27px, var(--rule-soft) 27px, var(--rule-soft) 28px);
+    height: 112px; margin-top: 8px;
+  }
+  .habits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; margin-top: 20px; }
+  .habit { padding: 16px 0; border-bottom: 1px solid var(--rule-soft); display: grid; grid-template-columns: 36px 1fr; gap: 12px; }
+  .habit .hn { font-family: var(--mono); font-size: 13px; color: var(--terra); letter-spacing: 0.08em; padding-top: 2px; }
+  .habit h5 { font-family: var(--sans); font-weight: 600; font-size: 15px; margin: 0 0 4px; }
+  .habit p { font-size: 13.5px; line-height: 1.45; margin: 0; color: var(--ink-soft); }
+  .artifact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 24px; }
+  .artifact-card { border: 1px solid var(--rule); padding: 22px 24px 20px; }
+  .artifact-card .artifact-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); margin-bottom: 6px; display: block; }
+  .artifact-card h4 { font-family: var(--serif); font-size: 22px; font-weight: 400; margin: 0 0 8px; line-height: 1.15; }
+  .artifact-card .artifact-desc { font-size: 13px; line-height: 1.45; color: var(--ink-soft); margin: 0 0 12px; }
+  .artifact-connector { background: var(--paper-2); border-left: 2px solid var(--terra); padding: 8px 12px; font-size: 12px; line-height: 1.45; margin-top: 10px; color: var(--ink-soft); }
+  .artifact-connector strong { color: var(--ink); }
+  .ideas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; margin-top: 20px; }
+  .idea-item { padding: 12px 0; border-bottom: 1px solid var(--rule-soft); display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
+  .idea-item .in { font-family: var(--mono); font-size: 11px; color: var(--terra); padding-top: 2px; }
+  .idea-item h5 { font-family: var(--sans); font-weight: 600; font-size: 14px; margin: 0 0 2px; }
+  .idea-item p { font-size: 12.5px; line-height: 1.4; margin: 0; color: var(--ink-soft); }
+  .blooper-card { border: 1px solid var(--rule); padding: 20px 24px; margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .blooper-card .blooper-prompt { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.45; color: var(--ink-soft); border-left: 2px solid var(--rule); padding-left: 12px; }
+  .blooper-card .blooper-reply { font-size: 13.5px; line-height: 1.5; background: var(--paper-2); padding: 12px 14px; border-radius: 4px; }
+  .blooper-card .blooper-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); display: block; margin-bottom: 5px; }
+  footer.doc-foot { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ink-soft); display: flex; justify-content: space-between; }
+  .checklist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
+  .checklist li { display: flex; gap: 10px; align-items: baseline; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--rule-soft); }
+  .checklist li::before { content: '\25A1'; font-family: var(--mono); color: var(--terra); font-size: 14px; flex-shrink: 0; }
+  .moment-card { border: 1px solid var(--rule); padding: 24px 28px; margin-bottom: 18px; }
+  .moment-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); margin-bottom: 6px; }
+  .moment-title { font-family: var(--serif); font-size: 22px; font-weight: 400; margin: 0 0 12px; line-height: 1.2; }
+  .moment-body { font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); margin: 0; }
+  .moment-quote { font-family: var(--mono); font-size: 12px; background: var(--paper-2); border-left: 3px solid var(--terra); padding: 10px 14px; margin: 12px 0; line-height: 1.5; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <span class="tag">Take-Home Pack &middot; Part A · Prompts</span>
+  <span class="meta">ATD Houston &middot; Technology SIG &middot; April 2026</span>
+</header>
+
+<h1 class="doc-title">The L&amp;D Prompt Library<br/><em>Part A.</em></h1>
+
+<p class="lede">20 ready-to-paste prompts mapped across the full ADDIE model, and six artifact starter prompts — one for each type of interactive deliverable you can build today.</p>
+
+<h2 class="section"><span class="section-kicker">Part One · 20 prompts</span>The L&amp;D Prompt Library.</h2>
+<p class="section-lede">
+  Copy a prompt. Replace the <span style="font-family: var(--mono); color: var(--terra);">bracketed</span> parts. Run it. Iterate. Organized by ADDIE phase.
+</p>
+
+<!-- ANALYZE -->
+<div style="margin-top: 28px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Analyze</div>
+
+  <h3 class="prompt-title">01 — Learning objectives from a messy transcript</h3>
+  <div class="prompt-meta">Best for: SME interviews · Output: 3-6 objectives</div>
+  <div class="prompt-body">Act as a senior instructional designer.
+
+I'll paste a transcript of an SME interview about <span class="fill">[TOPIC]</span>.
+Generate 3–6 learning objectives written at the appropriate
+Bloom's level for <span class="fill">[AUDIENCE: new hires / managers / etc]</span>.
+
+For each objective: state the verb, the content, and the condition.
+Then briefly flag which parts of the transcript support it.
+
+Transcript:
+<span class="fill">[PASTE TRANSCRIPT]</span></div>
+  <p class="why">Why it works: forces Claude to ground the objectives in source evidence instead of generating generic ones.</p>
+
+  <h3 class="prompt-title">02 — Interrogate a long document</h3>
+  <div class="prompt-meta">Best for: research, policies, SME docs</div>
+  <div class="prompt-body">I'm attaching a <span class="fill">[DOCUMENT TYPE]</span>. Read it carefully.
+
+Then, without summarizing yet, answer:
+1. What are the 3 most important claims?
+2. What assumptions are unstated?
+3. Where would a <span class="fill">[AUDIENCE]</span> get confused?
+4. What 5 questions would I need answered to turn
+   this into a learning experience?
+
+<span class="fill">[ATTACH / PASTE DOCUMENT]</span></div>
+
+  <h3 class="prompt-title">03 — Compare two frameworks</h3>
+  <div class="prompt-meta">Best for: competency models, methodologies</div>
+  <div class="prompt-body">I'll paste two <span class="fill">[FRAMEWORK TYPE]</span>.
+
+Compare them on:
+- What they agree on
+- Where they directly conflict
+- Which audiences each is better suited for
+- A proposed merged version that preserves the
+  strongest elements of each
+
+Framework A: <span class="fill">[PASTE A]</span>
+
+Framework B: <span class="fill">[PASTE B]</span></div>
+</div>
+
+<!-- DESIGN -->
+<div style="margin-top: 36px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Design</div>
+
+  <h3 class="prompt-title">04 — Workshop outline from an objective</h3>
+  <div class="prompt-meta">Best for: instructor-led design · Output: timed table</div>
+  <div class="prompt-body">Design a <span class="fill">[DURATION]</span>-minute in-person workshop that achieves
+this objective: <span class="fill">[PASTE OBJECTIVE]</span>.
+
+Audience: <span class="fill">[AUDIENCE DESCRIPTION + SIZE]</span>.
+
+Output a table with columns: time, activity, facilitator
+action, learner action, and assessment moment. Include at
+least one activity that surfaces prior experience and one
+that practices the new behavior.
+
+Ask me 3 clarifying questions before you draft.</div>
+  <p class="why">Why it works: the clarifying-question step prevents generic outputs.</p>
+
+  <h3 class="prompt-title">05 — Convert content to a scenario</h3>
+  <div class="prompt-meta">Best for: moving from lecture to application</div>
+  <div class="prompt-body">Take the policy/procedure below and turn it into a realistic
+workplace scenario for <span class="fill">[AUDIENCE]</span>.
+
+The scenario should:
+- Introduce a dilemma, not just a demonstration
+- Include 2 distractor details that feel real but aren't decision-critical
+- End with a decision point, not a conclusion
+
+Source: <span class="fill">[PASTE POLICY]</span></div>
+</div>
+
+<!-- DEVELOP -->
+<div style="margin-top: 36px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Develop</div>
+
+  <h3 class="prompt-title">06 — Scenario-based multiple choice</h3>
+  <div class="prompt-meta">Best for: knowledge + application checks</div>
+  <div class="prompt-body">Generate <span class="fill">[N]</span> scenario-based multiple-choice items on
+<span class="fill">[TOPIC]</span> for <span class="fill">[AUDIENCE]</span>.
+
+Format per item:
+- Stem: a 2–3 sentence realistic scenario
+- 4 options (A–D), one correct
+- A 1-sentence rationale for why each distractor is plausible
+- The Bloom's level you targeted
+
+Avoid trivia. Every item should require judgment.</div>
+  <p class="why">Why it works: "plausible distractor rationale" is the thing that stops lazy MCQs.</p>
+
+  <h3 class="prompt-title">07 — Critique my assessment</h3>
+  <div class="prompt-meta">Best for: polishing existing items</div>
+  <div class="prompt-body">Here's a set of assessment items I drafted. Critique them
+as a skeptical assessment specialist would.
+
+For each item call out:
+- Does it test what it claims to test?
+- Is the stem clear, or does it test reading comprehension?
+- Are distractors genuinely plausible for a novice?
+- Any cultural, demographic, or context bias?
+
+Be specific. Then rewrite the weakest 3 items.
+
+Items: <span class="fill">[PASTE ITEMS]</span></div>
+
+  <h3 class="prompt-title">08 — Facilitator script with timing cues</h3>
+  <div class="prompt-meta">Best for: handoff to other facilitators</div>
+  <div class="prompt-body">Turn the attached outline into a facilitator script for
+someone delivering this session for the first time.
+
+Include:
+- What the facilitator says (in natural speaking voice)
+- Timing cues in [brackets]
+- Watch-outs: where learners commonly get confused
+- What to do if an activity runs long
+
+Outline: <span class="fill">[PASTE OUTLINE]</span></div>
+
+  <h3 class="prompt-title">09 — One-page job aid</h3>
+  <div class="prompt-meta">Best for: reinforcement · Output: printable</div>
+  <div class="prompt-body">Create a one-page job aid for <span class="fill">[TASK]</span> that a
+<span class="fill">[ROLE]</span> could keep at their desk.
+
+Structure:
+- Title (6 words max)
+- 3–5 numbered steps in verb-first voice
+- A "watch-out" call-out for the most common mistake
+- An "if X, then Y" decision table for edge cases
+
+Optimize for scannability. No paragraphs.</div>
+
+  <h3 class="prompt-title">10 — Discussion questions, calibrated</h3>
+  <div class="prompt-meta">Best for: virtual live, small groups</div>
+  <div class="prompt-body">Generate 6 discussion questions on <span class="fill">[TOPIC]</span> calibrated
+for a <span class="fill">[DURATION]</span>-minute small-group conversation.
+
+Structure them as:
+- 2 to surface prior experience (no wrong answers)
+- 2 to apply a concept to participants' real work
+- 2 to provoke disagreement
+
+For each question, note the Bloom's level and what a
+facilitator should listen for in the responses.</div>
+</div>
+
+<!-- IMPLEMENT -->
+<div style="margin-top: 36px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Implement</div>
+
+  <h3 class="prompt-title">11 — Rewrite in my voice</h3>
+  <div class="prompt-meta">Best for: maintaining consistency across content</div>
+  <div class="prompt-body">Below are 3 writing samples in my voice and a draft that
+isn't in my voice. Study the samples, identify the moves
+I make (sentence length, vocabulary, structure, humor,
+what I avoid), then rewrite the draft to match.
+
+Before rewriting, summarize in 5 bullets what you noticed
+about my voice. I want to see your work.
+
+Samples: <span class="fill">[PASTE 3 SAMPLES]</span>
+
+Draft to rewrite: <span class="fill">[PASTE DRAFT]</span></div>
+  <p class="why">Why it works: the "show your work" step catches bad voice-matches before you get a full rewrite.</p>
+
+  <h3 class="prompt-title">12 — Executive summary for a specific skeptic</h3>
+  <div class="prompt-meta">Best for: stakeholder buy-in</div>
+  <div class="prompt-body">Summarize the attached <span class="fill">[REPORT / PROPOSAL]</span> for a
+specific reader: <span class="fill">[ROLE + WHAT THEY CARE ABOUT + WHAT THEY'RE SKEPTICAL OF]</span>.
+
+Output: 150 words or fewer. Lead with the business
+outcome. Address the skepticism directly. End with the
+single decision I'm asking them to make.
+
+Then flag: what claims in this summary would you
+verify before sending?
+
+<span class="fill">[ATTACH / PASTE CONTENT]</span></div>
+</div>
+
+<!-- EVALUATE — 8 new ADDIE prompts -->
+<div style="margin-top: 36px;">
+  <div class="tag" style="color: var(--ink); opacity: 0.5;">Evaluate + Extended ADDIE</div>
+
+  <h3 class="prompt-title">13 — Training needs analysis from interview data</h3>
+  <div class="prompt-meta">Best for: Analyze phase · Output: gap summary + recommendations</div>
+  <div class="prompt-body">I'm going to paste notes from <span class="fill">[N]</span> stakeholder or learner
+interviews about <span class="fill">[TOPIC / SKILL AREA]</span>.
+
+After reading them all:
+1. Identify the top 3 performance gaps across interviewees
+2. Note what is causing each gap (knowledge, skill, or environment)
+3. Recommend whether training is the right solution for each gap
+   — and if not, what is
+
+Be skeptical. Not everything is a training problem.
+
+Interview notes: <span class="fill">[PASTE NOTES]</span></div>
+  <p class="why">Why it works: forces a root-cause lens instead of jumping straight to course design.</p>
+
+  <h3 class="prompt-title">14 — Audience gap analysis</h3>
+  <div class="prompt-meta">Best for: Analyze phase · Output: learner-readiness profile</div>
+  <div class="prompt-body">I need to understand where my audience is starting from
+before I design this program.
+
+Role: <span class="fill">[ROLE]</span>
+Topic: <span class="fill">[TOPIC]</span>
+What I know about them: <span class="fill">[PASTE CONTEXT, SURVEYS, PAST DATA]</span>
+
+Give me:
+- What they likely already know (and what I can skip)
+- Where their common misconceptions or gaps tend to be
+- What they'll resist or question in this content
+- One question I should ask before designing anything</div>
+
+  <h3 class="prompt-title">15 — Competency map for a role</h3>
+  <div class="prompt-meta">Best for: Design phase · Output: competency framework draft</div>
+  <div class="prompt-body">Draft a competency map for the role of <span class="fill">[ROLE]</span>
+in a <span class="fill">[INDUSTRY / CONTEXT]</span> organization.
+
+For each competency:
+- Name it in plain language (no HR jargon)
+- Write 2 behavioral indicators at a developing level
+- Write 2 behavioral indicators at a proficient level
+
+Include 4–6 competencies. Flag which ones are most
+critical to get right in Year 1.
+
+Reference: <span class="fill">[PASTE JOB DESCRIPTION OR CONTEXT]</span></div>
+
+  <h3 class="prompt-title">16 — Learning experience blueprint</h3>
+  <div class="prompt-meta">Best for: Design phase · Output: modular course blueprint</div>
+  <div class="prompt-body">I'm designing a <span class="fill">[DURATION / FORMAT]</span> program on <span class="fill">[TOPIC]</span>
+for <span class="fill">[AUDIENCE]</span>.
+
+Build a module-level blueprint with:
+- 4–6 module titles in learner-facing language
+- One primary learning objective per module
+- The recommended modality (ILT, eLearning, job aid, practice, etc.)
+- A sequencing rationale — why this order
+
+Audience context: <span class="fill">[PASTE WHAT YOU KNOW ABOUT THEM]</span></div>
+  <p class="why">Why it works: separates architecture decisions from content decisions — which is where most design errors happen.</p>
+
+  <h3 class="prompt-title">17 — Storyboard draft for one eLearning scene</h3>
+  <div class="prompt-meta">Best for: Develop phase · Output: scene-by-scene storyboard</div>
+  <div class="prompt-body">Turn the content below into a storyboard for one eLearning
+scene. Target length: <span class="fill">[N]</span> slides or screens.
+
+For each screen include:
+- Screen number and title
+- Narration script (conversational, no jargon)
+- On-screen text (max 20 words)
+- Suggested visual or interaction (describe, don't design)
+- Learner action, if any
+
+Objective for this scene: <span class="fill">[OBJECTIVE]</span>
+
+Content: <span class="fill">[PASTE SOURCE CONTENT]</span></div>
+
+  <h3 class="prompt-title">18 — SME review request email</h3>
+  <div class="prompt-meta">Best for: Develop phase · Output: review request + feedback guide</div>
+  <div class="prompt-body">Write a short email asking <span class="fill">[SME NAME / ROLE]</span> to review
+the attached <span class="fill">[CONTENT TYPE: module / job aid / scenario]</span>.
+
+The email should:
+- Explain what you need reviewed and why their input matters
+- Give them a clear deadline: <span class="fill">[DATE]</span>
+- Include 4 specific questions to guide their feedback
+  (so you get useful input, not vague edits)
+- Keep the total ask under 30 minutes of their time
+
+Context for the content: <span class="fill">[WHAT IT'S FOR AND WHO IT'S FOR]</span></div>
+  <p class="why">Why it works: guided feedback questions prevent the "looks great!" response that tells you nothing.</p>
+
+  <h3 class="prompt-title">19 — Level 1 evaluation survey</h3>
+  <div class="prompt-meta">Best for: Evaluate phase · Output: post-session survey</div>
+  <div class="prompt-body">Write a post-session survey for a <span class="fill">[DURATION / FORMAT]</span>
+program on <span class="fill">[TOPIC]</span> for <span class="fill">[AUDIENCE]</span>.
+
+Requirements:
+- 6–8 questions max
+- Mix of Likert scale and open-ended
+- At least one question that identifies what participants
+  will do differently in the next 30 days
+- One question that surfaces what was missing or unclear
+
+Avoid: vanity questions ("Did you enjoy the session?")
+Focus on: learning + transfer intent</div>
+
+  <h3 class="prompt-title">20 — Learning impact summary for stakeholders</h3>
+  <div class="prompt-meta">Best for: Evaluate phase · Output: ROI-ready brief</div>
+  <div class="prompt-body">I need to summarize the impact of <span class="fill">[PROGRAM NAME]</span>
+for <span class="fill">[STAKEHOLDER AUDIENCE]</span>.
+
+Data I have: <span class="fill">[PASTE EVALUATION DATA, SURVEY RESULTS, OR COMPLETION STATS]</span>
+
+Write a one-page impact summary that:
+- Leads with the business outcome or behavior change
+- Translates data into plain language (no percentages without context)
+- Includes one or two direct learner quotes or examples
+  (I'll supply them — leave a placeholder)
+- Ends with one recommendation for the next iteration
+
+Tone: confident, honest, non-defensive about gaps.</div>
+  <p class="why">Why it works: stakeholders remember stories and recommendations — not completion rates.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 2 · The Seven-Day Challenge
+     ══════════════════════════════════════════════════════════════════ -->
+<h2 class="section"><span class="section-kicker">Part Seven · Artifact starter prompts</span>Six things you can build today.</h2>
+<p class="section-lede">Each of these runs as an Artifact. Pick one. Paste the prompt. Swap the brackets. You'll have something in under five minutes.</p>
+
+<div style="margin-bottom: 20px; padding: 16px 20px; background: var(--paper-2); border-left: 3px solid var(--terra); font-size: 11.5pt; line-height: 1.5;">
+  <strong>Before you build:</strong> Artifacts run in the browser. They handle everything interactive: quizzes, drag-and-drops, conversation sims, widgets. What they <em>don't</em> do: save data between sessions, store scores, or connect to your LMS. For that, you'd need a developer or a tool like Zapier.
+</div>
+
+<div class="artifact-grid">
+  <div class="artifact-card">
+    <span class="artifact-label">01 · Job Aid</span>
+    <h4>One-page reference card</h4>
+    <p class="artifact-desc">A scannable, printable job aid. Great for process steps, decision guides, or quick-reference tools.</p>
+    <div class="prompt-body" style="font-size: 11px; padding: 14px 16px;">Build a one-page job aid as a clean HTML page.
+
+Topic: <span class="fill">[TASK OR PROCESS]</span>
+Audience: <span class="fill">[ROLE]</span>
+
+Include: a short title, 4–6 numbered steps in
+verb-first language, one "watch-out" callout,
+and an if/then decision table for edge cases.
+
+Use a clean, professional layout.
+No long paragraphs — every element scannable.
+
+Before you build, ask me 3 questions. GO.</div>
+    <div class="artifact-connector"><strong>Connector tip:</strong> Add the Canva connector to generate a polished visual version directly in your Canva account.</div>
+  </div>
+
+  <div class="artifact-card">
+    <span class="artifact-label">02 · Self-Check</span>
+    <h4>Interactive knowledge check</h4>
+    <p class="artifact-desc">A browser-based quiz with instant feedback. No LMS required.</p>
+    <div class="prompt-body" style="font-size: 11px; padding: 14px 16px;">Build an interactive knowledge check as a
+self-contained HTML page.
+
+Topic: <span class="fill">[TOPIC]</span>
+Audience: <span class="fill">[LEARNER ROLE AND LEVEL]</span>
+
+Include 5 scenario-based multiple-choice
+questions. Each option should give immediate
+feedback explaining why it's right or wrong.
+Show a score at the end.
+
+Clean visual design. No frameworks.
+Before you build, ask me 3 questions. GO.</div>
+  </div>
+
+  <div class="artifact-card">
+    <span class="artifact-label">03 · Widget</span>
+    <h4>Interactive reference tool</h4>
+    <p class="artifact-desc">A calculator, decision guide, or checklist built around your specific content.</p>
+    <div class="prompt-body" style="font-size: 11px; padding: 14px 16px;">Build an interactive <span class="fill">[CALCULATOR / CHECKLIST /
+DECISION GUIDE]</span> as a self-contained HTML page.
+
+What it does: <span class="fill">[DESCRIBE WHAT IT CALCULATES
+OR HELPS THE USER DECIDE]</span>
+
+Audience: <span class="fill">[ROLE]</span>
+
+Keep the interface simple and mobile-friendly.
+No frameworks or external dependencies.
+Before you build, ask me 3 questions. GO.</div>
+    <div class="artifact-connector"><strong>Connector tip:</strong> Connect Google Drive to pull in your reference doc as the content source.</div>
+  </div>
+
+  <div class="artifact-card">
+    <span class="artifact-label">04 · Simulation</span>
+    <h4>Conversation practice sim</h4>
+    <p class="artifact-desc">A branching dialogue that lets learners practice a conversation with realistic choices and consequences.</p>
+    <div class="prompt-body" style="font-size: 11px; padding: 14px 16px;">Build a conversation practice simulation as
+an interactive HTML page.
+
+Scenario: <span class="fill">[DESCRIBE THE SITUATION: who, what's
+at stake, what the learner needs to do]</span>
+
+Include 3 decision points with 3 choices each.
+Each path should show consequences — what
+happens next based on what they chose.
+End with a brief debrief on what worked.
+
+No frameworks. Keep it self-contained.
+Before you build, ask me 3 questions. GO.</div>
+    <div class="artifact-connector"><strong>Heads up:</strong> Recipients need a Claude account to view shared Artifact links. For truly standalone delivery, host the HTML file on GitHub Pages.</div>
+  </div>
+
+  <div class="artifact-card">
+    <span class="artifact-label">05 · Microsite</span>
+    <h4>Program or resource hub</h4>
+    <p class="artifact-desc">A one-page mini-website for a program or initiative. Professional enough to share with stakeholders.</p>
+    <div class="prompt-body" style="font-size: 11px; padding: 14px 16px;">Build a one-page microsite as a clean HTML file.
+
+Program name: <span class="fill">[NAME]</span>
+Purpose: <span class="fill">[WHAT THIS PROGRAM DOES]</span>
+Audience: <span class="fill">[WHO IT'S FOR]</span>
+
+Sections: overview, key outcomes, what to
+expect, and a contact or next-step section.
+
+Warm, professional design. Serif headings.
+No frameworks or external images.
+Before you build, ask me 3 questions. GO.</div>
+  </div>
+
+  <div class="artifact-card">
+    <span class="artifact-label">06 · Game</span>
+    <h4>Learning game or challenge</h4>
+    <p class="artifact-desc">A simple browser game built around your content. More memorable than a quiz.</p>
+    <div class="prompt-body" style="font-size: 11px; padding: 14px 16px;">Build a simple learning game as an interactive
+HTML page.
+
+Game type: <span class="fill">[MATCHING / SORTING / TIMED QUIZ /
+SCENARIO CHALLENGE]</span>
+Content: <span class="fill">[TOPIC OR PASTE THE CONTENT TO
+BUILD AROUND]</span>
+Audience: <span class="fill">[ROLE]</span>
+
+Keep rules simple. Show a result at the end.
+No frameworks.
+Before you build, ask me 3 questions. GO.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PART 8 · Using Claude Efficiently
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+
+<footer class="doc-foot">
+  <span>Claude for L&amp;D · Tamara Thomas · tthomas1@westlake.com · ATD Houston Technology SIG</span>
+  <span>April 2026</span>
+</footer>
+</body>
+</html>
