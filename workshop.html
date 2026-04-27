@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workshop Materials — Claude for L&D · Tinkering Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1714;
+      --ink-muted: #6b6560;
+      --paper: #faf8f5;
+      --accent: #c8511b;
+      --accent-light: #f5ede7;
+      --border: #e4dfd9;
+      --card-bg: #ffffff;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html { font-size: 16px; }
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .wordmark {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent); }
+    .back-link {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 64px 40px 80px;
+      width: 100%;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      margin-bottom: 56px;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 60px);
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+    .subtitle {
+      font-size: 18px;
+      color: var(--ink-muted);
+      font-weight: 300;
+      line-height: 1.6;
+      max-width: 560px;
+    }
+    .meta-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    /* ── CARDS ── */
+    .materials-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: all 0.18s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(26, 23, 20, 0.08);
+    }
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-icon svg { color: var(--accent); }
+    .card-type {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .card-title {
+      font-family: var(--serif);
+      font-size: 24px;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .card-desc {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink-muted);
+      font-weight: 300;
+      flex: 1;
+    }
+    .card-cta {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 4px;
+    }
+
+    /* ── NOTE ── */
+    .note {
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 18px 22px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink-muted);
+    }
+    .note strong { color: var(--ink); font-weight: 500; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    footer p {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+    }
+    footer a {
+      color: var(--ink-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    footer a:hover { color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 18px 20px; }
+      main { padding: 40px 20px 60px; }
+      .materials-grid { grid-template-columns: 1fr; }
+      footer { padding: 20px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="wordmark" href="/"><span>✦</span> tinkeringhub</a>
+    <a class="back-link" href="/">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to home
+    </a>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <p class="eyebrow">ATD Houston · Technology SIG</p>
+      <h1>Claude for L&amp;D<br/><em style="font-style:italic; color: var(--accent);">Workshop Materials</em></h1>
+      <p class="subtitle">Resources from the April 2026 session on using Claude as a thinking and design partner in Learning &amp; Development work.</p>
+      <div class="meta-tags">
+        <span class="tag">April 2026</span>
+        <span class="tag">AI for L&amp;D</span>
+        <span class="tag">Claude</span>
+        <span class="tag">Prompt Design</span>
+      </div>
+    </header>
+
+    <div class="materials-grid">
+
+      <a class="card" href="./project/Claude%20for%20L%26D%20Workshop%20v2.html" target="_blank" rel="noopener">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 6h7M6.5 9h7M6.5 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <span class="card-type">Workshop Deck</span>
+        <h2 class="card-title">Claude for L&amp;D</h2>
+        <p class="card-desc">The full slide deck from the session — covering how to work with Claude as a design partner, prompt frameworks, and live examples built for L&D practitioners.</p>
+        <span class="card-cta">Open deck <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 4l3.5 3-3.5 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <a class="card" href="./project/Take-Home%20Wiki%20(Standalone).html" target="_blank" rel="noopener">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4h5v12H4zM11 4h5v12h-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 7l2 0M9 10l2 0M9 13l2 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <span class="card-type">Take-Home Pack</span>
+        <h2 class="card-title">The Take-Home Wiki</h2>
+        <p class="card-desc">Your post-workshop reference guide — prompts, practice exercises, instructions, tool recommendations, and inspiration all in one searchable document.</p>
+        <span class="card-cta">Open wiki <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 4l3.5 3-3.5 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+    </div>
+
+    <div class="note">
+      <strong>Questions after the workshop?</strong> Find me at <a href="https://linkedin.com/in/tamara-thomas-w" target="_blank" rel="noopener" style="color: var(--accent);">linkedin.com/in/tamara-thomas-w</a> or keep reading at <a href="https://substack.com/@tinkeringwithtech" target="_blank" rel="noopener" style="color: var(--accent);">substack.com/@tinkeringwithtech</a> — I write about L&D, AI, and what I'm experimenting with.
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Tamara Thomas · <a href="https://substack.com/@tinkeringwithtech" target="_blank" rel="noopener">tinkeringwithtech</a></p>
+    <p><a href="/">← Home</a></p>
+  </footer>
+
+</body>
+</html>
